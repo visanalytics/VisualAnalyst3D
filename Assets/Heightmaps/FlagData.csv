@@ -1,0 +1,5 @@
+'Type','Image name (without ext)','Path'
+'Positive','tick','Flag Images'
+'Negative','cross','Flag Images'
+'Danger','skull','Flag Images'
+'Wealth','moneybag','Flag Images'

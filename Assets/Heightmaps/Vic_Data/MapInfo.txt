@@ -1,0 +1,34 @@
+var info = {
+    "map": {
+        "VicAll-1x1": {"fromlat": -34, "fromlong": 141, "tolat": -39, "tolong": 150, "divlat": 1, "divlong": 1, "zoom": 7},
+        "VicAll-16x16": {"fromlat": -34, "fromlong": 141, "tolat": -39, "tolong": 150, "divlat": 16, "divlong": 16, "zoom": 7},
+        "VicAll-128x128": {"fromlat": -34, "fromlong": 141, "tolat": -39, "tolong": 150, "divlat": 128, "divlong": 128, "zoom": 7},
+        "VicAll-256x256": {"fromlat": -34, "fromlong": 141, "tolat": -39, "tolong": 150, "divlat": 256, "divlong": 256, "zoom": 7},
+        "VicAll-512x512": {"fromlat": -34, "fromlong": 141, "tolat": -39, "tolong": 150, "divlat": 512, "divlong": 512, "zoom": 7},
+        "LargerMelb-64x64": {"fromlat": -37.65, "fromlong": 144.7, "tolat": -38, "tolong": 145.3, "divlat": 64, "divlong": 64, "zoom": 11},
+        "LargerMelb-128x128": {"fromlat": -37.65, "fromlong": 144.7, "tolat": -38, "tolong": 145.3, "divlat": 128, "divlong": 128, "zoom": 11},
+        "CitySurr-16x16": {"fromlat": -37.78, "fromlong": 144.88, "tolat": -37.86, "tolong": 145.03, "divlat": 16, "divlong": 16, "zoom": 13},
+        "CitySurr-64x64": {"fromlat": -37.78, "fromlong": 144.88, "tolat": -37.86, "tolong": 145.03, "divlat": 64, "divlong": 64, "zoom": 13},
+        "CitySurr-128x128": {"fromlat": -37.78, "fromlong": 144.88, "tolat": -37.86, "tolong": 145.03, "divlat": 128, "divlong": 128, "zoom": 13},
+        "MelbCity-16x16": {"fromlat": -37.805, "fromlong": 144.950, "tolat": -37.825, "tolong": 144.986, "divlat": 16, "divlong": 16, "zoom": 15},
+        "MelbCity-64x64": {"fromlat": -37.805, "fromlong": 144.950, "tolat": -37.825, "tolong": 144.986, "divlat": 64, "divlong": 64, "zoom": 15}
+        //"Test": {"fromlat": -37.805, "fromlong": 144.950, "tolat": -37.825, "tolong": 144.986, "divlat": 64, "divlong": 64, "zoom": 15}
+    }
+};
+
+
+<label for="set-map">Map:</label>
+                        <select id="set-map">
+                                <option value="VicAll-1x1">Victoria (One)</option>
+                                <option value="VicAll-16x16" selected>Victoria (Outline)</option>
+                                <option value="VicAll-128x128">Victoria (Overview)</option>
+                                <option value="VicAll-256x256">Victoria (Detail)</option>
+                                <option value="LargerMelb-64x64">Larger Melbourne (Grain)</option>
+                                <option value="LargerMelb-128x128">Larger Melbourne (Fine)</option>
+                                <option value="CitySurr-16x16">Melbourne Inner Suburbs (Grain)</option>
+                                <option value="CitySurr-64x64">Melbourne Inner Suburbs (Medium)</option>
+                                <option value="CitySurr-128x128">Melbourne Inner Suburbs (Fine)</option>
+                                <option value="MelbCity-16x16">Melbourne City (Grain)</option>
+                                <option value="MelbCity-64x64">Melbourne City (Fine)</option>
+                                <!-- option value="Test" selected>Test</option-->
+                        </select>
