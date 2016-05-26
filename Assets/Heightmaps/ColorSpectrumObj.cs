@@ -16,6 +16,7 @@ using System.Linq;
 using UnityEngine;
 public class ColorSpectrumObj
 {
+	// Color Spectrum Presets.
 	public const String PRESET_RGBW = "RGBW";
 	public const String PRESET_WBGR = "WBGR";
 	public const String PRESET_PiPuDbDg = "PiPuDbDg";
@@ -29,12 +30,25 @@ public class ColorSpectrumObj
 
 	Color[] colors;
 	float[] prop;
+	/// <summary>
+	/// Initializes a new instance of the <see cref="ColorSpectrumObj"/> class.
+	/// Must have same number of elements in colors as in proportions.
+	/// </summary>
+	/// <param name="colors">Colors.</param>
+	/// <param name="proportions">Array defining float values at which
+	/// each color begins and ends (e.g. [0.0f, 0.3f, 0.6f, 1.0f]
+	/// and colors = [Color.clear, Color.red, ... , Color.white].</param>
 	public ColorSpectrumObj (Color[] colors, float[] proportions)
 	{
 		this.colors = colors;
 		this.prop = proportions;
 	}
 
+	/// <summary>
+	/// Initializes a new instance of the <see cref="ColorSpectrumObj"/> class
+	/// using a preset defined in the class.
+	/// </summary>
+	/// <param name="preset">Preset.</param>
 	public ColorSpectrumObj(String preset) 
 	{
 		switch(preset){ 
@@ -133,8 +147,6 @@ public class ColorSpectrumObj
 		for(int i=0; i<prop.Length; i++){
 			if(val < prop[i]){
 					if(i == 0){
-						float ratio = val/prop[i];
-	//					Color c = Color.Lerp(new Color(4f/255f, 4f/255f, 42f/255f), colors[i], ratio);
 						Color c = colors[0];
 						return c;
 					}

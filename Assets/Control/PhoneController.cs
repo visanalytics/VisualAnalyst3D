@@ -7,21 +7,27 @@ using System.Net.Sockets;
 using System.Threading;
 public class PhoneController : Controller
 {
-	Camera MainCamera;
 	Transform T;
 	float Speed;
 	Vector3 CurAcc;
 	Quaternion FacingDirection;
 	private NetworkController NetControl;
-	
+
+	/// <summary>
+	/// Initializes a new instance of the <see cref="PhoneController"/> class and starts 
+	/// server to which the phone can connect. 
+	/// </summary>
+	/// <param name="MainCamera">Main camera.</param>
 	public PhoneController (Camera MainCamera)
 	{
-		this.MainCamera = MainCamera;
 		this.T = MainCamera.transform;
 		this.NetControl = new NetworkController();
 		NetControl.StartServer();
 	}
 
+	/// <summary>
+	/// Update method of Phone Controller.
+	/// </summary>
 	public override void Update(){
 		if(enabled){
 			T.position = T.position + (T.forward * Speed/10);
@@ -29,11 +35,18 @@ public class PhoneController : Controller
 			T.RotateAround(T.position, T.right, CurAcc.y*2f);
 		}
 	}
-	
+
+	/// <summary>
+	/// Enables/disables the controller.
+	/// </summary>
+	/// <param name="val">If set to <c>true</c> value.</param>
 	public override void SetEnabled(bool val){
 		enabled = val;
 	}
 
+	/// <summary>
+	/// Destroy this instance of Controller.
+	/// </summary>
 	public override void Destroy(){
 		NetControl.CloseServer();
 		enabled = false;
@@ -41,8 +54,11 @@ public class PhoneController : Controller
 
 	#region RPC Calls propogated through networkView (Main.cs):
 
+	/// <summary>
+	/// Updates the phone data.
+	/// </summary>
+	/// <param name="acc">Acc.</param>
 	public void UpdatePhoneData(Vector3 acc){
-		//T.localEulerAngles = new Vector3(-acc.y*90f, acc.x*90f, 0);
 		CurAcc = acc;
 	}
 
@@ -60,6 +76,9 @@ public class PhoneController : Controller
 		private const string TypeName = "DeakinDataVis_PhoneControl";
 		private string RoomName; 
 			
+		/// <summary>
+		/// Starts the server hosting the phone controller.
+		/// </summary>
 		public void StartServer(){
 			NetworkConnectionError e = Network.InitializeServer (20, ServerPort, !Network.HavePublicAddress());
 
@@ -69,6 +88,9 @@ public class PhoneController : Controller
 			Debug.Log("Multiplayer Server return: " + e);
 		}
 
+		/// <summary>
+		/// Closes the server hosting the phone controller.
+		/// </summary>
 		public void CloseServer()
 		{
 			ConnectingMessage = "";

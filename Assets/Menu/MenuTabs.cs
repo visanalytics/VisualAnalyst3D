@@ -45,15 +45,7 @@ public class MenuTabs
 		this.Handler = handler;
 		CurrentTabState = TabState.TabDefault;
 
-		DataHandler dH = Handler.Inflater.dH; /*new DataHandler(Application.dataPath + Handler.Inflater.Vars.FILENAME,
-		                                 Handler.Inflater.Vars.COLUMN_X,
-		                                 Handler.Inflater.Vars.COLUMN_Y,
-		                                 Handler.Inflater.Vars.COLUMN_Z,
-		                                 Handler.Inflater.Vars.MIN_Z,
-		                                 Handler.Inflater.Vars.MIN_X,
-		                                 Handler.Inflater.Vars.MAX_Z,
-		                                 Handler.Inflater.Vars.MAX_X);*/
-		List<GameObject> toAddPoints = new List<GameObject>();
+		DataHandler dH = Handler.Inflater.dH;
 		List<double[]> data = dH.GetData();
 		MaxNumDataPoints = data.Count;
 		NumDataPoints = (int)(MaxNumDataPoints/1000f) + 1;
@@ -61,7 +53,7 @@ public class MenuTabs
 		AxisMinGridZ = Math.Abs(Handler.Inflater.Vars.MIN_X);
 		AxisMaxGridX = Math.Abs(Handler.Inflater.Vars.MAX_Z);
 		AxisMaxGridZ = Math.Abs(Handler.Inflater.Vars.MAX_X);
-		MinY = 0f;//(float)dH.GetMinY();
+		MinY = 0f;
 		MaxY = (float)dH.GetMaxY();
 		AxisMinGridY = 0f;
 		AxisMaxGridY = (float)Math.Abs(dH.GetMaxY());
@@ -248,22 +240,13 @@ public class MenuTabs
 	/// <param name="x">number of data points to show.</param>
 	public void AddDataPoints(float x){
 		RemoveDataPoints();
-		//		DataHandler dH = new DataHandler(Application.dataPath + Handler.Inflater.Vars.FILENAME, Handler.Inflater.Vars.COLUMN_X, Handler.Inflater.Vars.COLUMN_Y, Handler.Inflater.Vars.COLUMN_Z);
-		DataHandler dH = Handler.Inflater.dH; /*new DataHandler(Application.dataPath + Handler.Inflater.Vars.FILENAME,
-		                                 Handler.Inflater.Vars.COLUMN_X,
-		                                 Handler.Inflater.Vars.COLUMN_Y,
-		                                 Handler.Inflater.Vars.COLUMN_Z,
-		                                 Handler.Inflater.Vars.MIN_Z,
-		                                 Handler.Inflater.Vars.MIN_X,
-		                                 Handler.Inflater.Vars.MAX_Z,
-		                                 Handler.Inflater.Vars.MAX_X);*/
+		DataHandler dH = Handler.Inflater.dH;
 		List<GameObject> toAddPoints = new List<GameObject>();
 		List<double[]> data = dH.GetData();
 
 		int iterator = x > 2000 ? (int)(data.Count/1000) : (int)(data.Count/x);
 		for(int i=0; i<data.Count; i+= iterator){
 			float Y = (float)(data[i][1]/dH.GetMaxY());
-			//			Vector3 pos = new Vector3(X,Y,Z);
 			Vector3 pos = new Vector3((float)(data[i][0])*Handler.Inflater.theterrain.terrainData.size.x,
 			                          (float)(Y)*Handler.Inflater.theterrain.terrainData.size.y,
 			                          (float)(1-data[i][2])*Handler.Inflater.theterrain.terrainData.size.z);
@@ -287,14 +270,7 @@ public class MenuTabs
 	}
 
 	public void ResetDataPoints(){
-		DataHandler dH = Handler.Inflater.dH; /*new DataHandler(Application.dataPath + Handler.Inflater.Vars.FILENAME,
-		                                 Handler.Inflater.Vars.COLUMN_X,
-		                                 Handler.Inflater.Vars.COLUMN_Y,
-		                                 Handler.Inflater.Vars.COLUMN_Z,
-		                                 Handler.Inflater.Vars.MIN_Z,
-		                                 Handler.Inflater.Vars.MIN_X,
-		                                 Handler.Inflater.Vars.MAX_Z,
-		                                 Handler.Inflater.Vars.MAX_X);*/
+		DataHandler dH = Handler.Inflater.dH;
 		float tempRatio = ((float)NumDataPoints)/((float)MaxNumDataPoints);
 		MaxNumDataPoints = dH.GetData().Count;
 		NumDataPoints = (int)(MaxNumDataPoints*tempRatio);
@@ -303,7 +279,7 @@ public class MenuTabs
 			RemoveDataPoints();
 			AddDataPoints(NumDataPoints);
 		}else{
-			RemoveDataPoints(); // in worst case data points are disabled yet still show
+			RemoveDataPoints();
 		}
 	}
 
@@ -369,8 +345,6 @@ public class MenuTabs
 
 	#region Surface Grid Functions
 	public void ApplySurfaceGridValues(float gridSizeValueX, float gridSizeValueZ){
-		DataHandler dH = Handler.Inflater.dH; //new DataHandler(Application.dataPath + Handler.Inflater.Vars.FILENAME, Handler.Inflater.Vars.COLUMN_X, Handler.Inflater.Vars.COLUMN_Y, Handler.Inflater.Vars.COLUMN_Z);
-		
 		float proportionX = (float)((gridSizeValueX)/(AxisMaxGridX - AxisMinGridX));
 		float proportionZ = (float)((gridSizeValueZ)/(AxisMaxGridZ - AxisMinGridZ));
 		if(gridSizeValueX == 0)
@@ -399,8 +373,8 @@ public class MenuTabs
 		
 		Texture2D surfaceTex = new Texture2D(cMapTex.width, cMapTex.height);
 		surfaceTex.SetPixels(cMapTex.GetPixels());
-		float separatorX = (float)(cMapTex.width*gridSizeProportionX);// + 1;
-		float separatorZ = (float)(cMapTex.height*gridSizeProportionZ);// + 1;
+		float separatorX = (float)(cMapTex.width*gridSizeProportionX);
+		float separatorZ = (float)(cMapTex.height*gridSizeProportionZ);
 		
 		for(float x=0; x<surfaceTex.width; x+= separatorX){
 			for(float y=0; y<surfaceTex.height; y++){
@@ -435,7 +409,6 @@ public class MenuTabs
 	}
 
 	public void RemoveSurfaceGrid(){
-//		Terrain t = (Terrain)GameObject.Find("Terrain").GetComponent<Terrain>();
 		Handler.StateSingleplayer.RegenerateColorSplat();
 	}
 	#endregion
@@ -677,7 +650,7 @@ public class MenuTabs
 		zDir = new Vector3(0,0,-1f);
 
 		// X Lines
-		float iteratorX = proportionX*tSize.x;// < 8 ? 8 : proportionX*tSize.x;
+		float iteratorX = proportionX*tSize.x;
 		if(iteratorX == 0)
 			iteratorX = 8f;
 		for(float i=0; i<tSize.x; i+=iteratorX){
@@ -692,7 +665,7 @@ public class MenuTabs
 		}
 
 		// Y Lines
-		float iteratorY = proportionY*tSize.y;// < 8 ? 8 : proportionY*tSize.y;
+		float iteratorY = proportionY*tSize.y;
 		if(iteratorY == 0)
 			iteratorY = 8f;
 		for(float i=0; i<tSize.y; i+=iteratorY){
@@ -707,7 +680,7 @@ public class MenuTabs
 		}
 
 		// Z Lines
-		float iteratorZ = proportionZ*tSize.z;// < 8 ? 8 : proportionZ*tSize.z;
+		float iteratorZ = proportionZ*tSize.z;
 		if(iteratorZ == 0)
 			iteratorZ = 8f;
 		for(float i=0; i<tSize.z; i+=iteratorZ){
@@ -728,9 +701,9 @@ public class MenuTabs
 		Terrain ter = (Terrain)GameObject.Find("Terrain").GetComponent<Terrain>();
 		Vector3 tSize = ter.terrainData.size;
 		Vector3 tPos = ter.transform.position;
-		float iteratorX = proportionX*tSize.x;// < 8 ? 8 : proportionX*tSize.x;
-		float iteratorY = proportionY*tSize.y;// < 8 ? 8 : proportionY*tSize.y;
-		float iteratorZ = proportionZ*tSize.z;// < 8 ? 8 : proportionZ*tSize.z;
+		float iteratorX = proportionX*tSize.x;
+		float iteratorY = proportionY*tSize.y;
+		float iteratorZ = proportionZ*tSize.z;
 		Vector3 xStart = new Vector3(tPos.x,tPos.y+(iteratorY/2f)+tSize.y,tPos.z + tSize.z),
 		xDir = new Vector3(1f,0,0),
 		yStart1 = new Vector3(tPos.x,tPos.y+(iteratorY/2f),tPos.z+tSize.z),
@@ -844,21 +817,13 @@ public class MenuTabs
 	}
 
 	public void ResetAxisGrid(){
-		DataHandler dH = Handler.Inflater.dH; /*new DataHandler(Application.dataPath + Handler.Inflater.Vars.FILENAME,
-		                                 Handler.Inflater.Vars.COLUMN_X,
-		                                 Handler.Inflater.Vars.COLUMN_Y,
-		                                 Handler.Inflater.Vars.COLUMN_Z,
-		                                 Handler.Inflater.Vars.MIN_Z,
-		                                 Handler.Inflater.Vars.MIN_X,
-		                                 Handler.Inflater.Vars.MAX_Z,
-		                                 Handler.Inflater.Vars.MAX_X);*/
-		List<double[]> data = dH.GetData();
+		DataHandler dH = Handler.Inflater.dH;
 		float tempRatioX = (AxisGridSizeX)/(AxisMaxGridX-AxisMinGridX);
 		float tempRatioZ = (AxisGridSizeZ)/(AxisMaxGridZ-AxisMinGridZ);
 		float tempRatioY = (AxisGridSizeY)/(AxisMaxGridY-AxisMinGridY);
 		AxisMinGridX = Math.Abs(Handler.Inflater.Vars.MIN_Z);
 		AxisMinGridZ = Math.Abs(Handler.Inflater.Vars.MIN_X);
-		AxisMinGridY = 0f; //Math.Abs(dH.GetMinY()); #### When generating heightmaps the lower bound is considered to be zero
+		AxisMinGridY = 0f;
 		AxisMaxGridX = Math.Abs(Handler.Inflater.Vars.MAX_Z);
 		AxisMaxGridZ = Math.Abs(Handler.Inflater.Vars.MAX_X);
 		AxisMaxGridY = (float)Math.Abs(dH.GetMaxY());
@@ -874,53 +839,33 @@ public class MenuTabs
 		AxisGridSizeXString = String.Format("{0:0.000}", AxisGridSizeXRounded);
 		AxisGridSizeYString = String.Format("{0:0.000}", AxisGridSizeYRounded);
 		AxisGridSizeZString = String.Format("{0:0.000}", AxisGridSizeZRounded);
-		MinY = 0f;//(float)dH.GetMinY();
+		MinY = 0f;
 		MaxY = (float)dH.GetMaxY();
 
 		if(ShowAxisGrid){
-//			if(AxisGridSizeX == 0)
-//				tempRatioX = 1f;
-//			if(AxisGridSizeY == 0)
-//				tempRatioY = 1f;
-//			if(AxisGridSizeZ == 0)
-//				tempRatioZ = 1f;
 			RemoveAxisGrids();
 			AddAxisGridsValues(AxisGridSizeXRounded, AxisGridSizeYRounded, AxisGridSizeZRounded);
 			RemoveSurfaceGrid();
 			ApplySurfaceGridValues(AxisGridSizeXRounded, AxisGridSizeZRounded);
 		}
 		if(ShowAxisGridLabels){
-//			if(AxisGridSizeX == 0)
-//				tempRatioX = 1f;
-//			if(AxisGridSizeY == 0)
-//				tempRatioY = 1f;
-//			if(AxisGridSizeZ == 0)
-//				tempRatioZ = 1f;
 			RemoveAxisGridLabels();
 			AddAxisGridLabelsValues(AxisGridSizeXRounded, AxisGridSizeYRounded, AxisGridSizeZRounded);
 		}
 	}
 
 	private void ResetAxisStatics(){
-		DataHandler dH = Handler.Inflater.dH; /* new DataHandler(Application.dataPath + Handler.Inflater.Vars.FILENAME,
-		                                 Handler.Inflater.Vars.COLUMN_X,
-		                                 Handler.Inflater.Vars.COLUMN_Y,
-		                                 Handler.Inflater.Vars.COLUMN_Z,
-		                                 Handler.Inflater.Vars.MIN_Z,
-		                                 Handler.Inflater.Vars.MIN_X,
-		                                 Handler.Inflater.Vars.MAX_Z,
-		                                 Handler.Inflater.Vars.MAX_X);*/
-		List<double[]> data = dH.GetData();
+		DataHandler dH = Handler.Inflater.dH;
 		AxisMinGridX = Math.Abs(Handler.Inflater.Vars.MIN_Z);
 		AxisMinGridZ = Math.Abs(Handler.Inflater.Vars.MIN_X);
-		AxisMinGridY = 0f; //Math.Abs(dH.GetMinY()); #### When generating heightmaps the lower bound is considered to be zero
+		AxisMinGridY = 0f;
 		AxisMaxGridX = Math.Abs(Handler.Inflater.Vars.MAX_Z);
 		AxisMaxGridZ = Math.Abs(Handler.Inflater.Vars.MAX_X);
 		AxisMaxGridY = (float)Math.Abs(dH.GetMaxY());
 		AxisGridSizeXIT = GetGridIterator(AxisMaxGridX-AxisMinGridX);
 		AxisGridSizeYIT = GetGridIterator(AxisMaxGridY-AxisMinGridY);
 		AxisGridSizeZIT = GetGridIterator(AxisMaxGridZ-AxisMinGridZ);
-		MinY = 0f;//(float)dH.GetMinY();
+		MinY = 0f;
 		MaxY = (float)dH.GetMaxY();
 	}
 	

@@ -14,13 +14,8 @@ public class MultiplayerManager {
 	public MultiplayerManager(MenuHandler Handler, NetworkView nView){
 		this.Handler = Handler;
 		this.nView = nView;
-//		MasterServer.ipAddress = "127.0.0.1";
-//		MasterServer.port = 23466;//int.Parse(MasterServerPortString);
-//		Network.natFacilitatorIP = "127.0.0.1";
-//		Network.natFacilitatorPort = 50005;
 	}
 
-	// Update is called once per frame
 	public void Update () {
 		MyPlayerObject.GetComponent<MultiplayerObject>().SetPosition(Handler.MainCamera.transform.position);
 	}
@@ -48,12 +43,6 @@ public class MultiplayerManager {
 
 	public void Disconnect(){
 		Network.Disconnect();
-//		Network.Destroy(MyPlayerObject);
-//		MyPlayerObject = null;
-//		foreach(GameObject o in PlayerObjects){
-//			Main.Destroy (o);
-//		}
-//		PlayerObjects = new List<GameObject>();
 	}
 	
 	void OnFailedToConnectToMasterServer(NetworkConnectionError info) {
@@ -63,7 +52,7 @@ public class MultiplayerManager {
 
 	#endregion
 
-	#region Calls to Server
+	#region RPC Calls to server
 
 	public void CallChangeTerrain(string DataSource, string TerrainType, string Filename, string Preset, bool regen, float scale, float colorScale){
 		nView.RPC("ChangeTerrain", RPCMode.Server, Network.player, DataSource, TerrainType, Filename, Preset, regen, scale, colorScale);

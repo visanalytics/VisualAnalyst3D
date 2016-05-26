@@ -16,13 +16,22 @@ public class SexHeightmapGenerator
 	protected double lowerBound, upperBound;
 	protected double maxRadius;
 	protected String filename;
-	private double bWidth, bHeight;
 
 	ColorSpectrumObj spectrum;
 	
 	// Variables Holder
 	Variables Vars;
 
+	/// <summary>
+	/// Initializes a new instance of the <see cref="SexHeightmapGenerator"/> class.
+	/// </summary>
+	/// <param name="Vars">Variables instane.</param>
+	/// <param name="filename">Filename.</param>
+	/// <param name="maxRadius">Max radius.</param>
+	/// <param name="minX">Minimum X coord.</param>
+	/// <param name="minZ">Minimum Z coord.</param>
+	/// <param name="maxX">Max X coord.</param>
+	/// <param name="maxZ">Max Z coord.</param>
 	public SexHeightmapGenerator (Variables Vars, String filename, double maxRadius,
 	                              double minX, double minZ, double maxX, double maxZ)
 	{
@@ -35,31 +44,35 @@ public class SexHeightmapGenerator
 		this.maxZ = minX;
 	}
 
+	/// <summary>
+	/// Gets the mesh heightmap.
+	/// </summary>
+	/// <returns>The mesh heightmap texture.</returns>
+	/// <param name="heightMapWidth">Height map texture width.</param>
+	/// <param name="heightMapHeight">Height map texture height.</param>
 	public Texture2D GetMeshHeightmap(double heightMapWidth,
 	                                  double heightMapHeight){
 		DataHandler dataHandler = new DataHandler(filename, Vars.COLUMN_X, Vars.COLUMN_Y, Vars.COLUMN_Z, minX, minZ, maxX, maxZ);
 		hmapWidth = heightMapWidth;
 		hmapHeight = heightMapHeight;
 		double[] bnds= dataHandler.GetBounds();
-		lowerBound = 0f;//bnds[0];// - ((bnds[1]-bnds[0]+1)/10.0d); // lower bound minus 10% of the difference between bounds..this comment is unnecessary
+		lowerBound = 0f;
 		upperBound = bnds[1];
-		
-		UnityEngine.Color[] colors = new UnityEngine.Color[]{UnityEngine.Color.white, UnityEngine.Color.black};//, UnityEngine.Color.white};  // all values below zero are white, and all values above zero are white, same value, different colors
-		
-		float maxMagnitude = new float[]{Math.Abs((float)lowerBound),Math.Abs((float)upperBound)}.Max();
-		float[] proportions = new float[]{0.0f, /*(float)((-lowerBound)/(upperBound-lowerBound)),*/ 1.0f};  //
-//		lowerBound = -maxMagnitude;//bnds[0];// - ((bnds[1]-bnds[0]+1)/10.0d); // lower bound minus 10% of the difference between bounds..this comment is unnecessary
-//		upperBound = maxMagnitude;
 
-		spectrum = new ColorSpectrumObj(colors, proportions);
 		heightMap = new Texture2D((int)heightMapWidth, (int)heightMapHeight);
-		MeshTerrain mt = new MeshTerrain(Vars, filename, Vars.MIN_X,Vars.MIN_Z,Vars.MAX_X,Vars.MAX_Z);
-		heightMap = CreateHeightMap(dataHandler.GetData());//GetColormap(heightMapWidth, heightMapHeight, spectrum, -maxMagnitude, maxMagnitude);
+		heightMap = CreateHeightMap(dataHandler.GetData());
 		SaveToDisk(heightMap, "GA_" + Vars.TERRAIN_NAME);
 
 		return heightMap;
 	}
 
+	/// <summary>
+	/// Gets the mesh colormap texture.
+	/// </summary>
+	/// <returns>The mesh colormap texture.</returns>
+	/// <param name="heightMapWidth">Height map texture width.</param>
+	/// <param name="heightMapHeight">Height map texture height.</param>
+	/// <param name="spectrum">ColorSpectrumObj.</param>
 	public Texture2D GetMeshColormap(double heightMapWidth,
 	                                 double heightMapHeight,
 	                                 ColorSpectrumObj spectrum){
@@ -67,7 +80,7 @@ public class SexHeightmapGenerator
 		hmapWidth = heightMapWidth;
 		hmapHeight = heightMapHeight;
 		double[] bnds= dataHandler.GetBounds();
-		lowerBound = bnds[0];// - ((bnds[1]-bnds[0]+1)/10.0d); // lower bound minus 10% of the difference between bounds..this comment is unnecessary
+		lowerBound = bnds[0];
 		upperBound = bnds[1];
 		
 		UnityEngine.Color[] colors = new UnityEngine.Color[]{UnityEngine.Color.red,
@@ -76,72 +89,70 @@ public class SexHeightmapGenerator
 			UnityEngine.Color.black,
 			UnityEngine.Color.cyan,
 			UnityEngine.Color.blue,
-			UnityEngine.Color.blue};//, UnityEngine.Color.white};  // all values below zero are white, and all values above zero are white, same value, different colors
-		
-		float maxMagnitude = new float[]{Math.Abs((float)lowerBound),Math.Abs((float)upperBound)}.Max();
+			UnityEngine.Color.blue};
+
 		float[] proportions = new float[]{0.0f,
 			(float)((-lowerBound)/(upperBound-lowerBound))/2f,
 			(float)((-lowerBound)/(upperBound-lowerBound))-0.005f,
 			(float)((-lowerBound)/(upperBound-lowerBound)),
 			(float)((-lowerBound)/(upperBound-lowerBound))+0.005f,
 			(float)((-lowerBound)/(upperBound-lowerBound))+(1-(float)((-lowerBound)/(upperBound-lowerBound)))/2f,
-			1.0f};  //
-		//		lowerBound = -maxMagnitude;//bnds[0];// - ((bnds[1]-bnds[0]+1)/10.0d); // lower bound minus 10% of the difference between bounds..this comment is unnecessary
-		//		upperBound = maxMagnitude;
+			1.0f};
 		
 		this.spectrum = new ColorSpectrumObj(colors, proportions);
 		heightMap = new Texture2D((int)heightMapWidth, (int)heightMapHeight);
-		MeshTerrain mt = new MeshTerrain(Vars, filename, Vars.MIN_X,Vars.MIN_Z,Vars.MAX_X,Vars.MAX_Z);
-		heightMap = CreateColorMap(dataHandler.GetData());//GetColormap(heightMapWidth, heightMapHeight, spectrum, -maxMagnitude, maxMagnitude);
+		heightMap = CreateColorMap(dataHandler.GetData());
 		SaveToDisk(heightMap, "GA_Color_" + Vars.TERRAIN_NAME);
 		
 		return heightMap;
 	} 
-	 
+
+	/// <summary>
+	/// Gets the hills heightmap texture.
+	/// </summary>
+	/// <returns>The hills heightmap texture.</returns>
+	/// <param name="heightMapWidth">Height map texture width.</param>
+	/// <param name="heightMapHeight">Height map texture height.</param>
 	public Texture2D GetHillsHeightmap(double heightMapWidth,
 	                                   double heightMapHeight){
 		DataHandler dataHandler = new DataHandler(filename, Vars.COLUMN_X, Vars.COLUMN_Y, Vars.COLUMN_Z, minX, minZ, maxX, maxZ);
 		
 		double[] bnds= dataHandler.GetBounds();
-		lowerBound = 0f;//bnds[0];// - ((bnds[1]-bnds[0]+1)/10.0d); // lower  bound minus 10% of the difference between bounds..this comment is unnecessary
+		lowerBound = 0f;
 		upperBound = bnds[1];
-		
-		UnityEngine.Color[] colors = new UnityEngine.Color[]{UnityEngine.Color.black, UnityEngine.Color.white};  // all values below zero are white, and all values above zero are white, same value, different colors
-		
-		float maxMagnitude = (new float[]{Math.Abs((float)lowerBound),Math.Abs((float)upperBound)}).Max();
-		float[] proportions = new float[]{0.0f, 1.0f};  //
 
-		spectrum = new ColorSpectrumObj(colors, proportions);
-		
 		HeightmapGenerator heightGen = new HeightmapGenerator(Vars, filename, Vars.MAX_RADIUS, Vars.MIN_X,Vars.MIN_Z,Vars.MAX_X,Vars.MAX_Z);
-		heightMap = heightGen.GetHeightmap(heightMapWidth, heightMapHeight, true);//, dataHandler.GetData(), -maxMagnitude, maxMagnitude);
+		heightMap = heightGen.GetHeightmap(heightMapWidth, heightMapHeight, true);
 		SaveToDisk(heightMap, "heightmap_" + Vars.TERRAIN_NAME);
-		return heightMap;}
+		return heightMap;
+	}
 
+	/// <summary>
+	/// Gets the heightmap with terrain type Cylindrical.
+	/// </summary>
+	/// <returns>The heightmap texture.</returns>
+	/// <param name="bWidth">Texture width.</param>
+	/// <param name="bHeight">Texture height.</param>
 	public virtual Texture2D GetHillsSexHeightmapCylinder(double bWidth, double bHeight){
 		DataHandler dataHandler = new DataHandler(filename, Vars.COLUMN_X, Vars.COLUMN_Y, Vars.COLUMN_Z, minX, minZ, maxX, maxZ);
-		//		maxRadius = dataHandler.GetMaxRadius();
 		List<double[]> data = dataHandler.GetData();
-		this.bWidth = bWidth;// - (2*maxRadius*bWidth);
-		this.bHeight = bHeight;// - (2*maxRadius*bHeight);
 		heightMap = new Texture2D((int)bWidth, (int)bHeight);
 		FillInColor(UnityEngine.Color.black);
 		
 		double[] bnds= dataHandler.GetBounds();
-		lowerBound = 0;//bnds[0];//bnds[0];// - ((bnds[1]-bnds[0]+1)/10.0d); // lower bound minus 10% of the difference between bounds..this comment is unnecessary
+		lowerBound = 0;
 		upperBound = bnds[1];
-//////////
+
 		double it = (upperBound-lowerBound)/Vars.ITERATION_NUMBER;
 		if(it == 0)
 			it = 1f;
-		//double it = Vars.ITERATION_NUMBER;
+
 		System.Drawing.Bitmap bit = new System.Drawing.Bitmap(heightMap.width, heightMap.height);
 		System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(bit);
 		
 		double h = lowerBound;
 		while(data.Count != 0){
 			h += it;
-			//for(double h=lowerBound; h<upperBound; h+= it){
 			List<int> toRemove = new List<int>();
 			for(int i=0; i<data.Count; i++){
 				if(Math.Abs(data[i][1]) < h){ //If middle of the values is less than the lower bounds, then add it "toRemove" List
@@ -166,33 +177,11 @@ public class SexHeightmapGenerator
 		return heightMap;
 	}
 
-//	protected void CreateSexHeightMapCyl(List<double[]> data){
-//		//double it = (upperBound-lowerBound)/Vars.ITERATION_NUMBER;
-//		double it = Vars.ITERATION_NUMBER;
-//		System.Drawing.Bitmap bit = new System.Drawing.Bitmap(heightMap.width, heightMap.height);
-//		System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(bit);
-//		for(double h=lowerBound; h<upperBound; h+= it){
-//			List<int> toRemove = new List<int>();
-//			for(int i=0; i<data.Count; i++){
-//				//					DrawHillRadius(data[i][1], data[i][0] * bWidth + (maxRadius*bWidth), data[i][2] * bHeight + (maxRadius*bWidth), h, maxRadius * bWidth, HILLS);
-//				//DrawHillRadius(data[i][1], data[i][0] * bWidth, data[i][2] * bHeight, h, maxRadius * bWidth, HILLS);
-//				System.Drawing.Color col = DetermineStrength(data[i][1]);
-//				System.Drawing.Brush brush = new SolidBrush(col);
-//				Rectangle rect = new Rectangle((int)(data[i][0] * bWidth), (int)(data[i][2] * bHeight), 10 , 10);
-//				g.FillEllipse(brush, rect);			
-//			}
-//			/*for(int i=0; i<toRemove.Count; i++){
-//				data.RemoveAt(toRemove[i]-i);
-//			}*/
-//		}
-//		bit.RotateFlip(RotateFlipType.Rotate180FlipX);
-//		bit.Save(Application.dataPath + "/cylindertest.png");
-//		ImageConverter imgconv = new ImageConverter();
-//		byte[] hmapbytes = (byte[])imgconv.ConvertTo(bit, typeof(byte[]));
-//		heightMap.LoadImage(hmapbytes);
-//		heightMap.Apply();
-//	}
-
+	/// <summary>
+	/// Saves texture to disk memory.
+	/// </summary>
+	/// <param name="img">Image.</param>
+	/// <param name="filename">Filename.</param>
 	public void SaveToDisk(Texture2D img, string filename) {
 		byte[] bytes = img.EncodeToPNG();
 		File.WriteAllBytes(Application.dataPath + "/Heightmaps/Images/" + filename + ".png", bytes);
@@ -206,7 +195,7 @@ public class SexHeightmapGenerator
 		hmapWidth = heightMapWidth;
 		hmapHeight = heightMapHeight;
 		double[] bnds= dataHandler.GetBounds();
-		lowerBound = bnds[0];// - ((bnds[1]-bnds[0]+1)/10.0d); // lower bound minus 10% of the difference between bounds..this comment is unnecessary
+		lowerBound = bnds[0];
 		upperBound = bnds[1];
 
 		UnityEngine.Color[] colors = new UnityEngine.Color[]{UnityEngine.Color.red,
@@ -222,9 +211,7 @@ public class SexHeightmapGenerator
 			(float)((-lowerBound)/(upperBound-lowerBound)),
 			(float)((-lowerBound)/(upperBound-lowerBound))+0.005f,
 			(float)((-lowerBound)/(upperBound-lowerBound))+(1-(float)((-lowerBound)/(upperBound-lowerBound)))/2f,
-			1.0f};  //
-		//		lowerBound = -maxMagnitude;//bnds[0];// - ((bnds[1]-bnds[0]+1)/10.0d); // lower bound minus 10% of the difference between bounds..this comment is unnecessary
-		//		upperBound = maxMagnitude;
+			1.0f};
 		
 		this.spectrum = new ColorSpectrumObj(colors, proportions);
 		Texture2D colorMap = new Texture2D((int)heightMapWidth, (int)heightMapHeight);
@@ -242,7 +229,7 @@ public class SexHeightmapGenerator
 		hmapWidth = heightMapWidth;
 		hmapHeight = heightMapHeight;
 		double[] bnds= dataHandler.GetBounds();
-		lowerBound = bnds[0];// - ((bnds[1]-bnds[0]+1)/10.0d); // lower bound minus 10% of the difference between bounds..this comment is unnecessary
+		lowerBound = bnds[0];
 		upperBound = bnds[1];
 
 		UnityEngine.Color[] colors = new UnityEngine.Color[]{UnityEngine.Color.red,
@@ -258,9 +245,7 @@ public class SexHeightmapGenerator
 			(float)((-lowerBound)/(upperBound-lowerBound)),
 			(float)((-lowerBound)/(upperBound-lowerBound))+0.005f,
 			(float)((-lowerBound)/(upperBound-lowerBound))+(1-(float)((-lowerBound)/(upperBound-lowerBound)))/2f,
-			1.0f};  //
-		//		lowerBound = -maxMagnitude;//bnds[0];// - ((bnds[1]-bnds[0]+1)/10.0d); // lower bound minus 10% of the difference between bounds..this comment is unnecessary
-		//		upperBound = maxMagnitude;
+			1.0f};
 		
 		this.spectrum = new ColorSpectrumObj(colors, proportions);
 		Texture2D colorMap = new Texture2D((int)heightMapWidth, (int)heightMapHeight);
@@ -271,25 +256,6 @@ public class SexHeightmapGenerator
 		return colorMap;
 	}
 
-	private System.Drawing.Color DetermineStrength(double val)
-	{
-		System.Drawing.Color col = System.Drawing.Color.Black;
-		if(val < 0)//girl
-		{
-			val *= -1;
-			//int alph = (int)(val/255);
-			//col = System.Drawing.Color.FromArgb(alph, System.Drawing.Color.PaleVioletRed);
-			col = System.Drawing.Color.PaleVioletRed;
-		}
-		else //boy
-		{
-			//int alph = (int)(val/255);
-			//col = System.Drawing.Color.FromArgb(alph, System.Drawing.Color.BlueViolet);
-			col = System.Drawing.Color.BlueViolet;
-		}
-		return col;
-	}
-
 	protected void FillInColor(UnityEngine.Color c){
 		for(int i = 0; i < heightMap.width; i++) {
 			for(int j = 0; j < heightMap.height; j++) {
@@ -297,7 +263,15 @@ public class SexHeightmapGenerator
 			}
 		}
 	}
-	
+
+	/// <summary>
+	/// Performs the same function as <see cref="ColorFromHeight"/> 
+	/// however returns a System.Drawing.Color instead of a Unity
+	/// Color object.
+	/// </summary>
+	/// <returns>The color associated with the height from 
+	/// the designated ColorSpectrumObj.</returns>
+	/// <param name="val">Height value.</param>
 	public System.Drawing.Color ColourConvert(double val)
 	{
 		UnityEngine.Color unityC = GrayscaleFromHeight(val, upperBound, lowerBound);
@@ -353,22 +327,19 @@ public class SexHeightmapGenerator
 		//BEGIN GENETIC ALGORITHM 
 		for(int i=0; i<iterationMax; i++){
 			for(int n=0; n<numCores; n++){
-				System.Threading.ParameterizedThreadStart pts = new System.Threading.ParameterizedThreadStart(Foo);
+				System.Threading.ParameterizedThreadStart pts = new System.Threading.ParameterizedThreadStart(GenerateMesh);
 				System.Threading.Thread worker = new System.Threading.Thread(pts);
 				worker.Start(new int[]{(int)(hmapHeight/numCores)*n, (int)((hmapHeight/numCores)*(n+1))});
 			}
-			//			Foo (new int[]{0,(int)hmapHeight});
 			Array.Copy (map_temp, map, map_temp.Length);
 			Array.Copy (map_nonzero_temp, map_nonzero, map_nonzero_temp.Length);
-			//if(i == 0 || i == iterationMax-1){
-			//}
 		}
 		heightMap.Apply();
 		
 		// adjust pumps 
 		for(int i=0; i<Vars.GENETIC_SMOOTH_ITERATION; i++){
 			for(int n=0; n<numCores; n++){
-				System.Threading.ParameterizedThreadStart pts = new System.Threading.ParameterizedThreadStart(Bar);
+				System.Threading.ParameterizedThreadStart pts = new System.Threading.ParameterizedThreadStart(SmoothMesh);
 				System.Threading.Thread worker = new System.Threading.Thread(pts);
 				worker.Start(new int[]{(int)(hmapHeight/numCores)*n, (int)((hmapHeight/numCores)*(n+1))});
 			}
@@ -385,9 +356,7 @@ public class SexHeightmapGenerator
 			}
 		}
 		
-		heightMap.Apply(); 
-		//		SaveToDisk(heightMap);
-
+		heightMap.Apply();
 		return heightMap;
 	}
 	protected Texture2D CreateColorMap(List<double[]> data){ 
@@ -419,7 +388,7 @@ public class SexHeightmapGenerator
 		for(int a=0; a<hmapWidth; a++){
 			for (int b=0; b<hmapHeight; b++){
 				if(!map_pump[a,b])
-					map[a,b] = 0f;//(-lowerBound)/(upperBound-lowerBound);
+					map[a,b] = 0f;
 				map_nonzero[a,b] = true;
 			}
 		}
@@ -431,22 +400,19 @@ public class SexHeightmapGenerator
 		//BEGIN GENETIC ALGORITHM 
 		for(int i=0; i<iterationMax; i++){
 			for(int n=0; n<numCores; n++){
-				System.Threading.ParameterizedThreadStart pts = new System.Threading.ParameterizedThreadStart(Foo);
+				System.Threading.ParameterizedThreadStart pts = new System.Threading.ParameterizedThreadStart(GenerateMesh);
 				System.Threading.Thread worker = new System.Threading.Thread(pts);
 				worker.Start(new int[]{(int)(hmapHeight/numCores)*n, (int)((hmapHeight/numCores)*(n+1))});
 			}
-			//			Foo (new int[]{0,(int)hmapHeight});
 			Array.Copy (map_temp, map, map_temp.Length);
 			Array.Copy (map_nonzero_temp, map_nonzero, map_nonzero_temp.Length);
-			//if(i == 0 || i == iterationMax-1){
-			//}
 		}
 		heightMap.Apply();
 		
 		// adjust pumps 
 		for(int i=0; i<Vars.GENETIC_SMOOTH_ITERATION; i++){
 			for(int n=0; n<numCores; n++){
-				System.Threading.ParameterizedThreadStart pts = new System.Threading.ParameterizedThreadStart(Bar);
+				System.Threading.ParameterizedThreadStart pts = new System.Threading.ParameterizedThreadStart(SmoothMesh);
 				System.Threading.Thread worker = new System.Threading.Thread(pts);
 				worker.Start(new int[]{(int)(hmapHeight/numCores)*n, (int)((hmapHeight/numCores)*(n+1))});
 			}
@@ -490,9 +456,12 @@ public class SexHeightmapGenerator
 		return color;
 	}
 
-	private void Bar(object rangeArray){
-		int start = ((int[])rangeArray)[0];
-		int stop = ((int[])rangeArray)[1];
+	/// <summary>
+	/// Smooths the array representing the mesh texture.
+	/// </summary>
+	/// <param name="rangeArray">Array containing the data
+	/// in the form.</param>
+	private void SmoothMesh(object rangeArray){
 		for(int x=0; x<hmapWidth; x++){
 			for (int z=0; z<hmapHeight; z++){
 				double avg = 0f;
@@ -523,15 +492,20 @@ public class SexHeightmapGenerator
 					div += map_nonzero[x+1, z+1]? 1 : 0;
 				}
 				
-				avg = (div != 0) ? avg/div : 0f;//(-lowerBound)/(upperBound-lowerBound);
+				avg = (div != 0) ? avg/div : 0f;
 				map_temp[x,z] = avg;
 				map_nonzero_temp[x, z] = (avg != 0f) ? true : false;
-				//					heightMap.SetPixel(x,z,GrayscaleFromHeight(avg, upperBound, lowerBound)); // Put outside loop
+
 			}
 		}
 	}
-	
-	private void Foo(object rangeArray){
+
+	/// <summary>
+	/// Generates the initial terrain data.
+	/// </summary>
+	/// <param name="rangeArray">Array containing the data
+	/// in the form.</param>
+	private void GenerateMesh(object rangeArray){
 		int start = ((int[])rangeArray)[0];
 		int stop = ((int[])rangeArray)[1];
 		for(int x=0; x<hmapWidth; x++){
@@ -565,10 +539,9 @@ public class SexHeightmapGenerator
 						div += map_nonzero[x+1, z+1]? 1 : 0;
 					}
 					
-					avg = (div != 0) ? avg/div : 0f;//(-lowerBound)/(upperBound-lowerBound);
+					avg = (div != 0) ? avg/div : 0f;
 					map_temp[x,z] = avg;
 					map_nonzero_temp[x, z] = (avg != 0f) ? true : false;
-					//					heightMap.SetPixel(x,z,GrayscaleFromHeight(avg, upperBound, lowerBound)); // Put outside loop 
 				}
 			}
 		}

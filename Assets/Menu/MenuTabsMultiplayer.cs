@@ -4,7 +4,6 @@ public class MenuTabsMultiplayer : MenuTabs
 {
 	
 	bool KeyboardSelected = true;
-	bool PhoneSelected = false;
 
 	public MenuTabsMultiplayer (MenuHandler handler) : base(handler)
 	{
@@ -53,20 +52,10 @@ public class MenuTabsMultiplayer : MenuTabs
 			MenuHandler.GUIDrawRect(new Rect(w - tw*2f, h/2 + th*3.5f, tw, th), new Color(0.38f, 0.57f, 0.72f, 0.55f));
 		if(GUI.Button(new Rect(w - tw*2f, h/2 + th*3.5f, tw, th), "Keyboard")){
 			if(!KeyboardSelected){
-				PhoneSelected = false;
 				Handler.ControlHandler.SetControl(ControllerHandler.ControllerType.Keyboard);
 				KeyboardSelected = true;
 			}
 		}
-		/*if(PhoneSelected)
-			MenuHandler.GUIDrawRect(new Rect(w - tw*2f, h/2 + th*4.5f, tw, th), new Color(0.38f, 0.57f, 0.72f, 0.55f));
-		if(GUI.Button(new Rect(w - tw*2f, h/2 + th*4.5f, tw, th), "Phone")){
-			if(!PhoneSelected){
-				KeyboardSelected = false;
-				Handler.ControlHandler.SetControl(ControllerHandler.ControllerType.Phone);
-				PhoneSelected = true;
-			}
-		}*/
 
 		#endregion
 		
@@ -174,8 +163,7 @@ public class MenuTabsMultiplayer : MenuTabs
 						}
 						SelectedGrid = Handler.Grids[i];
 						SelectedGridData = (GridData)SelectedGrid.GetComponent(typeof(GridData));
-						DataHandler dH = Handler.Inflater.dH; //new DataHandler(Application.dataPath + Handler.Inflater.Vars.FILENAME, Handler.Inflater.Vars.COLUMN_X, Handler.Inflater.Vars.COLUMN_Y, Handler.Inflater.Vars.COLUMN_Z);
-						
+
 						switch(SelectedGridData.GetOrientation()){
 						case GridData.Orientation.UP_X:
 							SelectedGridHeight = (SelectedGridData.GetWorldValue()/Handler.Inflater.theterrain.terrainData.size.x) * 100 + 1;
@@ -273,31 +261,29 @@ public class MenuTabsMultiplayer : MenuTabs
 			}
 			for(int i=0; i<Handler.Flags.Count; i++){
 				FlagData fTemp = Handler.Flags[i].GetComponent<FlagData>();
-//				if(fTemp.GetAnnotation() != "" && fTemp.GetDataPos() != Vector3.zero){
-					float curX = w - tw*3f, curY = th*7f + th*2f*i;
-					float width = tw*3f, height = th*2f;
-					
-					if(fTemp.IsSelected()){MenuHandler.GUIDrawRect(new Rect(curX, curY, width, height), new Color(1.0f, 0.55f, 0.55f, 0.65f));}
-					
-					//Select Flag Button  
-					if(GUI.Button(new Rect(curX, curY, width, height), "")){
-						if(SelectedFlag == Handler.Flags[i]){
-							SelectedFlag = null;
-							fTemp.SetFlagSelected(false);
-						}else{
-							if(SelectedFlag != null){
-								SelectedFlag.GetComponent<FlagData>().SetFlagSelected(false);
-							}
-							SelectedFlag = Handler.Flags[i];
-							fTemp.SetFlagSelected(true);
+				float curX = w - tw*3f, curY = th*7f + th*2f*i;
+				float width = tw*3f, height = th*2f;
+				
+				if(fTemp.IsSelected()){MenuHandler.GUIDrawRect(new Rect(curX, curY, width, height), new Color(1.0f, 0.55f, 0.55f, 0.65f));}
+				
+				//Select Flag Button  
+				if(GUI.Button(new Rect(curX, curY, width, height), "")){
+					if(SelectedFlag == Handler.Flags[i]){
+						SelectedFlag = null;
+						fTemp.SetFlagSelected(false);
+					}else{
+						if(SelectedFlag != null){
+							SelectedFlag.GetComponent<FlagData>().SetFlagSelected(false);
 						}
+						SelectedFlag = Handler.Flags[i];
+						fTemp.SetFlagSelected(true);
 					}
-					GUI.Label(new Rect(curX + width*0.05f, curY, width*0.9f, height/2), fTemp.GetAnnotation());
-					string PosString = "Lat: " + Math.Round(fTemp.GetDataPos().x, 2).ToString() +
-						", Long: " + Math.Round(fTemp.GetDataPos().z, 2).ToString() +
-							", Value: " + Math.Round(fTemp.GetDataPos().y, 2).ToString();
-					GUI.Label(new Rect(curX + width*0.05f, curY + height/2, width*0.9f, height/2), PosString);
-//				}
+				}
+				GUI.Label(new Rect(curX + width*0.05f, curY, width*0.9f, height/2), fTemp.GetAnnotation());
+				string PosString = "Lat: " + Math.Round(fTemp.GetDataPos().x, 2).ToString() +
+					", Long: " + Math.Round(fTemp.GetDataPos().z, 2).ToString() +
+						", Value: " + Math.Round(fTemp.GetDataPos().y, 2).ToString();
+				GUI.Label(new Rect(curX + width*0.05f, curY + height/2, width*0.9f, height/2), PosString);
 			}
 		}
 		
@@ -594,7 +580,6 @@ public class MenuTabsMultiplayer : MenuTabs
 
 		int ID = data.GetID();
 		int Orientation;
-		//Orientation {UP_Y=0, UP_X=1, UP_Z=2};
 		switch(data.GetOrientation()){
 		case GridData.Orientation.UP_Y:
 			Orientation = 0;

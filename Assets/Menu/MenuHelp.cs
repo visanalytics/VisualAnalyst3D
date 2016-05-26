@@ -24,21 +24,18 @@ public class MenuHelp
 		float imgHeight = WtoHratioLogo * imgWidth;
 		
 		GUI.Box(new Rect(w/2f - h*0.45f - th, h*0.05f - th, h*0.9f + th*2f, h*0.9f + th*2f), "");
-		float boxX = w/2f - h*0.45f - th,
-		boxY = h*0.05f - th,
-		boxWidth = h*0.9f + th*2f,
-		boxHeight = h*0.9f + th*2f;
+		float boxY = h*0.05f - th;
+		float boxHeight = h*0.9f + th*2f;
 		
 		GUI.DrawTexture(new Rect(w/2f - h*0.45f, h*0.05f, imgWidth, imgHeight), Logo);
 		
-		String URLInfoString = "For more information regarding this program, see the link below (click). The controls for this program are below the link.";
 		String URLString = "http://visanalytics.org/va3d/";
 		Rect URLRect = new Rect(w/2f - h*0.45f + imgWidth*0.27f, h*0.05f + imgHeight*0.58f, imgWidth*0.45f, imgHeight*0.05f);
-		/// URL Rect proportions:
-		/// X: imgX + 526/1920 * imgWidth
-		/// Y: imgY + 1118/1920 * imgHeight
-		/// Width: 872/1920 * imgWidth
-		/// Height: 98/1920 * imgHeight 
+		// URL Rect proportions:
+		// X: imgX + 526/1920 * imgWidth
+		// Y: imgY + 1118/1920 * imgHeight
+		// Width: 872/1920 * imgWidth
+		// Height: 98/1920 * imgHeight 
 		if(Event.current.type == EventType.MouseUp && URLRect.Contains(Event.current.mousePosition))
 			Application.OpenURL(URLString);
 		

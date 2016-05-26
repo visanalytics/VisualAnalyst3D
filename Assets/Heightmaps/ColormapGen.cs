@@ -10,7 +10,13 @@ public class ColormapGen
 	Texture2D heightMap;
 	ColorSpectrumObj cso;
 	String filenameToSave;
-//	double aspectWidth, aspectHeight; 
+
+	/// <summary>
+	/// Initializes a new instance of the <see cref="ColormapGen"/> class.
+	/// </summary>
+	/// <param name="heightmap">Heightmap texture to convert from.</param>
+	/// <param name="colorSpectrumObj">Color spectrum object on which to model the colormap.</param>
+	/// <param name="filenameToSave">Filename to save image to on disk.</param>
 	public ColormapGen (Texture2D heightmap, ColorSpectrumObj colorSpectrumObj, String filenameToSave)
 	{
 		this.heightMap = heightmap;
@@ -18,14 +24,20 @@ public class ColormapGen
 		this.filenameToSave = filenameToSave;
 	}
 
+	/// <summary>
+	/// Returns the colormap associated with the heightmap passed in the constructor.
+	/// </summary>
+	/// <returns>The colormap texture.</returns>
 	public Texture2D GetColormap(){
-//		this.aspectWidth = bWidth/heightmap.width;
-//		this.aspectHeight = bHeight/heightmap.height;
 		Texture2D ColorMap = ConvertHeightmapToColormap();
 		SaveToDisk(ColorMap);
 		return ColorMap;
 	}
 
+	/// <summary>
+	/// Converts the heightmap to a colormap with associated color spectrum.
+	/// </summary>
+	/// <returns>The colormap texture.</returns>
 	private Texture2D ConvertHeightmapToColormap(){
 		Texture2D colorMap = new Texture2D(heightMap.width, heightMap.height);
 		for(int x=0; x<heightMap.width; x++){
@@ -40,6 +52,10 @@ public class ColormapGen
 		return colorMap;
 	}
 
+	/// <summary>
+	/// Saves the colormap image to disk memory.
+	/// </summary>
+	/// <param name="img">Colormap image.</param>
 	public void SaveToDisk(Texture2D img) {
 		byte[] bytes = img.EncodeToPNG();
 		File.WriteAllBytes(filenameToSave, bytes);

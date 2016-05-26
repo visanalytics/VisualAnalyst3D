@@ -4,6 +4,10 @@ using System.Collections;
 public class FlagData : MonoBehaviour {
 
 	private string Annotation;
+	/// <summary>
+	/// The identification number of the flag,
+	/// used for 
+	/// </summary>
 	private int ID;
 	private Vector3 DataPosition;
 	private bool Selected;
@@ -16,22 +20,9 @@ public class FlagData : MonoBehaviour {
 	float startOscillate;
 	float speed = 1f;
 
-	// Use this for initialization
 	void Start () {
 		//Assigns individual Shader for each flag
 		this.FlagCloth = GameObject.Find ("Cube");
-		//Material flagmat = new Material(Shader.Find("Transparent/Cutout/Specular"));
-//		Material flagmat = new Material(Shader.Find("Nature/Tree Soft Occlusion Leaves"));
-//		FlagCloth.renderer.material = flagmat;
-
-//		this.Annotation = "";
-//		this.DataPosition = new Vector3();
-//		this.WorldPosition = new Vector3();
-//		this.Selected = false;
-//
-//		//oscillation
-//		this.oscillateFrom = WorldPosition;
-//		this.oscillateTo = WorldPosition + (Vector3.up*5f);
 	}
 
 	public void Init(int ID, Vector3 WorldPosition, Vector3 DataPosition, string Annotation){
@@ -46,7 +37,6 @@ public class FlagData : MonoBehaviour {
 		this.oscillateTo = WorldPosition + (Vector3.up*5f);
 	}
 
-	// Update is called once per frame
 	void Update () {
 		if(Selected){
 			float t = (Mathf.Sin ((Time.time-startOscillate) * speed * Mathf.PI * 2.0f  - Mathf.PI/2) + 1.0f) / 2.0f;

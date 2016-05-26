@@ -185,8 +185,7 @@ public class MenuTabsSingleplayer : MenuTabs
 						}
 						SelectedGrid = Handler.Grids[i];
 						SelectedGridData = (GridData)SelectedGrid.GetComponent(typeof(GridData));
-						DataHandler dH = Handler.Inflater.dH; //new DataHandler(Application.dataPath + Handler.Inflater.Vars.FILENAME, Handler.Inflater.Vars.COLUMN_X, Handler.Inflater.Vars.COLUMN_Y, Handler.Inflater.Vars.COLUMN_Z);
-						
+
 						switch(SelectedGridData.GetOrientation()){
 						case GridData.Orientation.UP_X:
 							SelectedGridHeight = (SelectedGridData.GetWorldValue()/Handler.Inflater.theterrain.terrainData.size.x) * 100 + 1;

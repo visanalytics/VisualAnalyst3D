@@ -17,20 +17,13 @@ public class GridData : MonoBehaviour {
 	
 	private Vector3 WorldPosition;
 	Vector3 oscillateFrom, oscillateTo;
-	float startOscillate;
-	float speed = 1f;
 
 	float[][] dataBounds;
 	float[][] worldBounds;
-	
-	// Use this for initialization
-	void Start () {
 
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	}
+	void Start () {}
+
+	void Update () {}
 
 	public void Init(int ID, string Name, float[][] dataBounds,
 	                 float[][] worldBounds, bool selected,
@@ -70,13 +63,11 @@ public class GridData : MonoBehaviour {
 		float min = worldBounds[dI][0];
 		float max = worldBounds[dI][1];
 		float incWorldFloat = (max - min)/GridPositions.Length;
-		float incDataFloat = (float)(upper - lower)/GridDataPositions.Length;
 		float ratio = (float)(upper - lower)/(max - min);
 		
 		Vector3 incBaseData = new Vector3();
 		Vector3 incBaseWorld = new Vector3();
 		Vector3 incWorld = new Vector3();
-		Vector3 incData = new Vector3();
 
 		float dataX = (dataBounds[0][1] + dataBounds[0][0])/2;
 		float dataY = (dataBounds[1][1] + dataBounds[1][0])/2;
@@ -93,7 +84,6 @@ public class GridData : MonoBehaviour {
 			incBaseData = new Vector3((float)lower, 0, 0);
 			incBaseWorld = new Vector3(min, worldY, worldZ);
 			incWorld = new Vector3(incWorldFloat, 0, 0);
-			incData = new Vector3(incDataFloat, 0, 0);
 			if(!maintainPosition)
 				this.WorldPosition = new Vector3(worldX, worldY, worldZ);
 			else{
@@ -111,7 +101,6 @@ public class GridData : MonoBehaviour {
 			incBaseData = new Vector3(0, (float)lower, 0);
 			incBaseWorld = new Vector3(worldX, min, worldZ);
 			incWorld = new Vector3(0, incWorldFloat, 0);
-			incData = new Vector3(0, incDataFloat, 0);
 			if(!maintainPosition)
 				this.WorldPosition = new Vector3(worldX, worldY, worldZ);
 			else{
@@ -127,7 +116,6 @@ public class GridData : MonoBehaviour {
 			incBaseData = new Vector3(0, 0, (float)lower);
 			incBaseWorld = new Vector3(worldX, worldY, min);
 			incWorld = new Vector3(0, 0, incWorldFloat);
-			incData = new Vector3(0, 0, incDataFloat);
 			if(!maintainPosition)
 				this.WorldPosition = new Vector3(worldX, worldY, worldZ);
 			else{
@@ -142,7 +130,7 @@ public class GridData : MonoBehaviour {
 		}
 		for(int m=0; m<GridPositions.Length; m++){
 			GridPositions[m] = incBaseWorld + incWorld*(float)m;
-			GridDataPositions[m] = incBaseData + ratio*GridPositions[m];//incY*(float)m;
+			GridDataPositions[m] = incBaseData + ratio*GridPositions[m];
 		}
 		if(!maintainPosition){
 			SetWorldPosIndex(50);
@@ -167,7 +155,6 @@ public class GridData : MonoBehaviour {
 	
 	// For flag selection
 	public void SetGridSelected(bool val){
-		startOscillate = Time.time;
 		this.Selected = val;
 		if(!Selected){
 			this.transform.position = WorldPosition;
@@ -189,19 +176,15 @@ public class GridData : MonoBehaviour {
 		switch(orientation){
 		case GridData.Orientation.UP_X:
 			return DataPosition.x;
-			break;
 		case GridData.Orientation.UP_Y:
 			return DataPosition.y;
-			break;
 		case GridData.Orientation.UP_Z:
 			return DataPosition.z;
-			break;
 		default:
 			return DataPosition.y;
-			break;
 		}
 	}
-	public void SetWorldPos(Vector3 pos){	//Moves the Grid
+	public void SetWorldPos(Vector3 pos){
 		this.WorldPosition = pos;
 		this.transform.position = this.WorldPosition;
 	}
@@ -213,16 +196,12 @@ public class GridData : MonoBehaviour {
 		switch(orientation){
 		case GridData.Orientation.UP_X:
 			return this.WorldPosition.x;
-			break;
 		case GridData.Orientation.UP_Y:
 			return this.WorldPosition.y;
-			break;
 		case GridData.Orientation.UP_Z:
 			return this.WorldPosition.z;
-			break;
 		default:
 			return this.WorldPosition.y;
-			break;
 		}
 	}
 	public Vector3 GetWorldPos(){return this.WorldPosition;}

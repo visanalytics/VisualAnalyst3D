@@ -13,6 +13,18 @@ public class DataHandler
 	private string ColumnXName,ColumnYName,ColumnZName;
 	private double lowerBound,upperBound;
 	private Variables Vars;
+
+	/// <summary>
+	/// Initializes a new instance of the <see cref="DataHandler"/> class.
+	/// </summary>
+	/// <param name="filename">Filename.</param>
+	/// <param name="ColumnX">Index of column to be used as X coord in file.</param>
+	/// <param name="ColumnY">Index of column to be used as Y coord in file.</param>
+	/// <param name="ColumnZ">Index of column to be used as Z coord in file.</param>
+	/// <param name="minX">Minimum X coord.</param>
+	/// <param name="minZ">Minimum Z coord.</param>
+	/// <param name="maxX">Max X coord.</param>
+	/// <param name="maxZ">Max Z coord.</param>
 	public DataHandler (String filename, int ColumnX, int ColumnY, int ColumnZ, double minX, double minZ, double maxX, double maxZ)
 	{
 		this.ColumnX = ColumnX;
@@ -24,10 +36,18 @@ public class DataHandler
 		this.maxZ = maxZ;
 		this.Data = GenerateData(filename);
 		double[] bnds = GetBounds(Data);
-		lowerBound = bnds[0];// - ((bnds[1]-bnds[0])/10.0d);
+		lowerBound = bnds[0];
 		upperBound = bnds[1];
 	}
 
+	/// <summary>
+	/// Initializes a new instance of the <see cref="DataHandler"/> class
+	/// without min and max X and Z values.
+	/// </summary>
+	/// <param name="filename">Filename.</param>
+	/// <param name="ColumnX">Column X.</param>
+	/// <param name="ColumnY">Column Y.</param>
+	/// <param name="ColumnZ">Column Z.</param>
 	public DataHandler (String filename, int ColumnX, int ColumnY, int ColumnZ)
 	{
 		this.ColumnX = ColumnX;
@@ -39,10 +59,22 @@ public class DataHandler
 		this.maxZ = 0;
 		this.Data = GenerateData(filename);
 		double[] bnds = GetBounds(Data);
-		lowerBound = bnds[0];// - ((bnds[1]-bnds[0])/10.0d);
+		lowerBound = bnds[0];
 		upperBound = bnds[1];
 	}
 
+	/// <summary>
+	/// Initializes a new instance of the <see cref="DataHandler"/> class.
+	/// </summary>
+	/// <param name="filename">Filename.</param>
+	/// <param name="ColumnX">Index of column to be used as X coord in file.</param>
+	/// <param name="ColumnY">Index of column to be used as Y coord in file.</param>
+	/// <param name="ColumnZ">Index of column to be used as Z coord in file.</param>
+	/// <param name="minX">Minimum X coord.</param>
+	/// <param name="minZ">Minimum Z coord.</param>
+	/// <param name="maxX">Max X coord.</param>
+	/// <param name="maxZ">Max Z coord.</param>
+	/// <param name="Vars">Variables.</param>
 	public DataHandler (String filename, int ColumnX, int ColumnY, int ColumnZ, double minX, double minZ, double maxX, double maxZ, Variables Vars)
 	{
 		this.ColumnX = ColumnX;
@@ -55,7 +87,7 @@ public class DataHandler
 		this.Vars = Vars;
 		this.Data = GenerateData(filename);
 		double[] bnds = GetBounds(Data);
-		lowerBound = bnds[0];// - ((bnds[1]-bnds[0])/10.0d);
+		lowerBound = bnds[0];
 		upperBound = bnds[1];
 	}
 
@@ -71,6 +103,13 @@ public class DataHandler
 	public string GetColumnYName(){return ColumnYName;}
 	public string GetColumnZName(){return ColumnZName;}
 
+	/// <summary>
+	/// Reads the data from the file specified and returns
+	/// a list of data points associated with columns X, Y
+	/// and Z.
+	/// </summary>
+	/// <returns>The data in the form [X, Y, Z]</returns>
+	/// <param name="filename">Filename.</param>
 	protected virtual List<double[]> GenerateData(String filename){
 		List<double> x = new List<double>();
 		List<double> y = new List<double>();
@@ -83,7 +122,6 @@ public class DataHandler
 		string ColumnNamesLine = reader.ReadLine();
 		SaveColumnNames(ColumnNamesLine, filename);
 
-		int dateIndex = 0;
 		while (!reader.EndOfStream)
 		{
 			var line = reader.ReadLine();
@@ -142,6 +180,11 @@ public class DataHandler
 		return data;
 	}
 
+	/// <summary>
+	/// Save the headers of the columns used for axes names.
+	/// </summary>
+	/// <param name="ColumnNamesLine">Line from the file denoting the headers.</param>
+	/// <param name="filename">Filename.</param>
 	private void SaveColumnNames(string ColumnNamesLine, string filename){
 		string[] ColumnNames = ColumnNamesLine.Replace("\"","").Split(',');
 
@@ -191,7 +234,7 @@ public class DataHandler
 	/// Gets the bounds.
 	/// </summary>
 	/// <returns>The bounds in the form [upper, lower].</returns> 
-	/// <param name="dat">Dat.</param>
+	/// <param name="dat">Data.</param>
 	protected double[] GetBounds(List<double[]> dat){
 		
 		List<Vector3> points = new List<Vector3>();
@@ -201,8 +244,8 @@ public class DataHandler
 		}
 		
 		IOrderedEnumerable<Vector3> ioe = points.OrderBy(f => f.y);
-		double upper = ioe.Last().y;//dat[dat.Count-1][1];
-		double lower = ioe.First().y;//dat[0][1];
+		double upper = ioe.Last().y;
+		double lower = ioe.First().y;
 		return new double[]{lower, upper};
 	}
 }

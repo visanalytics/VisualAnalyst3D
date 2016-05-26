@@ -20,7 +20,9 @@ public class FlagHandler : MonoBehaviour {
 	public List<string> FLAG_PATH {
 		get { return FLAGPATH;}
 	}
-
+	/// <summary>
+	/// Initializes a new instance of the <see cref="FlagHandler"/> class.
+	/// </summary>
 	public FlagHandler()
 	{
 
@@ -30,6 +32,9 @@ public class FlagHandler : MonoBehaviour {
 		ReadCSV();
 	}
 
+	/// <summary>
+	/// Reads the CSV of flag image information and saves the data.
+	/// </summary>
 	private void ReadCSV()
 	{
 		using(StreamReader sr = new StreamReader(Application.dataPath + "/Heightmaps/FlagData.csv"))

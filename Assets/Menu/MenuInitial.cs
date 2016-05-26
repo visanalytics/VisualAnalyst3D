@@ -14,9 +14,6 @@ public class MenuInitial
 
 	/** Multiplayer **/
 	HostData[] hostList;
-	
-	string MasterServerIPString = "";
-	string MasterServerPortString = "";
 	string ServerIPFieldText = "";
 
 	public MenuInitial (MenuHandler Handler)
@@ -57,19 +54,6 @@ public class MenuInitial
 			#endregion
 			break;
 
-			/*case State.StateMasterServerInput:
-			GUI.Label(new Rect(boxX+(boxWidth/2f) - tw*0.75f, boxY+(boxHeight/2f) - th*1.5f, tw*2, th), "Enter Master Server IP:");
-			MasterServerIPString = GUI.TextField(new Rect(boxX+(boxWidth/2f) - tw*0.75f, boxY+(boxHeight/2f) - th*0.5f, tw*1.5f, th), MasterServerIPString, 32);
-
-			if(GUI.Button(new Rect(new Rect(boxX+(boxWidth/2f) - tw*0.5f, boxY+(boxHeight/2f) + th*0.5f, tw*1f, th)), "Continue")){
-				MasterServer.ipAddress = MasterServerIPString;
-				MasterServer.port = 23466;//int.Parse(MasterServerPortString);
-				Network.natFacilitatorIP = MasterServerIPString;
-				Network.natFacilitatorPort = 50005;
-				CurrentState = State.StateMultiplayerSelection;
-			}
-			break;*/
-
 			case State.StateMultiplayerSelection:
 			#region Multiplayer Server Selection
 			if (GUI.Button(new Rect(boxX+(boxWidth/2) - tw*1.1f, boxY + th/2, tw, th*1.5f), "Refresh Hosts")){
@@ -85,7 +69,6 @@ public class MenuInitial
 					if (GUI.Button(new Rect(boxX+(boxWidth/2) - tw*0.75f, (boxY + th*3f) + (th* 1.1f * i), tw*1.5f, th), hostList[i].gameName)){
 						Handler.Multiplayer.ConnectAsClient(hostList[i]);
 						CurrentState = State.StateConnecting;
-						//Handler.SetState(MenuHandler.State.StateMultiplayer);
 					}
 				}
 			}

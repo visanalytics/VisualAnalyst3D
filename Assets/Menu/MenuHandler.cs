@@ -28,7 +28,6 @@ public class MenuHandler
 	public List<GameObject> AxisLabels;
 	public List<GameObject> AxisGrids;
 	public bool GridsVisible;
-	bool initVertGrids = false;
 
 	public Variables Vars;
 	
@@ -52,12 +51,6 @@ public class MenuHandler
 		flaghandler = new FlagHandler();
 		InitGUI();
 	}
-
-	float w = Screen.width;
-	float h = Screen.height;
-	// "tile" width and height, for easy GUI creation 
-	float tw = 100f; 
-	float th = 20f;
 
 	public enum State {StateInitial=0,StateMultiplayer=1,StateSingleplayer=2,StateHelp=3};
 	private MenuHandler.State CurrentState;
@@ -194,28 +187,23 @@ public class MenuHandler
 	}
 
 	public GameObject CreateGrid(String name, int orientation){
-		//Orientation {UP_Y=0, UP_X=1, UP_Z=2};
 		switch(orientation){
 			case 0:
 			return CreateGrid(name, GridData.Orientation.UP_Y);
-			break;
 		
 			case 1:
 			return CreateGrid(name, GridData.Orientation.UP_X);
-			break;
 
 			case 2:
 			return CreateGrid(name, GridData.Orientation.UP_Z);
-			break;
 
 			default:
 			return CreateGrid(name, GridData.Orientation.UP_Y);
-			break;
 		}
 	}
 
 	public GameObject CreateGrid(String name, GridData.Orientation orientation){
-		DataHandler dH = Inflater.dH; //new DataHandler(Application.dataPath + Inflater.Vars.FILENAME, Inflater.Vars.COLUMN_X, Inflater.Vars.COLUMN_Y, Inflater.Vars.COLUMN_Z);
+		DataHandler dH = Inflater.dH;
 
 		GameObject temp = (GameObject) Main.Instantiate (Inflater.GridObject, new Vector3(), Quaternion.identity);
 		float[][] dataBounds = new float[][]{
@@ -225,7 +213,7 @@ public class MenuHandler
 		};
 		float[][] worldBounds = new float[][]{
 			new float[]{0, Inflater.theterrain.terrainData.size.x}, 
-			new float[]{0, Inflater.theterrain.terrainData.size.y},///Inflater.Vars.SCALE_Y},
+			new float[]{0, Inflater.theterrain.terrainData.size.y},
 			new float[]{0, Inflater.theterrain.terrainData.size.z}
 		};
 		((GridData)temp.GetComponent(typeof(GridData))).Init(R.Next(1,25000), "", dataBounds, worldBounds, false, orientation);
@@ -249,8 +237,6 @@ public class MenuHandler
 
 	public void DeleteAllFlags(){
 		for(int i=0; i<Flags.Count; i++){
-//			if(Network.peerType == NetworkPeerType.Client)
-//				Multiplayer.CallDeleteFlag(Flags[i].GetComponent<FlagData>().GetID());
 			Main.Destroy(Flags[i]);
 		}
 		Tabs.DeleteAllFlags();
@@ -259,12 +245,9 @@ public class MenuHandler
 
 	public void DeleteAllGrids(){
 		for(int i=0; i<Grids.Count; i++){
-//			if(Network.peerType == NetworkPeerType.Client)
-//				Multiplayer.CallDeleteGrid(Grids[i].GetComponent<GridData>().GetID());
 			Main.Destroy(Grids[i]);
 		}
 		Tabs.DeleteAllGrids();
-		initVertGrids = false;
 		Grids.Clear();
 	}
 
@@ -284,7 +267,7 @@ public class MenuHandler
 	}
 
 	public void UpdateGrids(){
-		DataHandler dH = Inflater.dH; //new DataHandler(Application.dataPath + Inflater.Vars.FILENAME, Inflater.Vars.COLUMN_X, Inflater.Vars.COLUMN_Y, Inflater.Vars.COLUMN_Z);
+		DataHandler dH = Inflater.dH;
 
 		float[][] dataBounds = new float[][]{
 			new float[]{Inflater.Vars.MIN_X, Inflater.Vars.MAX_X},
@@ -293,7 +276,7 @@ public class MenuHandler
 		};
 		float[][] worldBounds = new float[][]{
 			new float[]{0, Inflater.theterrain.terrainData.size.x}, 
-			new float[]{0, Inflater.theterrain.terrainData.size.y}, ///Inflater.Vars.SCALE_Y},
+			new float[]{0, Inflater.theterrain.terrainData.size.y},
 			new float[]{0, Inflater.theterrain.terrainData.size.z}
 		};
 
@@ -311,22 +294,22 @@ public class MenuHandler
 	// Note that this function is only meant to be called from OnGUI() functions.
 	public static void GUIDrawRect( Rect position, Color color )
 	{
-		if( _staticRectTexture == null )
+		if(_staticRectTexture == null)
 		{
-			_staticRectTexture = new Texture2D( 1, 1 );
+			_staticRectTexture = new Texture2D(1, 1);
 		}
 		
-		if( _staticRectStyle == null )
+		if(_staticRectStyle == null)
 		{
 			_staticRectStyle = new GUIStyle();
 		}
 		
-		_staticRectTexture.SetPixel( 0, 0, color );
+		_staticRectTexture.SetPixel(0, 0, color);
 		_staticRectTexture.Apply();
 		
 		_staticRectStyle.normal.background = _staticRectTexture;
 		
-		GUI.Box( position, GUIContent.none, _staticRectStyle );
+		GUI.Box(position, GUIContent.none, _staticRectStyle);
 	}
 
 	// Remembers that camera is to be placed home the next time terrain is generated
@@ -342,7 +325,9 @@ public class MenuHandler
 		camOrgReadyToChange = false;
 	}
 
-	// Places the camera into its original home position
+	/// <summary>
+	/// Places the camera into its original home position
+	/// </summary>
 	public void MoveCamHome() {
 		if (camOrgReadyToChange) {
 			// Change the mpuose position to its home
@@ -358,8 +343,6 @@ public class MenuHandler
 		tex = (Texture2D)Resources.Load(fh.FLAG_PATH[choice] + "/" + fh.FLAG_IMAGE[choice]);
 
 		Flags[Flags.Count-1].transform.Find("Cube").renderer.material.mainTexture = tex;
-
-		//PROBLEM: Initial(first) flag isn't being set
 	}
 
 	public void SetFlagColour(Color c, String colorName)
@@ -367,13 +350,27 @@ public class MenuHandler
 		Flags[Flags.Count-1].transform.Find("Cube").renderer.material.SetColor("_Color", c);
 		Flags[Flags.Count-1].GetComponent<FlagData>().SetFlagColorString(colorName);
 	}
-	
+
+	/// <summary>
+	/// Used to transmit the message of terrain generation from
+	/// <see cref="Main"/> to <see cref="MenuSinglePlayer"/>.
+	/// </summary>
 	public void GenerateGranular(string DataSource, string TerrainType, string Filename, string Preset, bool regen, float scale, float colorScale){
 		StateSingleplayer.GenerateGranular(DataSource, TerrainType, Filename, Preset, regen, scale, colorScale);
 	}
+
+	/// <summary>
+	/// Used to transmit the message of terrain generation from
+	/// <see cref="Main"/> to <see cref="MenuSinglePlayer"/>.
+	/// </summary>
 	public void GenerateSmooth(string DataSource, string TerrainType, string Filename, string Preset, bool regen, float scale, float colorScale){
 		StateSingleplayer.GenerateSmooth(DataSource, TerrainType, Filename, Preset, regen, scale, colorScale);
 	}
+
+	/// <summary>
+	/// Used to transmit the message of terrain generation from
+	/// <see cref="Main"/> to <see cref="MenuSinglePlayer"/>.
+	/// </summary>
 	public void GenerateCylindrical(string DataSource, string TerrainType, string Filename, string Preset, bool regen, float scale, float colorScale){
 		StateSingleplayer.GenerateCylindrical(DataSource, TerrainType, Filename, Preset, regen, scale, colorScale);
 	}

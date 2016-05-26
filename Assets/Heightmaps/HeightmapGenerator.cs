@@ -35,13 +35,13 @@ public class HeightmapGenerator
 	/// <summary>
 	/// Initializes a new instance of the <see cref="HeightmapGenerator"/> class.
 	/// </summary>
-	/// <param name="data">Data with each object containing the following structure: 
-	/// [ peak_height, peak_X, peak_Y ]</param>
-	/// <param name="tWidth">T width.</param>
-	/// <param name="tHeight">T height.</param>
+	/// <param name="Vars">Variables instance.</param>
+	/// <param name="filename">Data source filename.</param>
 	/// <param name="maxRadius">Max radius.</param>
-	/// 
-	/*public HeightmapGenerator (List<double[]> data, int bitmapWidth, int bitmapHeight, double maxRadius)*/
+	/// <param name="minX">Minimum X coord.</param>
+	/// <param name="minZ">Minimum Z coord.</param>
+	/// <param name="maxX">Max X coord.</param>
+	/// <param name="maxZ">Max Z coord.</param>
 	public HeightmapGenerator (Variables Vars, String filename, double maxRadius,
 	                           double minX, double minZ, double maxX, double maxZ)
 	{
@@ -54,17 +54,24 @@ public class HeightmapGenerator
 		this.maxZ = minX;
 	}
 
+	/// <summary>
+	/// Gets the heightmap Texture2D of the data.
+	/// </summary>
+	/// <returns>The heightmap texture.</returns>
+	/// <param name="bWidth">Bitmap width.</param>
+	/// <param name="bHeight">Bitmap height.</param>
+	/// <param name="sexData">If set to <c>true</c>, 
+	/// data is sex data (used for absolute value of data).</param>
 	public virtual Texture2D GetHeightmap(double bWidth, double bHeight, bool sexData){
 		DataHandler dataHandler = new DataHandler(filename, Vars.COLUMN_X, Vars.COLUMN_Y, Vars.COLUMN_Z, minX, minZ, maxX, maxZ);
-		//		maxRadius = dataHandler.GetMaxRadius();
 		
-		this.bWidth = bWidth;// - (2*maxRadius*bWidth);
-		this.bHeight = bHeight;// - (2*maxRadius*bHeight);
+		this.bWidth = bWidth;
+		this.bHeight = bHeight;
 		heightMap = new Texture2D((int)bWidth, (int)bHeight);
 		FillInColor(UnityEngine.Color.black);
 
 		double[] bnds= dataHandler.GetBounds();
-		lowerBound = sexData ? 0f : 0f;//bnds[0];//bnds[0];// - ((bnds[1]-bnds[0]+1)/10.0d); // lower bound minus 10% of the difference between bounds..this comment is unnecessary
+		lowerBound = sexData ? 0f : 0f;
 		upperBound = bnds[1];
 		 
 		CreateHeightMap(dataHandler.GetData(), sexData);
@@ -72,17 +79,25 @@ public class HeightmapGenerator
 		return heightMap;
 	}
 
+	/// <summary>
+	/// Gets the heightmap Texture2D generated with 
+	/// cylinders for data points.
+	/// </summary>
+	/// <returns>The heightmap Texture2D.</returns>
+	/// <param name="bWidth">Bitmap width.</param>
+	/// <param name="bHeight">Bitmap height.</param>
+	/// <param name="sexData">If set to <c>true</c>, 
+	/// data is sex data (used for absolute value of data).</param>
 	public virtual Texture2D GetHeightmapCylinder(double bWidth, double bHeight, bool sexData){
 		DataHandler dataHandler = new DataHandler(filename, Vars.COLUMN_X, Vars.COLUMN_Y, Vars.COLUMN_Z, minX, minZ, maxX, maxZ);
-		//		maxRadius = dataHandler.GetMaxRadius();
 		
-		this.bWidth = bWidth;// - (2*maxRadius*bWidth);
-		this.bHeight = bHeight;// - (2*maxRadius*bHeight);
+		this.bWidth = bWidth;
+		this.bHeight = bHeight;
 		heightMap = new Texture2D((int)bWidth, (int)bHeight);
 		FillInColor(UnityEngine.Color.black);
 		
 		double[] bnds= dataHandler.GetBounds();
-		lowerBound = sexData ? 0f : 0f;//bnds[0];//bnds[0];// - ((bnds[1]-bnds[0]+1)/10.0d); // lower bound minus 10% of the difference between bounds..this comment is unnecessary
+		lowerBound = sexData ? 0f : 0f;
 		upperBound = bnds[1];
 		
 		CreateHeightMapCyl(dataHandler.GetData(), sexData);
@@ -90,6 +105,10 @@ public class HeightmapGenerator
 		return heightMap;
 	}
 
+	/// <summary>
+	/// Fills the entire heightmap texture with a given color.
+	/// </summary>
+	/// <param name="c">Color with which to fill the texture..</param>
 	protected void FillInColor(UnityEngine.Color c){
 		for(int i = 0; i < heightMap.width; i++) {
 			for(int j = 0; j < heightMap.height; j++) {
@@ -98,7 +117,9 @@ public class HeightmapGenerator
 		}
 	}  
 
-	// Purely for testing purposes  
+	/// <summary>
+	/// Saves texture to disk memory.
+	/// </summary>
 	public virtual void SaveToDisk() {
 		byte[] bytes = heightMap.EncodeToPNG();
 		File.WriteAllBytes(Application.dataPath + "/Heightmaps/Images/heightmap_" + Vars.TERRAIN_NAME + ".png", bytes);
@@ -110,6 +131,8 @@ public class HeightmapGenerator
 	/// <param name="data">Data with each object containing the following structure:    
 	/// [ peak_height, peak_X, peak_Y ]
 	/// </param> 
+	/// <param name="sexData">If the data should be taken as the absolute
+	/// value.</param>
 	protected void CreateHeightMap(List<double[]> data, bool sexData){
 		double it = (upperBound-lowerBound)/Vars.ITERATION_NUMBER;
 		if(it == 0)
@@ -117,7 +140,6 @@ public class HeightmapGenerator
 		double h = lowerBound;
 		while(data.Count != 0){
 			h += it;
-		//for(double h=lowerBound; h<upperBound; h+= it){
 			List<int> toRemove = new List<int>();
 			for(int i=0; i<data.Count; i++){
 				if(data[i][1] < h){ //If middle of the values is less than the lower bounds, then add it "toRemove" List
@@ -133,20 +155,26 @@ public class HeightmapGenerator
 		heightMap.Apply();
 	}
 
+	/// <summary>
+	/// Creates the height map with cylinders representing data points.
+	/// </summary>
+	/// <param name="data">Data with each object containing the following structure:    
+	/// [ peak_height, peak_X, peak_Y ]
+	/// </param> 
+	/// <param name="sexData">If the data should be taken as the absolute
+	/// value.</param>
 	protected void CreateHeightMapCyl(List<double[]> data, bool sexData){
 		double it = (upperBound-lowerBound)/Vars.ITERATION_NUMBER;
 		if(it == 0){
 			it = 1f;
 		}
 
-		//double it = Vars.ITERATION_NUMBER;
 		System.Drawing.Bitmap bit = new System.Drawing.Bitmap(heightMap.width, heightMap.height);
 		System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(bit);
 		
 		double h = lowerBound;
 		while(data.Count != 0){
 			h += it;
-			//for(double h=lowerBound; h<upperBound; h+= it){
 			List<int> toRemove = new List<int>();
 			for(int i=0; i<data.Count; i++){
 				if(data[i][1] < h){ //If middle of the values is less than the lower bounds, then add it "toRemove" List
@@ -169,6 +197,14 @@ public class HeightmapGenerator
 		heightMap.Apply();
 	}
 
+	/// <summary>
+	/// Performs the same function as <see cref="ColorFromHeight"/> 
+	/// however returns a System.Drawing.Color instead of a Unity
+	/// Color object.
+	/// </summary>
+	/// <returns>The color associated with the height from 
+	/// the designated ColorSpectrumObj.</returns>
+	/// <param name="val">Height value.</param>
 	public System.Drawing.Color ColourConvert(double val)
 	{
 		UnityEngine.Color unityC = ColorFromHeight(val, upperBound, lowerBound);
@@ -178,12 +214,30 @@ public class HeightmapGenerator
 		return wincolour;
 	}
 
-
+	/// <summary>
+	/// Draws a circle on the bitmap with given x and y coords
+	/// as well as height to be input to <see cref="ColorFromHeight"/>
+	/// and compared to maxRadius using <see cref="RadiusFunc"/>
+	/// </summary>
+	/// <param name="peak">Peak.</param>
+	/// <param name="peakX">Peak x coord.</param>
+	/// <param name="peakY">Peak y coord.</param>
+	/// <param name="height">Height.</param>
+	/// <param name="maxRadius">Max radius.</param>
+	/// <param name="HillsOrPeaks">Hills or peaks REDUNDANT.</param>
 	public void DrawHillRadius(double peak, double peakX, double peakY, double height, double maxRadius, int HillsOrPeaks)
 	{
 		Circle(ref heightMap, (int)peakX, (int)peakY, (int)RadiusFunc(peak, height, maxRadius), ColorFromHeight(height, upperBound, lowerBound));
 	}
 
+	/// <summary>
+	/// Returns a 32 bit color given a height within the range
+	/// of the max and min possible height values.
+	/// </summary>
+	/// <returns>The color associated with the height.</returns>
+	/// <param name="height">Height.</param>
+	/// <param name="maxHeight">Max height.</param>
+	/// <param name="minHeight">Minimum height.</param>
 	protected virtual UnityEngine.Color ColorFromHeight(double height, double maxHeight, double minHeight) 
 	{ 
 		UnityEngine.Color color = new UnityEngine.Color(0,0,0,1);
@@ -200,13 +254,16 @@ public class HeightmapGenerator
 		return color;
 	}
 
-	private double HeightFunc(double peak, double radius, double maxRadius)
-	{
-		double z = (radius/maxRadius) * (Math.PI*2);
-		double y = (0.5)*Math.Cos(0.5*z) + 0.5;
-		return y * peak;
-	}
-
+	/// <summary>
+	/// Returns the radius of the hill at the given height
+	/// given the peak height of the hill (the Y value of the
+	/// data point)
+	/// </summary>
+	/// <returns>The the radius of the hill at height given
+	/// max height of data point is peak.</returns>
+	/// <param name="peak">Peak height of data point.</param>
+	/// <param name="height">Height at which to find radius.</param>
+	/// <param name="maxRadius">Max radius.</param>
 	private double RadiusFunc(double peak, double height, double maxRadius)
 	{
 		double cosVal = height/peak;
@@ -214,7 +271,15 @@ public class HeightmapGenerator
 		double radius = (z * maxRadius) / (Math.PI * 2);
 		return radius;
 	}
-	
+
+	/// <summary>
+	/// Draws a circle on the specified Texture2D
+	/// </summary>
+	/// <param name="tex">Texture on which to draw</param>
+	/// <param name="cx">Centre of circle X coord.</param>
+	/// <param name="cy">Centre of circle Y coord.</param>
+	/// <param name="r">The radius of the circle.</param>
+	/// <param name="col">Color of circle to draw.</param>
 	public void Circle(ref Texture2D tex, int cx, int cy, int r, UnityEngine.Color col)
 	{
 		int x, y, px, nx, py, ny, d;

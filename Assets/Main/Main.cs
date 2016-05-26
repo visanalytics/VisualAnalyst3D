@@ -11,15 +11,12 @@ public class Main : MonoBehaviour {
 
 	HeightmapInflater Inflater;
 	MenuHandler Menu;
-//	MultiplayerManager Multiplayer;
 
-	// Use this for initialization
 	void Start () {
 		Inflater = InflatedTerrain.GetComponent<HeightmapInflater>();
 		Menu = new MenuHandler(Inflater, MainCamera, networkView);
 	}
-	
-	// Update is called once per frame
+
 	void Update () {
 		Menu.Update();
 	}
@@ -63,7 +60,7 @@ public class Main : MonoBehaviour {
 	
 	[RPC]
 	void CreateFlag(NetworkPlayer player, int ID, Vector3 WorldPosition, Vector3 DataPosition, string Annotation, string Col, int Tex){
-		GameObject temp = Menu.CreateFlag(Annotation, WorldPosition);//Menu.CreateFlag(ID, WorldPosition, DataPosition, Annotation, Col, Tex);
+		GameObject temp = Menu.CreateFlag(Annotation, WorldPosition);
 		Color c;
 		switch(Col){
 		case MenuHandler.FC_BLUE:
@@ -85,7 +82,6 @@ public class Main : MonoBehaviour {
 			c = Color.white;
 			break;
 		}
-		Debug.Log("new flag created");
 		temp.transform.Find("Cube").renderer.material.SetColor ("_Color", c);
 		temp.transform.Find("Cube").renderer.material.mainTexture = (Texture2D)Resources.Load(Menu.flaghandler.FLAG_PATH[Tex] + "/" + Menu.flaghandler.FLAG_IMAGE[Tex]);
 		
@@ -138,11 +134,8 @@ public class Main : MonoBehaviour {
 	[RPC]
 	void SetPlayer(NetworkPlayer player, float playerColorR, float playerColorG, float playerColorB)
 	{
-//		Menu.Multiplayer.ObjectOwner = player;
 		if(player == Network.player){
 			Menu.Multiplayer.MyPlayerObject = (GameObject)Network.Instantiate(Inflater.PlayerObject, MainCamera.transform.position, Quaternion.identity, 0);
-			//		Multiplayer.MyPlayerObject.renderer.enabled = false;
-//			Menu.Multiplayer.PlayerObjects = new List<GameObject>();
 			Menu.Multiplayer.MyPlayerObject.
 				GetComponent<MultiplayerObject>().
 					SetColor(playerColorR,playerColorG,playerColorB);
@@ -196,32 +189,9 @@ public class Main : MonoBehaviour {
 	void ResetDataPoints(NetworkPlayer player, int NumDataPoints){
 		Menu.TabsMulti.ResetDataPointsValue(NumDataPoints);
 	}
-
-//	[RPC]
-//	void SpawnPlayer(NetworkPlayer player, float r, float g, float b, Vector3 position){
-//		GameObject tempPlayerObject = (GameObject)Instantiate(Menu.Inflater.PlayerObject,position,Quaternion.identity);
-//		tempPlayerObject.GetComponent<MultiplayerObject>().ID = player;
-//		tempPlayerObject.GetComponent<MultiplayerObject>().SetColor(r,g,b);
-//		tempPlayerObject.GetComponent<MultiplayerObject>().SetPosition(position);
-//		Menu.Multiplayer.PlayerObjects.Add(tempPlayerObject);
-//	}
-
-//	[RPC]
-//	void UpdatePlayer(NetworkPlayer player, Vector3 position){
-//		for(int i=0; i<Menu.Multiplayer.PlayerObjects.Count; i++){
-//			MultiplayerObject temp = Menu.Multiplayer.PlayerObjects[i].GetComponent<MultiplayerObject>();
-//			if(temp.ID == player){
-//				temp.SetPosition(position);
-//				break;
-//			}
-//		}
-//	}
-
 	
 	[RPC]
-	void RemovePlayer(NetworkPlayer player){
-		
-	}
+	void RemovePlayer(NetworkPlayer player){}
 	
 	#endregion
 
@@ -245,9 +215,7 @@ public class Main : MonoBehaviour {
 	#region Client Calls (DISREGARD):
 
 	[RPC]
-	void DisconnectFromServer(string message){
-
-	}
+	void DisconnectFromServer(string message){}
 
 	#endregion
 

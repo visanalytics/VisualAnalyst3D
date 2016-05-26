@@ -8,7 +8,6 @@ public class MenuSinglePlayer
 {
 	MenuHandler Handler;
 	float w = Screen.width;
-	float h = Screen.height;
 	// "tile" width and height, for easy GUI creation 
 	float tw = 100f;
 	float th = 20f;
@@ -70,8 +69,6 @@ public class MenuSinglePlayer
 		terraintypesCombo.Show();
 		GUI.Label(new Rect(tw*4f, th*0.5f, tw, th), "View");
 		presetsCombo.Show();
-		//RegenerateTerrainToggle = GUI.Toggle(new Rect(tw*6.65f, th*1.5f, tw*3f, th), RegenerateTerrainToggle, "Regenerate Terrain? Could take a long time");
-		
 		
 		GUI.Label(new Rect(tw*5.25f, th*2.75f, tw, th), "Max Height: ");
 		GUI.Label(new Rect(tw*6f, th*3.75f, tw, th), "0.0");
@@ -229,6 +226,9 @@ public class MenuSinglePlayer
 		GenerateSharedCalls(DataSource, TerrainType, Filename, Preset, scale, colorScale);
 	}
 
+	/// <summary>
+	/// Regenerates the colormap using the given color value.
+	/// </summary>
 	public void RegenerateColorSplat(){
 		if(ScaleYSliderValcolour == 1.0f)
 			ResetTerrainSplatToOriginal(ref currentterrain,CurrentDataSource,CurrentTerrainType,CurrentFilename,CurrentPreset);
@@ -259,7 +259,7 @@ public class MenuSinglePlayer
 		CurrentPreset = Preset;
 		ScaleYSliderVal = scale;
 		ScaleYSliderValcolour = colorScale;
-		///
+
 		for(int i=0; i<dSourceList.Length; i++){
 			if(dSourceList[i].text == CurrentDataSource){
 				datasourcesCombo.SelectedItemIndex = i;
@@ -289,7 +289,7 @@ public class MenuSinglePlayer
 				presetsCombo.SetMainString(CurrentPreset);
 			}
 		}
-		///
+
 		StoreSplatColours(currentterrain, ref splatmapcolours, ref currenttexture);
 		GenerateColorSplat(colorScale,DataSource,TerrainType,Filename,Preset);
 		Handler.Tabs.ResetDataPoints();
@@ -336,7 +336,6 @@ public class MenuSinglePlayer
 		                              "button",
 		                              "box",
 		                              fNameStyle);
-//		filenamesCombo.SetOnClick();
 		
 		// Terrain type, e.g. granular, smooth, etc.
 		tTypesStyle = new GUIStyle();
@@ -353,7 +352,6 @@ public class MenuSinglePlayer
 		                                 "button",
 		                                 "box",
 		                                 tTypesStyle);
-		// terraintypesCombo.SetOnClick(); 
 		
 		// Terrain view style, e.g. peaks, lanscape, etc.
 		presetsStyle = new GUIStyle();
@@ -371,8 +369,6 @@ public class MenuSinglePlayer
 		CurrentFilename = fNameList[filenamesCombo.SelectedItemIndex].text;
 		UpdatePresets();
 		CurrentPreset = presetsList[presetsCombo.SelectedItemIndex].text;
-
-		// Update the View combo box
 		
 		// Updates all combo box lists to ensure that all
 		UpdateAllAfterSource();
@@ -418,7 +414,9 @@ public class MenuSinglePlayer
 		}
 	}
 
-	// Alters the View combo box list when needed
+	/// <summary>
+	/// Alters the View combo box list when needed
+	/// </summary>
 	public void UpdatePresets(){
 		DataTable table = VariablesPresets.GetTableFromCSV();
 		DataRow[] preset_rows = table.Select("Source = '"+dSourceList[datasourcesCombo.SelectedItemIndex].text+
@@ -436,7 +434,10 @@ public class MenuSinglePlayer
 		                            presetsStyle);
 	}
 
-	// Changes the combo box lists Property, Type and View after the Data Set is changed
+	/// <summary>
+	/// Changes the combo box lists Property, 
+	/// Type and View after the Data Set is changed.
+	/// </summary>
 	private void UpdateAllAfterSource(){
 		
 		// Load the presets
@@ -523,6 +524,7 @@ public class MenuSinglePlayer
 	
 	public void SetSliderSplatColours(float slider, ref Terrain t, Color[,] c, string DataSource, string TerrainType, string Filename, string Preset)
 	{
+		// Currently color sliding for Sex and Gender terrain is not implemented.
 		if(Filename.Contains("Gender") || Filename.Contains("Sex"))
 			return;
 
@@ -530,10 +532,10 @@ public class MenuSinglePlayer
 		Texture2D tempsplat = LoadColourMap(DataSource,TerrainType,Filename,Preset);
 		
 		//Contains the colour for the corresponding map
-		Handler.Vars = VariablesPresets.VariablePreset(DataSource,//dSourceList[datasourcesCombo.SelectedItemIndex].text, 
-		                                       TerrainType, //tTypesList[terraintypesCombo.SelectedItemIndex].text,
-		                                       Filename, //fNameList[filenamesCombo.SelectedItemIndex].text,
-		                                       Preset);//presetsList[presetsCombo.SelectedItemIndex].text);
+		Handler.Vars = VariablesPresets.VariablePreset(DataSource,
+		                                       TerrainType,
+		                                       Filename,
+		                                       Preset);
 		
 		ColorSpectrumObj cso = new ColorSpectrumObj(Handler.Vars.COLOR_PRESET);
 		
@@ -571,10 +573,7 @@ public class MenuSinglePlayer
 		Terrain t = (Terrain)GameObject.Find("Terrain").GetComponent<Terrain>();
 		
 		Texture2D corrmap = new Texture2D((int)t.terrainData.size.x, (int)t.terrainData.size.z);
-		string colourfile = DataSource + TerrainType + Filename + Preset;//dSourceList[datasourcesCombo.SelectedItemIndex].text + 
-//			tTypesList[terraintypesCombo.SelectedItemIndex].text +
-//				fNameList[filenamesCombo.SelectedItemIndex].text +
-//				presetsList[presetsCombo.SelectedItemIndex].text;
+		string colourfile = DataSource + TerrainType + Filename + Preset;
 		
 		if(TerrainType == "Smooth")
 		{

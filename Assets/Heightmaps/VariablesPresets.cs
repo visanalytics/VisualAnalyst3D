@@ -6,6 +6,16 @@ using System.IO;
 using System.Data;
 public class VariablesPresets
 {
+	/// <summary>
+	/// Instantiates a new instance of <see cref="VariablePreset"/>
+	/// using the source, terrain type, filename and terrain preset
+	/// to find its preset values in the data table.
+	/// </summary>
+	/// <returns>The preset.</returns>
+	/// <param name="source">Source.</param>
+	/// <param name="terrainType">Terrain type.</param>
+	/// <param name="filename">Filename.</param>
+	/// <param name="terrainPreset">Terrain preset.</param>
 	public static Variables VariablePreset(String source,
 	                                       String terrainType,
 	                                       String filename,
@@ -50,141 +60,11 @@ public class VariablesPresets
 		}
 	}
 
-//	public static DataTable GetTable(){
-//		DataTable table = new DataTable();
-//		table.Columns.Add("Data", typeof(string));
-//		table.Columns.Add("Source", typeof(string));
-//		table.Columns.Add("TerrainType", typeof(string));
-//		table.Columns.Add("Preset", typeof(string));
-//		table.Columns.Add("HeightmapSize", typeof(float));
-//		table.Columns.Add("ColormapSize", typeof(float)); 
-//		table.Columns.Add("ScaleY", typeof(float));
-//		table.Columns.Add("Filename", typeof(string));
-//		table.Columns.Add("MapFilename", typeof(string));
-//		table.Columns.Add("MinX", typeof(float));
-//		table.Columns.Add("MinZ", typeof(float));
-//		table.Columns.Add("MaxX", typeof(float));
-//		table.Columns.Add("MaxZ", typeof(float));
-//		table.Columns.Add("ColorPreset", typeof(string));
-//		table.Columns.Add("ColumnX", typeof(int));
-//		table.Columns.Add("ColumnY", typeof(int));
-//		table.Columns.Add("ColumnZ", typeof(int));
-//		table.Columns.Add("HillsMaxRadius", typeof(float));
-//		table.Columns.Add("HillsIterationNumber", typeof(float));
-//		table.Columns.Add("GeneticMaxIteration", typeof(int));
-//		table.Columns.Add("GeneticSmoothIteration", typeof(int));
-//
-//		// Age
-//		table.Rows.Add("Age", "Victoria", "Granular", "Peaks", 512f, 512f, 5f, "/Heightmaps/Vic_Data/r_acc_age_grid_VicAll-512x512.csv", "/Heightmaps/Maps/VicAll.png", -34f, 141f, -39f, 150f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0.05f, 100f, 0, 0);
-//		table.Rows.Add("Age", "Victoria", "Granular", "Landscape", 512f, 512f, 1f, "/Heightmaps/Vic_Data/r_acc_age_grid_VicAll-512x512.csv", "/Heightmaps/Maps/VicAll.png", -34f, 141f, -39f, 150f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0.5f, 100f, 0, 0);
-//		table.Rows.Add("Age", "Victoria", "Smooth", "Peaks", 512f, 512f, 3f, "/Heightmaps/Vic_Data/r_acc_age_grid_VicAll-512x512.csv", "/Heightmaps/Maps/VicAll.png", -34f, 141f, -39f, 150f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0f, 0f, 200, 0);
-//		table.Rows.Add("Age", "Victoria", "Smooth", "Landscape", 512f, 512f, 2.5f, "/Heightmaps/Vic_Data/r_acc_age_grid_VicAll-512x512.csv", "/Heightmaps/Maps/VicAll.png", -34f, 141f, -39f, 150f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW, 3, 1, 2, 0f, 0f, 200, 7);     
-//		table.Rows.Add("Age", "City", "Granular", "Peaks", 512f, 512f, 5f, "/Heightmaps/Vic_Data/r_acc_age_grid_CitySurr-128x128.csv", "/Heightmaps/Maps/CitySurr.png", -37.78f, 144.88f, -37.86f, 145.03f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0.001f, 100f, 0, 0);
-//		table.Rows.Add("Age", "City", "Granular", "Landscape", 512f, 512f, 1f, "/Heightmaps/Vic_Data/r_acc_age_grid_CitySurr-128x128.csv", "/Heightmaps/Maps/CitySurr.png", -37.78f, 144.88f, -37.86f, 145.03f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0.005f, 100f, 0, 0);
-//		table.Rows.Add("Age", "City", "Smooth", "Peaks", 512f, 512f, 3f, "/Heightmaps/Vic_Data/r_acc_age_grid_CitySurr-128x128.csv", "/Heightmaps/Maps/CitySurr.png", -37.78f, 144.88f, -37.86f, 145.03f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0f, 0f, 200, 0);
-//		table.Rows.Add("Age", "City", "Smooth", "Landscape", 512f, 512f, 2.5f, "/Heightmaps/Vic_Data/r_acc_age_grid_CitySurr-128x128.csv", "/Heightmaps/Maps/CitySurr.png", -37.78f, 144.88f, -37.86f, 145.03f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW, 3, 1, 2, 0f, 0f, 200, 7);    
-//		table.Rows.Add("Age", "Larger Melb.", "Granular", "Peaks", 512f, 512f, 5f, "/Heightmaps/Vic_Data/r_acc_age_grid_LargerMelb-128x128.csv", "/Heightmaps/Maps/LargerMelb.png", -37.65f, 144.7f, -38f, 145.3f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0.002f, 100f, 0, 0);
-//		table.Rows.Add("Age", "Larger Melb.", "Granular", "Landscape", 512f, 512f, 1f, "/Heightmaps/Vic_Data/r_acc_age_grid_LargerMelb-128x128.csv", "/Heightmaps/Maps/LargerMelb.png", -37.65f, 144.7f, -38f, 145.3f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0.01f, 100f, 0, 0);
-//		table.Rows.Add("Age", "Larger Melb.", "Smooth", "Peaks", 512f, 512f, 3f, "/Heightmaps/Vic_Data/r_acc_age_grid_LargerMelb-128x128.csv", "/Heightmaps/Maps/LargerMelb.png", -37.65f, 144.7f, -38f, 145.3f,  ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0f, 0f, 200, 0);
-//		table.Rows.Add("Age", "Larger Melb.", "Smooth", "Landscape", 512f, 512f, 2.5f, "/Heightmaps/Vic_Data/r_acc_age_grid_LargerMelb-128x128.csv", "/Heightmaps/Maps/LargerMelb.png", -37.65f, 144.7f, -38f, 145.3f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW, 3, 1, 2, 0f, 0f, 200, 7);    
-//		table.Rows.Add("Age", "CBD", "Granular", "Peaks", 512f, 512f, 5f, "/Heightmaps/Vic_Data/r_acc_age_grid_MelbCity-64x64.csv", "/Heightmaps/Maps/MelbCity.png", -37.805f, 144.950f, -37.825f, 144.986f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0.0002f, 100f, 0, 0);
-//		table.Rows.Add("Age", "CBD", "Granular", "Landscape", 512f, 512f, 1f, "/Heightmaps/Vic_Data/r_acc_age_grid_MelbCity-64x64.csv", "/Heightmaps/Maps/MelbCity.png", -37.805f, 144.950f, -37.825f, 144.986f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0.001f, 100f, 0, 0);
-//		table.Rows.Add("Age", "CBD", "Smooth", "Peaks", 512f, 512f, 3f, "/Heightmaps/Vic_Data/r_acc_age_grid_MelbCity-64x64.csv", "/Heightmaps/Maps/MelbCity.png", -37.805f, 144.950f, -37.825f, 144.986f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0f, 0f, 200, 0);
-//		table.Rows.Add("Age", "CBD", "Smooth", "Landscape", 512f, 512f, 2.5f, "/Heightmaps/Vic_Data/r_acc_age_grid_MelbCity-64x64.csv", "/Heightmaps/Maps/MelbCity.png", -37.805f, 144.950f, -37.825f, 144.986f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW, 3, 1, 2, 0f, 0f, 200, 7);    
-//
-//		// Sum
-//		table.Rows.Add("Totals", "Victoria", "Granular", "Peaks", 512f, 512f, 5f, "/Heightmaps/Vic_Data/r_acc_sum_grid_VicAll-128x128.csv", "/Heightmaps/Maps/VicAll.png", -34f, 141f, -39f, 150f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0.03f, 100f, 0, 0);
-//		table.Rows.Add("Totals", "Victoria", "Granular", "Landscape", 512f, 512f, 1f, "/Heightmaps/Vic_Data/r_acc_sum_grid_VicAll-128x128.csv", "/Heightmaps/Maps/VicAll.png", -34f, 141f, -39f, 150f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0.25f, 100f, 0, 0);
-//		table.Rows.Add("Totals", "Victoria", "Smooth", "Peaks", 512f, 512f, 3f, "/Heightmaps/Vic_Data/r_acc_sum_grid_VicAll-128x128.csv", "/Heightmaps/Maps/VicAll.png", -34f, 141f, -39f, 150f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0f, 0f, 200, 0);
-//		table.Rows.Add("Totals", "Victoria", "Smooth", "Landscape", 512f, 512f, 2.5f, "/Heightmaps/Vic_Data/r_acc_sum_grid_VicAll-128x128.csv", "/Heightmaps/Maps/VicAll.png", -34f, 141f, -39f, 150f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW, 3, 1, 2, 0f, 0f, 200, 7);     
-//		table.Rows.Add("Totals", "City", "Granular", "Peaks", 512f, 512f, 5f, "/Heightmaps/Vic_Data/r_acc_sum_grid_CitySurr-128x128.csv", "/Heightmaps/Maps/CitySurr.png", -37.78f, 144.88f, -37.86f, 145.03f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0.001f, 100f, 0, 0);
-//		table.Rows.Add("Totals", "City", "Granular", "Landscape", 512f, 512f, 1f, "/Heightmaps/Vic_Data/r_acc_sum_grid_CitySurr-128x128.csv", "/Heightmaps/Maps/CitySurr.png", -37.78f, 144.88f, -37.86f, 145.03f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0.005f, 100f, 0, 0);
-//		table.Rows.Add("Totals", "City", "Smooth", "Peaks", 512f, 512f, 3f, "/Heightmaps/Vic_Data/r_acc_sum_grid_CitySurr-128x128.csv", "/Heightmaps/Maps/CitySurr.png", -37.78f, 144.88f, -37.86f, 145.03f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0f, 0f, 200, 0);
-//		table.Rows.Add("Totals", "City", "Smooth", "Landscape", 512f, 512f, 2.5f, "/Heightmaps/Vic_Data/r_acc_sum_grid_CitySurr-128x128.csv", "/Heightmaps/Maps/CitySurr.png", -37.78f, 144.88f, -37.86f, 145.03f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW, 3, 1, 2, 0f, 0f, 200, 7);    
-//		table.Rows.Add("Totals", "Larger Melb.", "Granular", "Peaks", 512f, 512f, 5f, "/Heightmaps/Vic_Data/r_acc_sum_grid_LargerMelb-128x128.csv", "/Heightmaps/Maps/LargerMelb.png", -37.65f, 144.7f, -38f, 145.3f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0.002f, 100f, 0, 0);
-//		table.Rows.Add("Totals", "Larger Melb.", "Granular", "Landscape", 512f, 512f, 1f, "/Heightmaps/Vic_Data/r_acc_sum_grid_LargerMelb-128x128.csv", "/Heightmaps/Maps/LargerMelb.png", -37.65f, 144.7f, -38f, 145.3f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0.01f, 100f, 0, 0);
-//		table.Rows.Add("Totals", "Larger Melb.", "Smooth", "Peaks", 512f, 512f, 3f, "/Heightmaps/Vic_Data/r_acc_sum_grid_LargerMelb-128x128.csv", "/Heightmaps/Maps/LargerMelb.png", -37.65f, 144.7f, -38f, 145.3f,  ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0f, 0f, 200, 0);
-//		table.Rows.Add("Totals", "Larger Melb.", "Smooth", "Landscape", 512f, 512f, 2.5f, "/Heightmaps/Vic_Data/r_acc_sum_grid_LargerMelb-128x128.csv", "/Heightmaps/Maps/LargerMelb.png", -37.65f, 144.7f, -38f, 145.3f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW, 3, 1, 2, 0f, 0f, 200, 7);    
-//		table.Rows.Add("Totals", "CBD", "Granular", "Peaks", 512f, 512f, 5f, "/Heightmaps/Vic_Data/r_acc_sum_grid_MelbCity-64x64.csv", "/Heightmaps/Maps/MelbCity.png", -37.805f, 144.950f, -37.825f, 144.986f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0.0002f, 100f, 0, 0);
-//		table.Rows.Add("Totals", "CBD", "Granular", "Landscape", 512f, 512f, 1f, "/Heightmaps/Vic_Data/r_acc_sum_grid_MelbCity-64x64.csv", "/Heightmaps/Maps/MelbCity.png", -37.805f, 144.950f, -37.825f, 144.986f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0.001f, 100f, 0, 0);
-//		table.Rows.Add("Totals", "CBD", "Smooth", "Peaks", 512f, 512f, 3f, "/Heightmaps/Vic_Data/r_acc_sum_grid_MelbCity-64x64.csv", "/Heightmaps/Maps/MelbCity.png", -37.805f, 144.950f, -37.825f, 144.986f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0f, 0f, 200, 0);
-//		table.Rows.Add("Totals", "CBD", "Smooth", "Landscape", 512f, 512f, 2.5f, "/Heightmaps/Vic_Data/r_acc_sum_grid_MelbCity-64x64.csv", "/Heightmaps/Maps/MelbCity.png", -37.805f, 144.950f, -37.825f, 144.986f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW, 3, 1, 2, 0f, 0f, 200, 7);    
-//
-//		// Fatalities
-//		table.Rows.Add("Fatalities", "Victoria", "Granular", "Peaks", 512f, 512f, 5f, "/Heightmaps/Vic_Data/r_acc_fat_grid_VicAll-256x256.csv", "/Heightmaps/Maps/VicAll.png", -34f, 141f, -39f, 150f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0.03f, 100f, 0, 0);
-//		table.Rows.Add("Fatalities", "Victoria", "Granular", "Landscape", 512f, 512f, 1f, "/Heightmaps/Vic_Data/r_acc_fat_grid_VicAll-256x256.csv", "/Heightmaps/Maps/VicAll.png", -34f, 141f, -39f, 150f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0.25f, 100f, 0, 0);
-//		table.Rows.Add("Fatalities", "Victoria", "Smooth", "Peaks", 512f, 512f, 3f, "/Heightmaps/Vic_Data/r_acc_fat_grid_VicAll-256x256.csv", "/Heightmaps/Maps/VicAll.png", -34f, 141f, -39f, 150f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0f, 0f, 200, 0);
-//		table.Rows.Add("Fatalities", "Victoria", "Smooth", "Landscape", 512f, 512f, 2.5f, "/Heightmaps/Vic_Data/r_acc_fat_grid_VicAll-256x256.csv", "/Heightmaps/Maps/VicAll.png", -34f, 141f, -39f, 150f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW, 3, 1, 2, 0f, 0f, 200, 7);     
-//		table.Rows.Add("Fatalities", "City", "Granular", "Peaks", 512f, 512f, 5f, "/Heightmaps/Vic_Data/r_acc_fat_grid_CitySurr-128x128.csv", "/Heightmaps/Maps/CitySurr.png", -37.78f, 144.88f, -37.86f, 145.03f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0.001f, 100f, 0, 0);
-//		table.Rows.Add("Fatalities", "City", "Granular", "Landscape", 512f, 512f, 1f, "/Heightmaps/Vic_Data/r_acc_fat_grid_CitySurr-128x128.csv", "/Heightmaps/Maps/CitySurr.png", -37.78f, 144.88f, -37.86f, 145.03f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0.005f, 100f, 0, 0);
-//		table.Rows.Add("Fatalities", "City", "Smooth", "Peaks", 512f, 512f, 3f, "/Heightmaps/Vic_Data/r_acc_fat_grid_CitySurr-128x128.csv", "/Heightmaps/Maps/CitySurr.png", -37.78f, 144.88f, -37.86f, 145.03f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0f, 0f, 200, 0);
-//		table.Rows.Add("Fatalities", "City", "Smooth", "Landscape", 512f, 512f, 2.5f, "/Heightmaps/Vic_Data/r_acc_fat_grid_CitySurr-128x128.csv", "/Heightmaps/Maps/CitySurr.png", -37.78f, 144.88f, -37.86f, 145.03f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW, 3, 1, 2, 0f, 0f, 200, 7);    
-//		table.Rows.Add("Fatalities", "Larger Melb.", "Granular", "Peaks", 512f, 512f, 5f, "/Heightmaps/Vic_Data/r_acc_fat_grid_LargerMelb-128x128.csv", "/Heightmaps/Maps/LargerMelb.png", -37.65f, 144.7f, -38f, 145.3f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0.002f, 100f, 0, 0);
-//		table.Rows.Add("Fatalities", "Larger Melb.", "Granular", "Landscape", 512f, 512f, 1f, "/Heightmaps/Vic_Data/r_acc_fat_grid_LargerMelb-128x128.csv", "/Heightmaps/Maps/LargerMelb.png", -37.65f, 144.7f, -38f, 145.3f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0.01f, 100f, 0, 0);
-//		table.Rows.Add("Fatalities", "Larger Melb.", "Smooth", "Peaks", 512f, 512f, 3f, "/Heightmaps/Vic_Data/r_acc_fat_grid_LargerMelb-128x128.csv", "/Heightmaps/Maps/LargerMelb.png", -37.65f, 144.7f, -38f, 145.3f,  ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0f, 0f, 200, 0);
-//		table.Rows.Add("Fatalities", "Larger Melb.", "Smooth", "Landscape", 512f, 512f, 2.5f, "/Heightmaps/Vic_Data/r_acc_fat_grid_LargerMelb-128x128.csv", "/Heightmaps/Maps/LargerMelb.png", -37.65f, 144.7f, -38f, 145.3f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW, 3, 1, 2, 0f, 0f, 200, 7);    
-//		table.Rows.Add("Fatalities", "CBD", "Granular", "Peaks", 512f, 512f, 5f, "/Heightmaps/Vic_Data/r_acc_fat_grid_MelbCity-64x64.csv", "/Heightmaps/Maps/MelbCity.png", -37.805f, 144.950f, -37.825f, 144.986f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0.0002f, 100f, 0, 0);
-//		table.Rows.Add("Fatalities", "CBD", "Granular", "Landscape", 512f, 512f, 1f, "/Heightmaps/Vic_Data/r_acc_fat_grid_MelbCity-64x64.csv", "/Heightmaps/Maps/MelbCity.png", -37.805f, 144.950f, -37.825f, 144.986f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0.001f, 100f, 0, 0);
-//		table.Rows.Add("Fatalities", "CBD", "Smooth", "Peaks", 512f, 512f, 3f, "/Heightmaps/Vic_Data/r_acc_fat_grid_MelbCity-64x64.csv", "/Heightmaps/Maps/MelbCity.png", -37.805f, 144.950f, -37.825f, 144.986f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0f, 0f, 200, 0);
-//		table.Rows.Add("Fatalities", "CBD", "Smooth", "Landscape", 512f, 512f, 2.5f, "/Heightmaps/Vic_Data/r_acc_fat_grid_MelbCity-64x64.csv", "/Heightmaps/Maps/MelbCity.png", -37.805f, 144.950f, -37.825f, 144.986f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW, 3, 1, 2, 0f, 0f, 200, 7);    
-//
-//		// Local Gov. Areas 
-//		table.Rows.Add("Local Areas", "Victoria", "Granular", "Peaks", 512f, 512f, 5f, "/Heightmaps/Vic_Data/r_acc_lgas_grid_VicAll-512x512.csv", "/Heightmaps/Maps/VicAll.png", -34f, 141f, -39f, 150f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0.03f, 100f, 0, 0);
-//		table.Rows.Add("Local Areas", "Victoria", "Granular", "Landscape", 512f, 512f, 1f, "/Heightmaps/Vic_Data/r_acc_lgas_grid_VicAll-512x512.csv", "/Heightmaps/Maps/VicAll.png", -34f, 141f, -39f, 150f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0.25f, 100f, 0, 0);
-//		table.Rows.Add("Local Areas", "Victoria", "Smooth", "Peaks", 512f, 512f, 3f, "/Heightmaps/Vic_Data/r_acc_lgas_grid_VicAll-512x512.csv", "/Heightmaps/Maps/VicAll.png", -34f, 141f, -39f, 150f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0f, 0f, 200, 0);
-//		table.Rows.Add("Local Areas", "Victoria", "Smooth", "Landscape", 512f, 512f, 2.5f, "/Heightmaps/Vic_Data/r_acc_lgas_grid_VicAll-512x512.csv", "/Heightmaps/Maps/VicAll.png", -34f, 141f, -39f, 150f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW, 3, 1, 2, 0f, 0f, 200, 7);     
-//		table.Rows.Add("Local Areas", "City", "Granular", "Peaks", 512f, 512f, 5f, "/Heightmaps/Vic_Data/r_acc_lgas_grid_CitySurr-128x128.csv", "/Heightmaps/Maps/CitySurr.png", -37.78f, 144.88f, -37.86f, 145.03f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0.001f, 100f, 0, 0);
-//		table.Rows.Add("Local Areas", "City", "Granular", "Landscape", 512f, 512f, 1f, "/Heightmaps/Vic_Data/r_acc_lgas_grid_CitySurr-128x128.csv", "/Heightmaps/Maps/CitySurr.png", -37.78f, 144.88f, -37.86f, 145.03f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0.005f, 100f, 0, 0);
-//		table.Rows.Add("Local Areas", "City", "Smooth", "Peaks", 512f, 512f, 3f, "/Heightmaps/Vic_Data/r_acc_lgas_grid_CitySurr-128x128.csv", "/Heightmaps/Maps/CitySurr.png", -37.78f, 144.88f, -37.86f, 145.03f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0f, 0f, 200, 0);
-//		table.Rows.Add("Local Areas", "City", "Smooth", "Landscape", 512f, 512f, 2.5f, "/Heightmaps/Vic_Data/r_acc_lgas_grid_CitySurr-128x128.csv", "/Heightmaps/Maps/CitySurr.png", -37.78f, 144.88f, -37.86f, 145.03f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW, 3, 1, 2, 0f, 0f, 200, 7);    
-//		table.Rows.Add("Local Areas", "Larger Melb.", "Granular", "Peaks", 512f, 512f, 5f, "/Heightmaps/Vic_Data/r_acc_lgas_grid_LargerMelb-128x128.csv", "/Heightmaps/Maps/LargerMelb.png", -37.65f, 144.7f, -38f, 145.3f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0.002f, 100f, 0, 0);
-//		table.Rows.Add("Local Areas", "Larger Melb.", "Granular", "Landscape", 512f, 512f, 1f, "/Heightmaps/Vic_Data/r_acc_lgas_grid_LargerMelb-128x128.csv", "/Heightmaps/Maps/LargerMelb.png", -37.65f, 144.7f, -38f, 145.3f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0.01f, 100f, 0, 0);
-//		table.Rows.Add("Local Areas", "Larger Melb.", "Smooth", "Peaks", 512f, 512f, 3f, "/Heightmaps/Vic_Data/r_acc_lgas_grid_LargerMelb-128x128.csv", "/Heightmaps/Maps/LargerMelb.png", -37.65f, 144.7f, -38f, 145.3f,  ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0f, 0f, 200, 0);
-//		table.Rows.Add("Local Areas", "Larger Melb.", "Smooth", "Landscape", 512f, 512f, 2.5f, "/Heightmaps/Vic_Data/r_acc_lgas_grid_LargerMelb-128x128.csv", "/Heightmaps/Maps/LargerMelb.png", -37.65f, 144.7f, -38f, 145.3f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW, 3, 1, 2, 0f, 0f, 200, 7);    
-//		table.Rows.Add("Local Areas", "CBD", "Granular", "Peaks", 512f, 512f, 5f, "/Heightmaps/Vic_Data/r_acc_lgas_grid_MelbCity-64x64.csv", "/Heightmaps/Maps/MelbCity.png", -37.805f, 144.950f, -37.825f, 144.986f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0.0002f, 100f, 0, 0);
-//		table.Rows.Add("Local Areas", "CBD", "Granular", "Landscape", 512f, 512f, 1f, "/Heightmaps/Vic_Data/r_acc_lgas_grid_MelbCity-64x64.csv", "/Heightmaps/Maps/MelbCity.png", -37.805f, 144.950f, -37.825f, 144.986f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0.001f, 100f, 0, 0);
-//		table.Rows.Add("Local Areas", "CBD", "Smooth", "Peaks", 512f, 512f, 3f, "/Heightmaps/Vic_Data/r_acc_lgas_grid_MelbCity-64x64.csv", "/Heightmaps/Maps/MelbCity.png", -37.805f, 144.950f, -37.825f, 144.986f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0f, 0f, 200, 0);
-//		table.Rows.Add("Local Areas", "CBD", "Smooth", "Landscape", 512f, 512f, 2.5f, "/Heightmaps/Vic_Data/r_acc_lgas_grid_MelbCity-64x64.csv", "/Heightmaps/Maps/MelbCity.png", -37.805f, 144.950f, -37.825f, 144.986f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW, 3, 1, 2, 0f, 0f, 200, 7);    
-//
-//		// Severity 
-//		table.Rows.Add("Severity", "Victoria", "Granular", "Peaks", 512f, 512f, 5f, "/Heightmaps/Vic_Data/r_acc_sev_grid_VicAll-512x512.csv", "/Heightmaps/Maps/VicAll.png", -34f, 141f, -39f, 150f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0.03f, 100f, 0, 0);
-//		table.Rows.Add("Severity", "Victoria", "Granular", "Landscape", 512f, 512f, 1f, "/Heightmaps/Vic_Data/r_acc_sev_grid_VicAll-512x512.csv", "/Heightmaps/Maps/VicAll.png", -34f, 141f, -39f, 150f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0.25f, 100f, 0, 0);
-//		table.Rows.Add("Severity", "Victoria", "Smooth", "Peaks", 512f, 512f, 3f, "/Heightmaps/Vic_Data/r_acc_sev_grid_VicAll-512x512.csv", "/Heightmaps/Maps/VicAll.png", -34f, 141f, -39f, 150f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0f, 0f, 200, 0);
-//		table.Rows.Add("Severity", "Victoria", "Smooth", "Landscape", 512f, 512f, 2.5f, "/Heightmaps/Vic_Data/r_acc_sev_grid_VicAll-512x512.csv", "/Heightmaps/Maps/VicAll.png", -34f, 141f, -39f, 150f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW, 3, 1, 2, 0f, 0f, 200, 7);     
-//		table.Rows.Add("Severity", "City", "Granular", "Peaks", 512f, 512f, 5f, "/Heightmaps/Vic_Data/r_acc_sev_grid_CitySurr-128x128.csv", "/Heightmaps/Maps/CitySurr.png", -37.78f, 144.88f, -37.86f, 145.03f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0.001f, 100f, 0, 0);
-//		table.Rows.Add("Severity", "City", "Granular", "Landscape", 512f, 512f, 1f, "/Heightmaps/Vic_Data/r_acc_sev_grid_CitySurr-128x128.csv", "/Heightmaps/Maps/CitySurr.png", -37.78f, 144.88f, -37.86f, 145.03f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0.005f, 100f, 0, 0);
-//		table.Rows.Add("Severity", "City", "Smooth", "Peaks", 512f, 512f, 3f, "/Heightmaps/Vic_Data/r_acc_sev_grid_CitySurr-128x128.csv", "/Heightmaps/Maps/CitySurr.png", -37.78f, 144.88f, -37.86f, 145.03f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0f, 0f, 200, 0);
-//		table.Rows.Add("Severity", "City", "Smooth", "Landscape", 512f, 512f, 2.5f, "/Heightmaps/Vic_Data/r_acc_sev_grid_CitySurr-128x128.csv", "/Heightmaps/Maps/CitySurr.png", -37.78f, 144.88f, -37.86f, 145.03f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW, 3, 1, 2, 0f, 0f, 200, 7);    
-//		table.Rows.Add("Severity", "Larger Melb.", "Granular", "Peaks", 512f, 512f, 5f, "/Heightmaps/Vic_Data/r_acc_sev_grid_LargerMelb-128x128.csv", "/Heightmaps/Maps/LargerMelb.png", -37.65f, 144.7f, -38f, 145.3f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0.002f, 100f, 0, 0);
-//		table.Rows.Add("Severity", "Larger Melb.", "Granular", "Landscape", 512f, 512f, 1f, "/Heightmaps/Vic_Data/r_acc_sev_grid_LargerMelb-128x128.csv", "/Heightmaps/Maps/LargerMelb.png", -37.65f, 144.7f, -38f, 145.3f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0.01f, 100f, 0, 0);
-//		table.Rows.Add("Severity", "Larger Melb.", "Smooth", "Peaks", 512f, 512f, 3f, "/Heightmaps/Vic_Data/r_acc_sev_grid_LargerMelb-128x128.csv", "/Heightmaps/Maps/LargerMelb.png", -37.65f, 144.7f, -38f, 145.3f,  ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0f, 0f, 200, 0);
-//		table.Rows.Add("Severity", "Larger Melb.", "Smooth", "Landscape", 512f, 512f, 2.5f, "/Heightmaps/Vic_Data/r_acc_sev_grid_LargerMelb-128x128.csv", "/Heightmaps/Maps/LargerMelb.png", -37.65f, 144.7f, -38f, 145.3f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW, 3, 1, 2, 0f, 0f, 200, 7);    
-//		table.Rows.Add("Severity", "CBD", "Granular", "Peaks", 512f, 512f, 5f, "/Heightmaps/Vic_Data/r_acc_sev_grid_MelbCity-64x64.csv", "/Heightmaps/Maps/MelbCity.png", -37.805f, 144.950f, -37.825f, 144.986f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0.0002f, 100f, 0, 0);
-//		table.Rows.Add("Severity", "CBD", "Granular", "Landscape", 512f, 512f, 1f, "/Heightmaps/Vic_Data/r_acc_sev_grid_MelbCity-64x64.csv", "/Heightmaps/Maps/MelbCity.png", -37.805f, 144.950f, -37.825f, 144.986f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0.001f, 100f, 0, 0);
-//		table.Rows.Add("Severity", "CBD", "Smooth", "Peaks", 512f, 512f, 3f, "/Heightmaps/Vic_Data/r_acc_sev_grid_MelbCity-64x64.csv", "/Heightmaps/Maps/MelbCity.png", -37.805f, 144.950f, -37.825f, 144.986f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0f, 0f, 200, 0);
-//		table.Rows.Add("Severity", "CBD", "Smooth", "Landscape", 512f, 512f, 2.5f, "/Heightmaps/Vic_Data/r_acc_sev_grid_MelbCity-64x64.csv", "/Heightmaps/Maps/MelbCity.png", -37.805f, 144.950f, -37.825f, 144.986f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW, 3, 1, 2, 0f, 0f, 200, 7);    
-//		
-//		// Sex
-//		table.Rows.Add("Sex", "Victoria", "Granular", "Peaks", 512f, 512f, 5f, "/Heightmaps/Vic_Data/r_acc_sex_grid_VicAll-512x512.csv", "/Heightmaps/Maps/VicAll.png", -34f, 141f, -39f, 150f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0.03f, 100f, 0, 0);
-//		table.Rows.Add("Sex", "Victoria", "Granular", "Landscape", 512f, 512f, 1f, "/Heightmaps/Vic_Data/r_acc_sex_grid_VicAll-512x512.csv", "/Heightmaps/Maps/VicAll.png", -34f, 141f, -39f, 150f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0.25f, 100f, 0, 0);
-//		table.Rows.Add("Sex", "Victoria", "Smooth", "Peaks", 512f, 512f, 3f, "/Heightmaps/Vic_Data/r_acc_sex_grid_VicAll-512x512.csv", "/Heightmaps/Maps/VicAll.png", -34f, 141f, -39f, 150f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0f, 0f, 200, 0);
-//		table.Rows.Add("Sex", "Victoria", "Smooth", "Landscape", 512f, 512f, 2.5f, "/Heightmaps/Vic_Data/r_acc_sex_grid_VicAll-512x512.csv", "/Heightmaps/Maps/VicAll.png", -34f, 141f, -39f, 150f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW, 3, 1, 2, 0f, 0f, 200, 7);      
-//		table.Rows.Add("Sex", "City", "Granular", "Peaks", 512f, 512f, 5f, "/Heightmaps/Vic_Data/r_acc_sex_grid_CitySurr-128x128.csv", "/Heightmaps/Maps/CitySurr.png", -37.78f, 144.88f, -37.86f, 145.03f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0.001f, 100f, 0, 0);
-//		table.Rows.Add("Sex", "City", "Granular", "Landscape", 512f, 512f, 1f, "/Heightmaps/Vic_Data/r_acc_sex_grid_CitySurr-128x128.csv", "/Heightmaps/Maps/CitySurr.png", -37.78f, 144.88f, -37.86f, 145.03f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0.01f, 100f, 0, 0);
-//		table.Rows.Add("Sex", "City", "Smooth", "Peaks", 512f, 512f, 3f, "/Heightmaps/Vic_Data/r_acc_sex_grid_CitySurr-128x128.csv", "/Heightmaps/Maps/CitySurr.png", -37.78f, 144.88f, -37.86f, 145.03f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0f, 0f, 200, 0);
-//		table.Rows.Add("Sex", "City", "Smooth", "Landscape", 512f, 512f, 2.5f, "/Heightmaps/Vic_Data/r_acc_sex_grid_CitySurr-128x128.csv", "/Heightmaps/Maps/CitySurr.png", -37.78f, 144.88f, -37.86f, 145.03f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW, 3, 1, 2, 0f, 0f, 200, 7);    
-//		table.Rows.Add("Sex", "Larger Melb.", "Granular", "Peaks", 512f, 512f, 5f, "/Heightmaps/Vic_Data/r_acc_sex_grid_LargerMelb-128x128.csv", "/Heightmaps/Maps/LargerMelb.png", -37.65f, 144.7f, -38f, 145.3f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0.002f, 100f, 0, 0);
-//		table.Rows.Add("Sex", "Larger Melb.", "Granular", "Landscape", 512f, 512f, 1f, "/Heightmaps/Vic_Data/r_acc_sex_grid_LargerMelb-128x128.csv", "/Heightmaps/Maps/LargerMelb.png", -37.65f, 144.7f, -38f, 145.3f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0.01f, 100f, 0, 0);
-//		table.Rows.Add("Sex", "Larger Melb.", "Smooth", "Peaks", 512f, 512f, 3f, "/Heightmaps/Vic_Data/r_acc_sex_grid_LargerMelb-128x128.csv", "/Heightmaps/Maps/LargerMelb.png", -37.65f, 144.7f, -38f, 145.3f,  ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0f, 0f, 200, 0);
-//		table.Rows.Add("Sex", "Larger Melb.", "Smooth", "Landscape", 512f, 512f, 2.5f, "/Heightmaps/Vic_Data/r_acc_sex_grid_LargerMelb-128x128.csv", "/Heightmaps/Maps/LargerMelb.png", -37.65f, 144.7f, -38f, 145.3f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW, 3, 1, 2, 0f, 0f, 200, 7);    
-//		table.Rows.Add("Sex", "CBD", "Granular", "Peaks", 512f, 512f, 5f, "/Heightmaps/Vic_Data/r_acc_sex_grid_MelbCity-64x64.csv", "/Heightmaps/Maps/MelbCity.png", -37.805f, 144.950f, -37.825f, 144.986f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0.0002f, 100f, 0, 0);
-//		table.Rows.Add("Sex", "CBD", "Granular", "Landscape", 512f, 512f, 1f, "/Heightmaps/Vic_Data/r_acc_sex_grid_MelbCity-64x64.csv", "/Heightmaps/Maps/MelbCity.png", -37.805f, 144.950f, -37.825f, 144.986f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0.001f, 100f, 0, 0);
-//		table.Rows.Add("Sex", "CBD", "Smooth", "Peaks", 512f, 512f, 3f, "/Heightmaps/Vic_Data/r_acc_sex_grid_MelbCity-64x64.csv", "/Heightmaps/Maps/MelbCity.png", -37.805f, 144.950f, -37.825f, 144.986f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW_NEEDLES, 3, 1, 2, 0f, 0f, 200, 0);
-//		table.Rows.Add("Sex", "CBD", "Smooth", "Landscape", 512f, 512f, 2.5f, "/Heightmaps/Vic_Data/r_acc_sex_grid_MelbCity-64x64.csv", "/Heightmaps/Maps/MelbCity.png", -37.805f, 144.950f, -37.825f, 144.986f, ColorSpectrumObj.PRESET_BLUE_TO_YELLOW, 3, 1, 2, 0f, 0f, 200, 7);    
-//
-//		return table;
-//	}
-
+	/// <summary>
+	/// Generates the data table from the CSV file of 
+	/// data presets.
+	/// </summary>
+	/// <returns>The populated data table.</returns>
 	public static DataTable GetTableFromCSV(){
 		String filename = Application.dataPath + "/Heightmaps/DataPresets.csv";
 		DataTable table = new DataTable();
