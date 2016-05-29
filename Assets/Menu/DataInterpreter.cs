@@ -86,12 +86,22 @@ public class DataInterpreter
 		string Comma = ",";
 		for(int i=0; i<PresetStrings.Length; i++){
 			string temp = "";
-			temp += preset_name + Comma;
-			temp += data_name + Comma;
-			temp += PresetStrings[i][0] + Comma;
-			temp += "512,512" + Comma;
-			temp += "1" + Comma;
-			temp += 
+			temp += preset_name + Comma; // Preset name
+			temp += data_name + Comma; // Source name
+			temp += PresetStrings[i][0] + Comma; // Terrain type & preset
+			temp += "512,512" + Comma; // Heightmap size. colormap size
+			temp += "1" + Comma; // Scale Y
+			temp += filename + Comma; // Data filename
+			temp += map_filename + Comma; // Map filename
+			temp += MinI[0].ToString() + Comma; // Min X
+			temp += MinI[2].ToString() + Comma; // Min Z
+			temp += MaxI[0].ToString() + Comma; // Max X
+			temp += MaxI[2].ToString() + Comma; // Max Z
+			temp += PresetStrings[i][1] + Comma; // Color Preset
+			temp += columnXIndex.ToString() + Comma; // Column X Index
+			temp += columnYIndex.ToString() + Comma; // Column Y Index
+			temp += columnZIndex.ToString() + Comma; // Column Z Index
+			temp += PresetStrings[i][2]; // HillsMaxRadius,HillsIterationNumber,GeneticMaxIteration,GeneticSmoothIteration
 		}
 	}
 }
