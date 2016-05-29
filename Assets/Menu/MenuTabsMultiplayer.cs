@@ -247,17 +247,20 @@ public class MenuTabsMultiplayer : MenuTabs
 	}
 	
 	protected override void GUIFlags(){
-		
-		if(GUI.Button(new Rect(w - tw*3.5f, h*0.5f - th*0.5f, tw*0.5f, th), " >> ")){
-			SetTabState(TabState.TabDefault);
-		}
-		
-		// Viewing Flags: 
 		GUI.Box(new Rect(w - tw*3f, th*7f, tw*3f, h - th*5f), "");
+		if(!PlacingFlag && !SelectingFlag && !FlagColour && ! AnnotatingFlag){
+			if(GUI.Button(new Rect(w - tw*3.5f, h*0.5f - th*0.5f, tw*0.5f, th), " >> ")){
+				SetTabState(TabState.TabDefault);
+			}
+		}
+	
+		// Viewing Flags: 
 		if(Handler.Flags.Count > 0){
-			MenuHandler.GUIDrawRect(new Rect(w - tw*1.5f, th*3.5f, tw*1.2f, th), Color.red);
-			if(GUI.Button(new Rect(w - tw*1.5f, th*3.5f, tw*1.2f, th),"Delete ALL Flags")){
-				Handler.DeleteAllFlags();
+			if(!PlacingFlag && !SelectingFlag && !FlagColour && ! AnnotatingFlag){
+				MenuHandler.GUIDrawRect(new Rect(w - tw*1.5f, th*3.5f, tw*1.2f, th), Color.red);
+				if(GUI.Button(new Rect(w - tw*1.5f, th*3.5f, tw*1.2f, th),"Delete ALL Flags")){
+					Handler.DeleteAllFlags();
+				}
 			}
 			for(int i=0; i<Handler.Flags.Count; i++){
 				FlagData fTemp = Handler.Flags[i].GetComponent<FlagData>();
@@ -303,20 +306,24 @@ public class MenuTabsMultiplayer : MenuTabs
 			GUI.skin.label.wordWrap = defaultWordWrap;
 			GUI.Label(new Rect(boxX + boxWidth*0.05f, boxY + th*3.5f, boxWidth*0.9f, th*1f), selectedFlagPosString);
 			// Delete Flag Button
-			if(GUI.Button(new Rect(boxX + boxWidth*0.33f, boxY + th*4.65f, boxWidth*0.33f, th), "Delete Flag")){
-				Handler.Multiplayer.CallDeleteFlag(selectedFlagData.GetID());
-				Handler.Flags.Remove(SelectedFlag);
-				Main.Destroy(SelectedFlag);
-				SelectedFlag = null;
+			if(!PlacingFlag && !SelectingFlag && !FlagColour && ! AnnotatingFlag){
+				if(GUI.Button(new Rect(boxX + boxWidth*0.33f, boxY + th*4.65f, boxWidth*0.33f, th), "Delete Flag")){
+					Handler.Multiplayer.CallDeleteFlag(selectedFlagData.GetID());
+					Handler.Flags.Remove(SelectedFlag);
+					Main.Destroy(SelectedFlag);
+					SelectedFlag = null;
+				}
 			}
 		}
 
 		/*******	Flag Creation  	*******/
-
-		if(GUI.Button(new Rect(w-tw*2, th*5.5f, tw, th), "New Flag")){
-			if(!PlacingFlag){
-				FlagBeingAnnotated = Handler.CreateFlag("", Vector3.zero);
-				PlacingFlag = true;
+		
+		if(!PlacingFlag && !SelectingFlag && !FlagColour && ! AnnotatingFlag){
+			if(GUI.Button(new Rect(w-tw*2, th*5.5f, tw, th), "New Flag")){
+				if(!PlacingFlag){
+					FlagBeingAnnotated = Handler.CreateFlag("", Vector3.zero);
+					PlacingFlag = true;
+				}
 			}
 		}
 		

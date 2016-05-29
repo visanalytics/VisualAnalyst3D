@@ -1,0 +1,195 @@
+[1mdiff --git a/Assets/Asset/Text/AxisValue.prefab b/Assets/Asset/Text/AxisValue.prefab[m
+[1mindex 7e39cfa..6813a90 100644[m
+Binary files a/Assets/Asset/Text/AxisValue.prefab and b/Assets/Asset/Text/AxisValue.prefab differ
+[1mdiff --git a/Assets/Menu/MenuHandler.cs b/Assets/Menu/MenuHandler.cs[m
+[1mindex 6fe62c3..72b1e58 100644[m
+[1m--- a/Assets/Menu/MenuHandler.cs[m
+[1m+++ b/Assets/Menu/MenuHandler.cs[m
+[36m@@ -177,6 +177,7 @@[m [mpublic class MenuHandler[m
+ 				                                          Quaternion.identity);[m
+ 		((FlagData)temp.GetComponent(typeof(FlagData))).SetID(R.Next(1,25000));[m
+ 		Flags.Add(temp);[m
+[32m+[m		[32mUpdateFlags();[m
+ 		return temp;[m
+ 	}[m
+ [m
+[36m@@ -236,19 +237,37 @@[m [mpublic class MenuHandler[m
+ 	}[m
+ [m
+ 	public void DeleteAllFlags(){[m
+[31m-		for(int i=0; i<Flags.Count; i++){[m
+[31m-			Main.Destroy(Flags[i]);[m
+[32m+[m		[32mif(Network.peerType == NetworkPeerType.Client){[m
+[32m+[m			[32mfor(int i=0; i<Flags.Count; i++){[m
+[32m+[m				[32mMultiplayer.CallDeleteFlag(Flags[i].GetComponent<FlagData>().GetID());[m
+[32m+[m				[32mMain.Destroy(Flags[i]);[m
+[32m+[m			[32m}[m
+[32m+[m			[32mFlags.Clear();[m
+[32m+[m			[32mTabs.DeleteAllFlags();[m
+[32m+[m		[32m}else{[m
+[32m+[m			[32mfor(int i=0; i<Flags.Count; i++){[m
+[32m+[m				[32mMain.Destroy(Flags[i]);[m
+[32m+[m			[32m}[m
+[32m+[m			[32mTabs.DeleteAllFlags();[m
+[32m+[m			[32mFlags.Clear();[m
+ 		}[m
+[31m-		Tabs.DeleteAllFlags();[m
+[31m-		Flags.Clear();[m
+ 	}[m
+ [m
+ 	public void DeleteAllGrids(){[m
+[31m-		for(int i=0; i<Grids.Count; i++){[m
+[31m-			Main.Destroy(Grids[i]);[m
+[32m+[m		[32mif(Network.peerType == NetworkPeerType.Client){[m
+[32m+[m			[32mfor(int i=0; i<Grids.Count; i++){[m
+[32m+[m				[32mMultiplayer.CallDeleteGrid(Grids[i].GetComponent<GridData>().GetID());[m
+[32m+[m				[32mMain.Destroy (Grids[i]);[m
+[32m+[m			[32m}[m
+[32m+[m			[32mGrids.Clear();[m
+[32m+[m			[32mTabs.DeleteAllGrids();[m
+[32m+[m		[32m}else{[m
+[32m+[m			[32mfor(int i=0; i<Grids.Count; i++){[m
+[32m+[m				[32mMain.Destroy(Grids[i]);[m
+[32m+[m			[32m}[m
+[32m+[m			[32mTabs.DeleteAllGrids();[m
+[32m+[m			[32mGrids.Clear();[m
+ 		}[m
+[31m-		Tabs.DeleteAllGrids();[m
+[31m-		Grids.Clear();[m
+ 	}[m
+ [m
+ 	public void UpdateFlags(){[m
+[1mdiff --git a/Assets/Menu/MenuTabsMultiplayer.cs b/Assets/Menu/MenuTabsMultiplayer.cs[m
+[1mindex 7437c02..490e35b 100644[m
+[1m--- a/Assets/Menu/MenuTabsMultiplayer.cs[m
+[1m+++ b/Assets/Menu/MenuTabsMultiplayer.cs[m
+[36m@@ -247,17 +247,20 @@[m [mpublic class MenuTabsMultiplayer : MenuTabs[m
+ 	}[m
+ 	[m
+ 	protected override void GUIFlags(){[m
+[31m-		[m
+[31m-		if(GUI.Button(new Rect(w - tw*3.5f, h*0.5f - th*0.5f, tw*0.5f, th), " >> ")){[m
+[31m-			SetTabState(TabState.TabDefault);[m
+[32m+[m		[32mGUI.Box(new Rect(w - tw*3f, th*7f, tw*3f, h - th*5f), "");[m
+[32m+[m		[32mif(!PlacingFlag && !SelectingFlag && !FlagColour && ! AnnotatingFlag){[m
+[32m+[m			[32mif(GUI.Button(new Rect(w - tw*3.5f, h*0.5f - th*0.5f, tw*0.5f, th), " >> ")){[m
+[32m+[m				[32mSetTabState(TabState.TabDefault);[m
+[32m+[m			[32m}[m
+ 		}[m
+[31m-		[m
+[32m+[m[41m	[m
+ 		// Viewing Flags: [m
+[31m-		GUI.Box(new Rect(w - tw*3f, th*7f, tw*3f, h - th*5f), "");[m
+ 		if(Handler.Flags.Count > 0){[m
+[31m-			MenuHandler.GUIDrawRect(new Rect(w - tw*1.5f, th*3.5f, tw*1.2f, th), Color.red);[m
+[31m-			if(GUI.Button(new Rect(w - tw*1.5f, th*3.5f, tw*1.2f, th),"Delete ALL Flags")){[m
+[31m-				Handler.DeleteAllFlags();[m
+[32m+[m			[32mif(!PlacingFlag && !SelectingFlag && !FlagColour && ! AnnotatingFlag){[m
+[32m+[m				[32mMenuHandler.GUIDrawRect(new Rect(w - tw*1.5f, th*3.5f, tw*1.2f, th), Color.red);[m
+[32m+[m				[32mif(GUI.Button(new Rect(w - tw*1.5f, th*3.5f, tw*1.2f, th),"Delete ALL Flags")){[m
+[32m+[m					[32mHandler.DeleteAllFlags();[m
+[32m+[m				[32m}[m
+ 			}[m
+ 			for(int i=0; i<Handler.Flags.Count; i++){[m
+ 				FlagData fTemp = Handler.Flags[i].GetComponent<FlagData>();[m
+[36m@@ -303,20 +306,24 @@[m [mpublic class MenuTabsMultiplayer : MenuTabs[m
+ 			GUI.skin.label.wordWrap = defaultWordWrap;[m
+ 			GUI.Label(new Rect(boxX + boxWidth*0.05f, boxY + th*3.5f, boxWidth*0.9f, th*1f), selectedFlagPosString);[m
+ 			// Delete Flag Button[m
+[31m-			if(GUI.Button(new Rect(boxX + boxWidth*0.33f, boxY + th*4.65f, boxWidth*0.33f, th), "Delete Flag")){[m
+[31m-				Handler.Multiplayer.CallDeleteFlag(selectedFlagData.GetID());[m
+[31m-				Handler.Flags.Remove(SelectedFlag);[m
+[31m-				Main.Destroy(SelectedFlag);[m
+[31m-				SelectedFlag = null;[m
+[32m+[m			[32mif(!PlacingFlag && !SelectingFlag && !FlagColour && ! AnnotatingFlag){[m
+[32m+[m				[32mif(GUI.Button(new Rect(boxX + boxWidth*0.33f, boxY + th*4.65f, boxWidth*0.33f, th), "Delete Flag")){[m
+[32m+[m					[32mHandler.Multiplayer.CallDeleteFlag(selectedFlagData.GetID());[m
+[32m+[m					[32mHandler.Flags.Remove(SelectedFlag);[m
+[32m+[m					[32mMain.Destroy(SelectedFlag);[m
+[32m+[m					[32mSelectedFlag = null;[m
+[32m+[m				[32m}[m
+ 			}[m
+ 		}[m
+ [m
+ 		/*******	Flag Creation  	*******/[m
+[31m-[m
+[31m-		if(GUI.Button(new Rect(w-tw*2, th*5.5f, tw, th), "New Flag")){[m
+[31m-			if(!PlacingFlag){[m
+[31m-				FlagBeingAnnotated = Handler.CreateFlag("", Vector3.zero);[m
+[31m-				PlacingFlag = true;[m
+[32m+[m[41m		[m
+[32m+[m		[32mif(!PlacingFlag && !SelectingFlag && !FlagColour && ! AnnotatingFlag){[m
+[32m+[m			[32mif(GUI.Button(new Rect(w-tw*2, th*5.5f, tw, th), "New Flag")){[m
+[32m+[m				[32mif(!PlacingFlag){[m
+[32m+[m					[32mFlagBeingAnnotated = Handler.CreateFlag("", Vector3.zero);[m
+[32m+[m					[32mPlacingFlag = true;[m
+[32m+[m				[32m}[m
+ 			}[m
+ 		}[m
+ 		[m
+[1mdiff --git a/Assets/Menu/MenuTabsSingleplayer.cs b/Assets/Menu/MenuTabsSingleplayer.cs[m
+[1mindex c9278e8..08c194b 100644[m
+[1m--- a/Assets/Menu/MenuTabsSingleplayer.cs[m
+[1m+++ b/Assets/Menu/MenuTabsSingleplayer.cs[m
+[36m@@ -265,23 +265,27 @@[m [mpublic class MenuTabsSingleplayer : MenuTabs[m
+ 	[m
+ 	protected override void GUIFlags(){[m
+ 		[m
+[31m-		if(GUI.Button(new Rect(w - tw*3.5f, h*0.5f - th*0.5f, tw*0.5f, th), " >> ")){[m
+[31m-			SetTabState(TabState.TabDefault);[m
+[31m-		}[m
+[31m-		[m
+[31m-		if(GUI.Button(new Rect(w-tw*2, th*5.5f, tw, th), "New Flag")){[m
+[31m-			if(!PlacingFlag){[m
+[31m-				FlagBeingAnnotated = Handler.CreateFlag("", Vector3.zero);[m
+[31m-				PlacingFlag = true;[m
+[32m+[m		[32mif(!PlacingFlag && !SelectingFlag && !FlagColour && ! AnnotatingFlag){[m
+[32m+[m			[32mif(GUI.Button(new Rect(w - tw*3.5f, h*0.5f - th*0.5f, tw*0.5f, th), " >> ")){[m
+[32m+[m				[32mSetTabState(TabState.TabDefault);[m
+[32m+[m			[32m}[m
+[32m+[m[41m			[m
+[32m+[m			[32mif(GUI.Button(new Rect(w-tw*2, th*5.5f, tw, th), "New Flag")){[m
+[32m+[m				[32mif(!PlacingFlag){[m
+[32m+[m					[32mFlagBeingAnnotated = Handler.CreateFlag("", Vector3.zero);[m
+[32m+[m					[32mPlacingFlag = true;[m
+[32m+[m				[32m}[m
+ 			}[m
+ 		}[m
+ 		[m
+ 		// Viewing Flags: [m
+ 		GUI.Box(new Rect(w - tw*3f, th*7f, tw*3f, h - th*5f), "");[m
+ 		if(Handler.Flags.Count > 0){[m
+[31m-			MenuHandler.GUIDrawRect(new Rect(w - tw*1.5f, th*3.5f, tw*1.2f, th), Color.red);[m
+[31m-			if(GUI.Button(new Rect(w - tw*1.5f, th*3.5f, tw*1.2f, th),"Delete ALL Flags")){[m
+[31m-				Handler.DeleteAllFlags();[m
+[32m+[m			[32mif(!PlacingFlag && !SelectingFlag && !FlagColour && ! AnnotatingFlag){[m
+[32m+[m				[32mMenuHandler.GUIDrawRect(new Rect(w - tw*1.5f, th*3.5f, tw*1.2f, th), Color.red);[m
+[32m+[m				[32mif(GUI.Button(new Rect(w - tw*1.5f, th*3.5f, tw*1.2f, th),"Delete ALL Flags")){[m
+[32m+[m					[32mHandler.DeleteAllFlags();[m
+[32m+[m				[32m}[m
+ 			}[m
+ 			for(int i=0; i<Handler.Flags.Count; i++){[m
+ 				FlagData fTemp = (FlagData)Handler.Flags[i].GetComponent(typeof(FlagData));[m
+[36m@@ -329,10 +333,12 @@[m [mpublic class MenuTabsSingleplayer : MenuTabs[m
+ 			GUI.skin.label.wordWrap = defaultWordWrap;[m
+ 			GUI.Label(new Rect(boxX + boxWidth*0.05f, boxY + th*3.5f, boxWidth*0.9f, th*1f), selectedFlagPosString);[m
+ 			// Delete Flag Button[m
+[31m-			if(GUI.Button(new Rect(boxX + boxWidth*0.33f, boxY + th*4.65f, boxWidth*0.33f, th), "Delete Flag")){[m
+[31m-				Handler.Flags.Remove(SelectedFlag);[m
+[31m-				Main.Destroy(SelectedFlag);[m
+[31m-				SelectedFlag = null;[m
+[32m+[m			[32mif(!PlacingFlag && !SelectingFlag && !FlagColour && ! AnnotatingFlag){[m
+[32m+[m				[32mif(GUI.Button(new Rect(boxX + boxWidth*0.33f, boxY + th*4.65f, boxWidth*0.33f, th), "Delete Flag")){[m
+[32m+[m					[32mHandler.Flags.Remove(SelectedFlag);[m
+[32m+[m					[32mMain.Destroy(SelectedFlag);[m
+[32m+[m					[32mSelectedFlag = null;[m
+[32m+[m				[32m}[m
+ 			}[m
+ 		}[m
+ 		[m
+warning: LF will be replaced by CRLF in Assets/Menu/MenuHandler.cs.
+The file will have its original line endings in your working directory.
+warning: LF will be replaced by CRLF in Assets/Menu/MenuTabsMultiplayer.cs.
+The file will have its original line endings in your working directory.
+warning: LF will be replaced by CRLF in Assets/Menu/MenuTabsSingleplayer.cs.
+The file will have its original line endings in your working directory.

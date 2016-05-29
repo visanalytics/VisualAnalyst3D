@@ -177,6 +177,7 @@ public class MenuHandler
 				                                          Quaternion.identity);
 		((FlagData)temp.GetComponent(typeof(FlagData))).SetID(R.Next(1,25000));
 		Flags.Add(temp);
+		UpdateFlags();
 		return temp;
 	}
 
@@ -236,19 +237,37 @@ public class MenuHandler
 	}
 
 	public void DeleteAllFlags(){
-		for(int i=0; i<Flags.Count; i++){
-			Main.Destroy(Flags[i]);
+		if(Network.peerType == NetworkPeerType.Client){
+			for(int i=0; i<Flags.Count; i++){
+				Multiplayer.CallDeleteFlag(Flags[i].GetComponent<FlagData>().GetID());
+				Main.Destroy(Flags[i]);
+			}
+			Flags.Clear();
+			Tabs.DeleteAllFlags();
+		}else{
+			for(int i=0; i<Flags.Count; i++){
+				Main.Destroy(Flags[i]);
+			}
+			Tabs.DeleteAllFlags();
+			Flags.Clear();
 		}
-		Tabs.DeleteAllFlags();
-		Flags.Clear();
 	}
 
 	public void DeleteAllGrids(){
-		for(int i=0; i<Grids.Count; i++){
-			Main.Destroy(Grids[i]);
+		if(Network.peerType == NetworkPeerType.Client){
+			for(int i=0; i<Grids.Count; i++){
+				Multiplayer.CallDeleteGrid(Grids[i].GetComponent<GridData>().GetID());
+				Main.Destroy (Grids[i]);
+			}
+			Grids.Clear();
+			Tabs.DeleteAllGrids();
+		}else{
+			for(int i=0; i<Grids.Count; i++){
+				Main.Destroy(Grids[i]);
+			}
+			Tabs.DeleteAllGrids();
+			Grids.Clear();
 		}
-		Tabs.DeleteAllGrids();
-		Grids.Clear();
 	}
 
 	public void UpdateFlags(){
