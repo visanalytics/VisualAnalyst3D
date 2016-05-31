@@ -37,6 +37,9 @@ public class MultiplayerManager {
 	public void ConnectAsClient(HostData hostData){
 		Network.Connect(hostData);
 	}
+	public void ConnectAsClient(HostData hostData, string password){
+		Network.Connect(hostData, password);
+	}
 	public void ConnectManual(string hostIP){
 		Network.Connect(hostIP, ServerPort);
 	}

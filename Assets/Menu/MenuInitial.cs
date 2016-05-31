@@ -9,17 +9,27 @@ public class MenuInitial
 	float tw = 100f;
 	float th = 20f;
 
-	private enum State {StateInitial=0,StateMultiplayerSelection=1,StateMasterServerInput=2,StateConnecting=3, StateManualConnect=4};
+	private enum State {StateInitial=0,
+		StateMultiplayerSelection=1,
+		StateMasterServerInput=2,
+		StateConnecting=3,
+		StateManualConnect=4,
+		StateMultiplayerPassword=5};
 	State CurrentState;
 
 	/** Multiplayer **/
 	HostData[] hostList;
+	HostData HostConnecting;
 	string ServerIPFieldText = "";
+	string ServerPasswordFieldText = "";
+	Vector2 scrollPosition;
 
 	public MenuInitial (MenuHandler Handler)
 	{
 		this.Handler = Handler;
 		this.CurrentState = State.StateInitial;
+		this.scrollPosition = Vector2.zero;
+		hostList = MasterServer.PollHostList();
 	}
 
 	public void OnGUI(){
@@ -49,28 +59,53 @@ public class MenuInitial
 				Handler.TabsSingle.RemoveSurfaceGrid();
 				Handler.DeleteAllFlags();
 				Handler.DeleteAllGrids();
+				hostList = MasterServer.PollHostList();
 			}
 
 			#endregion
 			break;
 
+			case State.StateMultiplayerPassword:
+			GUI.Box(new Rect(boxX + boxWidth*0.5f + tw*1f, boxY + boxHeight*0.5f - th*3f, tw*3f, th*6f), "Enter Password");
+			ServerPasswordFieldText = GUI.TextField(new Rect(boxX + boxWidth*0.5f + tw*1.2f, boxY + boxHeight*0.5f - th*2f, tw*2.6f, th*3.5f), ServerPasswordFieldText, 32);
+
+			if(GUI.Button(new Rect(boxX + boxWidth*0.5f + tw*2f, boxY + boxHeight*0.5f + th*1.9f, tw*1f, th), "Enter")){
+				Handler.Multiplayer.ConnectAsClient(HostConnecting, ServerPasswordFieldText);
+				CurrentState = State.StateConnecting;
+			}
+			goto case State.StateMultiplayerSelection;
+
 			case State.StateMultiplayerSelection:
 			#region Multiplayer Server Selection
 			if (GUI.Button(new Rect(boxX+(boxWidth/2) - tw*1.1f, boxY + th/2, tw, th*1.5f), "Refresh Hosts")){
 				Handler.Multiplayer.RefreshHostList();
+				hostList = MasterServer.PollHostList();
 			}if (GUI.Button(new Rect(boxX+(boxWidth/2), boxY + th/2, tw*1.5f, th*1.5f), "Connect Manually")){
 				CurrentState = State.StateManualConnect;
 			}
-			hostList = MasterServer.PollHostList();
 			if (hostList != null)
 			{
+				float scrollHeight = hostList.Length * th * 1.1f < boxHeight - th*5f ? boxHeight - th*5f : hostList.Length * th * 1.1f;
+				scrollPosition = GUI.BeginScrollView(
+					new Rect(boxX+(boxWidth/2f) - tw, boxY + th*2.5f, tw*2f, boxHeight - th*5f),
+					scrollPosition,
+					new Rect(0, 0, tw*2f, scrollHeight),
+					false,
+					true);
 				for (int i = 0; i < hostList.Length; i++)
 				{
-					if (GUI.Button(new Rect(boxX+(boxWidth/2) - tw*0.75f, (boxY + th*3f) + (th* 1.1f * i), tw*1.5f, th), hostList[i].gameName)){
-						Handler.Multiplayer.ConnectAsClient(hostList[i]);
-						CurrentState = State.StateConnecting;
+					if(CurrentState == State.StateMultiplayerPassword){
+						MenuHandler.GUIDrawRect(new Rect(tw*0.25f, th * 1.1f * i, tw*1.5f, th), Color.red);
+					}
+					if (GUI.Button(new Rect(tw*0.25f, th * 1.1f * i, tw*1.5f, th), hostList[i].gameName)){
+						if(CurrentState != State.StateMultiplayerPassword){
+							HostConnecting = hostList[i];
+							Handler.Multiplayer.ConnectAsClient(hostList[i]);
+							CurrentState = State.StateConnecting;
+						}
 					}
 				}
+				GUI.EndScrollView();
 			}
 			if(Handler.Multiplayer.MasterServerFailedToConnect){
 				GUI.Label(new Rect(boxX+boxWidth*0.5f - tw*1f, boxY+boxHeight*0.5f - th, tw*2.5f, th), "Failed to connect to master server.");
@@ -117,6 +152,12 @@ public class MenuInitial
 
 		if(GUI.Button(new Rect(w/2 + tw*0.25f, boxY + boxHeight - th*1.5f, tw*1.5f, th*1.2f), "Exit to Desktop")){
 			Application.Quit();
+		}
+	}
+
+	public void InvalidPasswordFlag(){
+		if(CurrentState == State.StateConnecting){
+			CurrentState = State.StateMultiplayerPassword;
 		}
 	}
 }

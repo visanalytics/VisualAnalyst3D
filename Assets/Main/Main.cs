@@ -43,6 +43,14 @@ public class Main : MonoBehaviour {
 		}
 	}
 
+	void OnFailedToConnect(NetworkConnectionError info){
+		switch(info){
+		case NetworkConnectionError.InvalidPassword:
+			Menu.StateInitial.InvalidPasswordFlag();
+			break;
+		}
+	}
+
 	void OnFailedToConnectToMasterServer(NetworkConnectionError info) {
 		Menu.Multiplayer.MasterServerFailedToConnect = true;
 		Network.Disconnect();
