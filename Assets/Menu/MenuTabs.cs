@@ -115,14 +115,13 @@ public class MenuTabs
 		MenuHandler.GUIDrawRect(new Rect(tw*0.1f, h - th*4.2f, tw*1.1f, th*1.5f), new Color(Color.red.r,Color.red.g,Color.red.b,0.65f));
 		if(Handler.GetState() == MenuHandler.State.StateMultiplayer){
 			if(GUI.Button(new Rect(tw*0.1f, h - th*4.2f, tw*1.1f, th*1.5f), "Disconnect")){
-				
+				Handler.Multiplayer.Disconnect();
 				Handler.TabsMulti.RemoveAxisGrids();
 				Handler.TabsMulti.RemoveAxisGridLabels();
 				Handler.TabsMulti.RemoveDataPointsExternal();
 				Handler.TabsMulti.RemoveSurfaceGrid();
 				Handler.DeleteAllFlags();
 				Handler.DeleteAllGrids();
-				Handler.Multiplayer.Disconnect();
 				Handler.SetState(MenuHandler.State.StateInitial);
 				Handler.ControlHandler.SetEnabled(false);
 			}

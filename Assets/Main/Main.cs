@@ -33,6 +33,13 @@ public class Main : MonoBehaviour {
 			Menu.ShowMessage("Lost connection to the server");
 		}else{
 			Menu.ShowMessage("Disconnected from the server");
+			Menu.TabsMulti.RemoveAxisGrids();
+			Menu.TabsMulti.RemoveAxisGridLabels();
+			Menu.TabsMulti.RemoveDataPointsExternal();
+			Menu.TabsMulti.RemoveSurfaceGrid();
+			Menu.DeleteAllFlags();
+			Menu.DeleteAllGrids();
+			Menu.ControlHandler.SetEnabled(false);
 		}
 	}
 
