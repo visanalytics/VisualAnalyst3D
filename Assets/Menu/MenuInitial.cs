@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 public class MenuInitial
 {
@@ -22,6 +23,9 @@ public class MenuInitial
 	HostData HostConnecting;
 	string ServerIPFieldText = "";
 	string ServerPasswordFieldText = "";
+	string ServerPasswordBoxText = "";
+	private readonly string[] PasswordBox = /*= new string[]*/{"",
+		"Enter Password", "Invalid Password"};
 	Vector2 scrollPosition;
 
 	public MenuInitial (MenuHandler Handler)
@@ -66,12 +70,16 @@ public class MenuInitial
 			break;
 
 			case State.StateMultiplayerPassword:
-			GUI.Box(new Rect(boxX + boxWidth*0.5f + tw*1f, boxY + boxHeight*0.5f - th*3f, tw*3f, th*6f), "Enter Password");
+			GUI.Box(new Rect(boxX + boxWidth*0.5f + tw*1f, boxY + boxHeight*0.5f - th*3f, tw*3f, th*6f), ServerPasswordBoxText);
 			ServerPasswordFieldText = GUI.TextField(new Rect(boxX + boxWidth*0.5f + tw*1.2f, boxY + boxHeight*0.5f - th*2f, tw*2.6f, th*3.5f), ServerPasswordFieldText, 32);
 
-			if(GUI.Button(new Rect(boxX + boxWidth*0.5f + tw*2f, boxY + boxHeight*0.5f + th*1.9f, tw*1f, th), "Enter")){
+			if(GUI.Button(new Rect(boxX + boxWidth*0.5f + tw*2.75f, boxY + boxHeight*0.5f + th*1.9f, tw*1f, th), "Enter")){
 				Handler.Multiplayer.ConnectAsClient(HostConnecting, ServerPasswordFieldText);
 				CurrentState = State.StateConnecting;
+			}
+			if(GUI.Button(new Rect(boxX + boxWidth*0.5f + tw*1.25f, boxY + boxHeight*0.5f + th*1.9f, tw*1f, th), "Cancel")){
+				ResetPasswordField();
+				CurrentState = State.StateMultiplayerSelection;
 			}
 			goto case State.StateMultiplayerSelection;
 
@@ -85,27 +93,43 @@ public class MenuInitial
 			}
 			if (hostList != null)
 			{
-				float scrollHeight = hostList.Length * th * 1.1f < boxHeight - th*5f ? boxHeight - th*5f : hostList.Length * th * 1.1f;
-				scrollPosition = GUI.BeginScrollView(
-					new Rect(boxX+(boxWidth/2f) - tw, boxY + th*2.5f, tw*2f, boxHeight - th*5f),
-					scrollPosition,
-					new Rect(0, 0, tw*2f, scrollHeight),
-					false,
-					true);
-				for (int i = 0; i < hostList.Length; i++)
-				{
-					if(CurrentState == State.StateMultiplayerPassword){
-						MenuHandler.GUIDrawRect(new Rect(tw*0.25f, th * 1.1f * i, tw*1.5f, th), Color.red);
-					}
-					if (GUI.Button(new Rect(tw*0.25f, th * 1.1f * i, tw*1.5f, th), hostList[i].gameName)){
-						if(CurrentState != State.StateMultiplayerPassword){
-							HostConnecting = hostList[i];
-							Handler.Multiplayer.ConnectAsClient(hostList[i]);
-							CurrentState = State.StateConnecting;
+				if(hostList.Length * th * 1.1f < boxHeight - th*5f){
+					for (int i = 0; i < hostList.Length; i++)
+					{
+						if(CurrentState == State.StateMultiplayerPassword){
+							MenuHandler.GUIDrawRect(new Rect(boxX + boxHeight - tw*0.75f, boxY + boxHeight + (th * 1.1f * i), tw*1.5f, th), Color.red);
+						}
+						if (GUI.Button(new Rect(boxX + boxHeight - tw*0.75f, boxY + boxHeight + (th * 1.1f * i), tw*1.5f, th), hostList[i].gameName)){
+							if(CurrentState != State.StateMultiplayerPassword){
+								HostConnecting = hostList[i];
+								Handler.Multiplayer.ConnectAsClient(hostList[i]);
+								CurrentState = State.StateConnecting;
+							}
 						}
 					}
+				}else{
+					float scrollHeight = hostList.Length * th * 1.1f < boxHeight - th*5f ? boxHeight - th*5f : hostList.Length * th * 1.1f;
+					scrollPosition = GUI.BeginScrollView(
+						new Rect(boxX+(boxWidth/2f) - tw, boxY + th*2.5f, tw*2f, boxHeight - th*5f),
+						scrollPosition,
+						new Rect(0, 0, tw*2f, scrollHeight),
+						false,
+						true);
+					for (int i = 0; i < hostList.Length; i++)
+					{
+						if(CurrentState == State.StateMultiplayerPassword){
+							MenuHandler.GUIDrawRect(new Rect(tw*0.25f, th * 1.1f * i, tw*1.5f, th), Color.red);
+						}
+						if (GUI.Button(new Rect(tw*0.25f, th * 1.1f * i, tw*1.5f, th), hostList[i].gameName)){
+							if(CurrentState != State.StateMultiplayerPassword){
+								HostConnecting = hostList[i];
+								Handler.Multiplayer.ConnectAsClient(hostList[i]);
+								CurrentState = State.StateConnecting;
+							}
+						}
+					}
+					GUI.EndScrollView();
 				}
-				GUI.EndScrollView();
 			}
 			if(Handler.Multiplayer.MasterServerFailedToConnect){
 				GUI.Label(new Rect(boxX+boxWidth*0.5f - tw*1f, boxY+boxHeight*0.5f - th, tw*2.5f, th), "Failed to connect to master server.");
@@ -157,7 +181,18 @@ public class MenuInitial
 
 	public void InvalidPasswordFlag(){
 		if(CurrentState == State.StateConnecting){
+			if(ServerPasswordBoxText == PasswordBox[0]){
+				ServerPasswordBoxText = PasswordBox[1];
+			}else if(ServerPasswordBoxText == PasswordBox[1]){
+				ServerPasswordBoxText = PasswordBox[2];
+			}else{
+				ServerPasswordBoxText = PasswordBox[2];
+			}
 			CurrentState = State.StateMultiplayerPassword;
 		}
+	}
+
+	private void ResetPasswordField(){
+		ServerPasswordBoxText = PasswordBox[0];
 	}
 }
