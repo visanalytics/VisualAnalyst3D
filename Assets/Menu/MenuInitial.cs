@@ -27,13 +27,14 @@ public class MenuInitial
 	private readonly string[] PasswordBox = /*= new string[]*/{"",
 		"Enter Password", "Invalid Password"};
 	Vector2 scrollPosition;
+	string ServerSearchFieldText = "";
 
 	public MenuInitial (MenuHandler Handler)
 	{
 		this.Handler = Handler;
 		this.CurrentState = State.StateInitial;
 		this.scrollPosition = Vector2.zero;
-		hostList = MasterServer.PollHostList();
+		hostList = GetHostList();
 	}
 
 	public void OnGUI(){
@@ -63,7 +64,7 @@ public class MenuInitial
 				Handler.TabsSingle.RemoveSurfaceGrid();
 				Handler.DeleteAllFlags();
 				Handler.DeleteAllGrids();
-				hostList = MasterServer.PollHostList();
+				hostList = GetHostList();
 			}
 			if(GUI.Button(new Rect(w/2 - tw*1.75f, boxY + boxHeight - th*1.5f, tw*1.5f, th*1.2f), "Back To Help")){
 				CurrentState = State.StateInitial;
@@ -89,20 +90,28 @@ public class MenuInitial
 			case State.StateMultiplayerSelection:
 			#region Multiplayer Server Selection
 			if (GUI.Button(new Rect(boxX+(boxWidth/2) - tw*1.1f, boxY + th/2, tw, th*1.5f), "Refresh Hosts")){
-				Handler.Multiplayer.RefreshHostList();
-				hostList = MasterServer.PollHostList();
+				hostList = GetHostList();
 			}if (GUI.Button(new Rect(boxX+(boxWidth/2), boxY + th/2, tw*1.5f, th*1.5f), "Connect Manually")){
 				CurrentState = State.StateManualConnect;
 			}
+			ServerSearchFieldText = GUI.TextField(new Rect(boxX+(boxWidth/2) - tw*1.1f, boxY + th*2.2f, tw*1.5f, th*1f), ServerSearchFieldText);
+			if (GUI.Button(new Rect(boxX+(boxWidth/2) + tw*0.5f, boxY + th*2.2f, tw*1f, th*1f), "Search")){
+				hostList = GetHostList();
+				hostList = RefineHostList(hostList, ServerSearchFieldText);
+			}
+			if(GUI.Button(new Rect(boxX+(boxWidth/2) + tw*1.55f, boxY + th*2.2f, tw*0.5f, th*1f), "Clear")){
+				ServerSearchFieldText = "";
+				hostList = GetHostList();
+			}
 			if (hostList != null)
 			{
-				if(hostList.Length * th * 1.1f < boxHeight - th*5f){
+				if(hostList.Length * th * 1.1f < boxHeight - th*6f){
 					for (int i = 0; i < hostList.Length; i++)
 					{
 						if(CurrentState == State.StateMultiplayerPassword){
-							MenuHandler.GUIDrawRect(new Rect(boxX + boxWidth/2f - tw*0.75f, boxY + th*3f + (th * 1.1f * i), tw*1.5f, th), Color.red);
+							MenuHandler.GUIDrawRect(new Rect(boxX + boxWidth/2f - tw*0.75f, boxY + th*4f + (th * 1.1f * i), tw*1.5f, th), Color.red);
 						}
-						if (GUI.Button(new Rect(boxX + boxWidth/2f - tw*0.75f, boxY + th*3f + (th * 1.1f * i), tw*1.5f, th), hostList[i].gameName)){
+						if (GUI.Button(new Rect(boxX + boxWidth/2f - tw*0.75f, boxY + th*4f + (th * 1.1f * i), tw*1.5f, th), hostList[i].gameName)){
 							if(CurrentState != State.StateMultiplayerPassword){
 								HostConnecting = hostList[i];
 								Handler.Multiplayer.ConnectAsClient(hostList[i]);
@@ -111,11 +120,11 @@ public class MenuInitial
 						}
 					}
 				}else{
-					float scrollHeight = hostList.Length * th * 1.1f < boxHeight - th*5f ? boxHeight - th*5f : hostList.Length * th * 1.1f;
+					float scrollHeight = hostList.Length * th * 1.1f < boxHeight - th*6f ? boxHeight - th*6f : hostList.Length * th * 1.1f;
 					scrollPosition = GUI.BeginScrollView(
-						new Rect(boxX+(boxWidth/2f) - tw, boxY + th*2.5f, tw*2f, boxHeight - th*5f),
+						new Rect(boxX+(boxWidth/2f) - tw, boxY + th*4f, tw*2f, boxHeight - th*6f),
 						scrollPosition,
-						new Rect(0, 0, tw*2f, scrollHeight),
+						new Rect(0, 0, tw*1.75f, scrollHeight),
 						false,
 						true);
 					for (int i = 0; i < hostList.Length; i++)
@@ -201,5 +210,39 @@ public class MenuInitial
 
 	private void ResetPasswordField(){
 		ServerPasswordBoxText = PasswordBox[0];
+	}
+
+	private HostData[] GetHostList(){
+		Handler.Multiplayer.RefreshHostList();
+		return MasterServer.PollHostList();
+	}
+
+	private HostData[] RefineHostList(HostData[] hostList, string searchString){
+		List<HostData> refinedHostListEqual = new List<HostData>();
+		List<HostData> refinedHostListStarts = new List<HostData>();
+		List<HostData> refinedHostListContains = new List<HostData>();
+		for(int i=0; i<hostList.Length; i++){
+			if(hostList[i].gameName.Equals(searchString)){
+				refinedHostListEqual.Add(hostList[i]);
+			}else if(hostList[i].gameName.StartsWith(searchString)){
+				refinedHostListStarts.Add(hostList[i]);
+			}else if(hostList[i].gameName.Contains(searchString)){
+				refinedHostListContains.Add(hostList[i]);
+			}
+		}
+		int resultNum = refinedHostListEqual.Count +
+			refinedHostListStarts.Count +
+				refinedHostListContains.Count;
+		HostData[] refinedHostList = new HostData[resultNum];
+		for(int i=0; i<refinedHostListEqual.Count; i++){
+			refinedHostList[i] = refinedHostListEqual[i];
+		}
+		for(int i=0; i<refinedHostListStarts.Count; i++){
+			refinedHostList[i + refinedHostListEqual.Count] = refinedHostListStarts[i];
+		}
+		for(int i=0; i<refinedHostListContains.Count; i++){
+			refinedHostList[i + refinedHostListEqual.Count + refinedHostListStarts.Count] = refinedHostListContains[i];
+		}
+		return refinedHostList;
 	}
 }
