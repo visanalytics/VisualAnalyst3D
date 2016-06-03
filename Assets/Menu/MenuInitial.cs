@@ -65,7 +65,10 @@ public class MenuInitial
 				Handler.DeleteAllGrids();
 				hostList = MasterServer.PollHostList();
 			}
-
+			if(GUI.Button(new Rect(w/2 - tw*1.75f, boxY + boxHeight - th*1.5f, tw*1.5f, th*1.2f), "Back To Help")){
+				CurrentState = State.StateInitial;
+				Handler.SetState(MenuHandler.State.StateHelp);
+			}
 			#endregion
 			break;
 
@@ -97,9 +100,9 @@ public class MenuInitial
 					for (int i = 0; i < hostList.Length; i++)
 					{
 						if(CurrentState == State.StateMultiplayerPassword){
-							MenuHandler.GUIDrawRect(new Rect(boxX + boxHeight - tw*0.75f, boxY + boxHeight + (th * 1.1f * i), tw*1.5f, th), Color.red);
+							MenuHandler.GUIDrawRect(new Rect(boxX + boxWidth/2f - tw*0.75f, boxY + th*3f + (th * 1.1f * i), tw*1.5f, th), Color.red);
 						}
-						if (GUI.Button(new Rect(boxX + boxHeight - tw*0.75f, boxY + boxHeight + (th * 1.1f * i), tw*1.5f, th), hostList[i].gameName)){
+						if (GUI.Button(new Rect(boxX + boxWidth/2f - tw*0.75f, boxY + th*3f + (th * 1.1f * i), tw*1.5f, th), hostList[i].gameName)){
 							if(CurrentState != State.StateMultiplayerPassword){
 								HostConnecting = hostList[i];
 								Handler.Multiplayer.ConnectAsClient(hostList[i]);
@@ -137,6 +140,9 @@ public class MenuInitial
 					CurrentState = State.StateManualConnect;
 				}
 			}
+			if(GUI.Button(new Rect(w/2 - tw*1.75f, boxY + boxHeight - th*1.5f, tw*1.5f, th*1.2f), "Back")){
+				CurrentState = State.StateInitial;
+			}
 			#endregion
 			break;
 
@@ -147,6 +153,9 @@ public class MenuInitial
 			if(GUI.Button(new Rect(boxX+boxWidth*0.5f - tw*0.5f, boxY+boxHeight*0.5f + th*0.75f, tw, th), "Connect")){
 				Handler.Multiplayer.ConnectManual(ServerIPFieldText);
 				CurrentState = State.StateConnecting;
+			}
+			if(GUI.Button(new Rect(w/2 - tw*1.75f, boxY + boxHeight - th*1.5f, tw*1.5f, th*1.2f), "Back")){
+				CurrentState = State.StateMultiplayerSelection;
 			}
 			#endregion
 			break;
@@ -164,16 +173,14 @@ public class MenuInitial
 				Handler.InitMultiplayer();
 				Handler.SetState(MenuHandler.State.StateMultiplayer);
 			}
+			if(GUI.Button(new Rect(w/2 - tw*1.75f, boxY + boxHeight - th*1.5f, tw*1.5f, th*1.2f), "Back")){
+				CurrentState = State.StateMultiplayerSelection;
+			}
 			#endregion
 			break;
 		}
 
-		// Return Button & Exit Button
-		if(GUI.Button(new Rect(w/2 - tw*1.75f, boxY + boxHeight - th*1.5f, tw*1.5f, th*1.2f), "Back To Help")){
-			CurrentState = State.StateInitial;
-			Handler.SetState(MenuHandler.State.StateHelp);
-		}
-
+		// Exit Button
 		if(GUI.Button(new Rect(w/2 + tw*0.25f, boxY + boxHeight - th*1.5f, tw*1.5f, th*1.2f), "Exit to Desktop")){
 			Application.Quit();
 		}
