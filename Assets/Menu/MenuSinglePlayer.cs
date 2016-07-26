@@ -63,29 +63,29 @@ public class MenuSinglePlayer
 		
 		GUI.Label(new Rect(tw*0.5f, th*0.5f, tw, th), "Data Set");
 		datasourcesCombo.Show();
-		GUI.Label(new Rect(tw*1.5f, th*0.5f, tw*1.5f, th), "Property");
+		GUI.Label(new Rect(tw*2f, th*0.5f, tw*1.5f, th), "Property");
 		filenamesCombo.Show();
-		GUI.Label(new Rect(tw*3f, th*0.5f, tw, th), "Terrain Type");
+		GUI.Label(new Rect(tw*3.5f, th*0.5f, tw, th), "Terrain Type");
 		terraintypesCombo.Show();
-		GUI.Label(new Rect(tw*4f, th*0.5f, tw, th), "View");
+		GUI.Label(new Rect(tw*4.5f, th*0.5f, tw, th), "View");
 		presetsCombo.Show();
 		
-		GUI.Label(new Rect(tw*5.25f, th*2.75f, tw, th), "Max Height: ");
-		GUI.Label(new Rect(tw*6f, th*3.75f, tw, th), "0.0");
-		GUI.Label(new Rect(tw*7f, th*3.75f, tw, th), "1.0");
-		MenuHandler.GUIDrawRect(new Rect(tw*6f, th*2.9f, tw*1.2f, th*0.75f), new Color(1f,1f,1f,0.25f));
-		ScaleYSliderVal = GUI.HorizontalSlider(new Rect(tw*6.1f, th*3f, tw*1, th), ScaleYSliderVal, 0.01f, 0.8f);
+		GUI.Label(new Rect(tw*5.75f, th*2.75f, tw, th), "Max Height: ");
+		GUI.Label(new Rect(tw*6.5f, th*3.75f, tw, th), "0.0");
+		GUI.Label(new Rect(tw*7.5f, th*3.75f, tw, th), "1.0");
+		MenuHandler.GUIDrawRect(new Rect(tw*6.5f, th*2.9f, tw*1.2f, th*0.75f), new Color(1f,1f,1f,0.25f));
+		ScaleYSliderVal = GUI.HorizontalSlider(new Rect(tw*6.6f, th*3f, tw*1, th), ScaleYSliderVal, 0.01f, 0.8f);
 
-		if(GUI.Button(new Rect(tw*7f, th*1.5f, tw*1.5f, th), "Reset Colour Shift")){
+		if(GUI.Button(new Rect(tw*7.5f, th*1.5f, tw*1.5f, th), "Reset Colour Shift")){
 			ScaleYSliderValcolour = 1f;
 		}
-		GUI.Label(new Rect(tw*7.50f, th*2.75f, tw, th), "Colour Shift: ");
-		GUI.Label(new Rect(tw*8.25f, th*3.75f, tw, th), "0.0");
-		GUI.Label(new Rect(tw*9.25f, th*3.75f, tw, th), "2.0");
-		MenuHandler.GUIDrawRect(new Rect(tw*8.25f, th*2.9f, tw*1.2f, th*0.75f), new Color(1f,1f,1f,0.25f));
-		ScaleYSliderValcolour = GUI.HorizontalSlider(new Rect(tw*8.35f, th*3f, tw*1, th), ScaleYSliderValcolour, 0.01f, 2.0f);
+		GUI.Label(new Rect(tw*8.00f, th*2.75f, tw, th), "Colour Shift: ");
+		GUI.Label(new Rect(tw*8.75f, th*3.75f, tw, th), "0.0");
+		GUI.Label(new Rect(tw*9.75f, th*3.75f, tw, th), "2.0");
+		MenuHandler.GUIDrawRect(new Rect(tw*8.75f, th*2.9f, tw*1.2f, th*0.75f), new Color(1f,1f,1f,0.25f));
+		ScaleYSliderValcolour = GUI.HorizontalSlider(new Rect(tw*8.85f, th*3f, tw*1, th), ScaleYSliderValcolour, 0.01f, 2.0f);
 
-		if(GUI.Button(new Rect(tw*5.35f, th*1.5f, tw*1.5f, th), "Generate Terrain")){
+		if(GUI.Button(new Rect(tw*5.85f, th*1.5f, tw*1.5f, th), "Generate Terrain")){
 			if(Handler.GetState() == MenuHandler.State.StateMultiplayer){
 				Handler.Multiplayer.CallChangeTerrain(dSourceList[datasourcesCombo.SelectedItemIndex].text,
 				                                      tTypesList[terraintypesCombo.SelectedItemIndex].text,
@@ -301,6 +301,10 @@ public class MenuSinglePlayer
 		}
 	}
 
+	public void ReinitGui(){
+		InitGui();
+	}
+
 	private void InitGui(){
 		InitComboBoxLists();
 		
@@ -313,7 +317,7 @@ public class MenuSinglePlayer
 			dSourceStyle.padding.right = 
 				dSourceStyle.padding.top = 
 				dSourceStyle.padding.bottom = 4;
-		datasourcesCombo = new ComboBox(new Rect(tw*0.5f, th*1.5f, tw, th),
+		datasourcesCombo = new ComboBox(new Rect(tw*0.5f, th*1.5f, tw*1.5f, th),
 		                                dSourceList[0],
 		                                dSourceList,
 		                                "button",
@@ -330,7 +334,7 @@ public class MenuSinglePlayer
 			fNameStyle.padding.right = 
 				fNameStyle.padding.top = 
 				fNameStyle.padding.bottom = 4;
-		filenamesCombo = new ComboBox(new Rect(tw*1.5f, th*1.5f, tw*1.5f, th),
+		filenamesCombo = new ComboBox(new Rect(tw*2f, th*1.5f, tw*1.5f, th),
 		                              fNameList[0],
 		                              fNameList,
 		                              "button",
@@ -346,7 +350,7 @@ public class MenuSinglePlayer
 			tTypesStyle.padding.right = 
 				tTypesStyle.padding.top = 
 				tTypesStyle.padding.bottom = 4;
-		terraintypesCombo = new ComboBox(new Rect(tw*3f, th*1.5f, tw, th),
+		terraintypesCombo = new ComboBox(new Rect(tw*3.5f, th*1.5f, tw, th),
 		                                 tTypesList[0],
 		                                 tTypesList,
 		                                 "button",
@@ -426,7 +430,7 @@ public class MenuSinglePlayer
 		for(int i=0; i<preset_rows.Length; i++){
 			presetsList[i] = new GUIContent((String)preset_rows[i]["Preset"]);
 		}
-		presetsCombo = new ComboBox(new Rect(tw*4f, th*1.5f, tw, th),
+		presetsCombo = new ComboBox(new Rect(tw*4.5f, th*1.5f, tw, th),
 		                            presetsList[0],
 		                            presetsList,
 		                            "button",
@@ -455,7 +459,7 @@ public class MenuSinglePlayer
 		for(int i=0; i<terraintypes.Count; i++){
 			tTypesList[i] = new GUIContent(terraintypes[i]);
 		} 
-		terraintypesCombo = new ComboBox(new Rect(tw*3f, th*1.5f, tw, th),
+		terraintypesCombo = new ComboBox(new Rect(tw*3.5f, th*1.5f, tw, th),
 		                                 tTypesList[0],
 		                                 tTypesList,
 		                                 "button",
@@ -475,7 +479,7 @@ public class MenuSinglePlayer
 		for(int i=0; i<datatypes.Count; i++){
 			fNameList[i] = new GUIContent(datatypes[i]);
 		}
-		filenamesCombo = new ComboBox(new Rect(tw*1.5f, th*1.5f, tw*1.5f, th),
+		filenamesCombo = new ComboBox(new Rect(tw*2f, th*1.5f, tw*1.5f, th),
 		                              fNameList[0],
 		                              fNameList,
 		                              "button",
@@ -590,7 +594,6 @@ public class MenuSinglePlayer
 			byte[] cMapBytes = File.ReadAllBytes(Application.dataPath + "/Heightmaps/Images/colormap_" + colourfile + ".png");
 			corrmap.LoadImage(cMapBytes);
 		}
-		
 		return corrmap;
 	}
 }

@@ -99,9 +99,9 @@ public class DataHandler
 	public double GetMaxY(){return maxY;}
 	public double GetMaxZ(){return maxZ;}
 	public double GetMaxRadius(){return maxRadius;}
-	public string GetColumnXName(){return ColumnXName;}
-	public string GetColumnYName(){return ColumnYName;}
-	public string GetColumnZName(){return ColumnZName;}
+	public string GetColumnXName(){return Vars.COLUMN_X_ALIAS;}
+	public string GetColumnYName(){return Vars.COLUMN_Y_ALIAS;}
+	public string GetColumnZName(){return Vars.COLUMN_Z_ALIAS;}
 
 	/// <summary>
 	/// Reads the data from the file specified and returns
@@ -173,6 +173,10 @@ public class DataHandler
 			point[2] -= (minZ);
 			point[0] /= (maxX - minX);
 			point[2] /= (maxZ - minZ);
+			point[0] = Math.Abs(point[0]);
+			point[2] = Math.Abs(point[2]);
+			// Make Z correction (flip in Z-axis)
+			point[2] = 1f-point[2];
 		}
 		minY = (double)y.Min();
 		maxY = (double)y.Max();
@@ -196,7 +200,7 @@ public class DataHandler
 		filenameToDataName.Add("Sex", "Gender Balance");
 		filenameToDataName.Add("Totals", "Total");
 		string CurrentDataName = "";
-		try{
+		try{ 
 			CurrentDataName = filenameToDataName[Vars.DATA];
 		}catch(Exception e){}
 
@@ -217,9 +221,21 @@ public class DataHandler
 		columnNameToName.Add("acc_long", "Longitude");
 		columnNameToName.Add("acc_lat", "Latitude");
 		columnNameToName.Add("point_value", CurrentDataName);
-		ColumnXName = columnNameToName[ColumnNames[ColumnX].Replace("\"","")];
-		ColumnYName = columnNameToName[ColumnNames[ColumnY].Replace("\"","")];
-		ColumnZName = columnNameToName[ColumnNames[ColumnZ].Replace("\"","")];
+		try{
+			ColumnXName = columnNameToName[ColumnNames[ColumnX].Replace("\"","")];
+		}catch(KeyNotFoundException e){
+			ColumnXName = "X-axis";
+		}
+		try{
+			ColumnYName = columnNameToName[ColumnNames[ColumnY].Replace("\"","")];
+		}catch(KeyNotFoundException e){
+			ColumnYName = "Y-axis";
+		}
+		try{
+			ColumnZName = columnNameToName[ColumnNames[ColumnZ].Replace("\"","")];
+		}catch(KeyNotFoundException e){
+			ColumnZName = "Z-axis";
+		}
 	}
 	
 	/// <summary>

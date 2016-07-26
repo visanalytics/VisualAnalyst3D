@@ -38,10 +38,14 @@ public class MeshTerrain
 	{
 		this.Vars = Vars;
 		this.filename = filename;
-		this.minX = minZ;
-		this.minZ = maxX;
-		this.maxX = maxZ;
-		this.maxZ = minX;
+		this.minX = minX;
+		this.minZ = minZ;
+		this.maxX = maxX;
+		this.maxZ = maxZ;
+//		this.minX = minZ;
+//		this.minZ = maxX;
+//		this.maxX = maxZ;
+//		this.maxZ = minX;
 	}
 
 	/// <summary>

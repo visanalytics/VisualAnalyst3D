@@ -53,10 +53,14 @@ public class ColormapGenerator
 		this.filename = filename;
 		this.maxRadius = maxRadius;
 		// Swapping X and Z values due to an inconsistency in the data layout.
-		this.minX = minZ;
-		this.minZ = maxX;
-		this.maxX = maxZ;
-		this.maxZ = minX;
+		this.minX = minX;
+		this.minZ = minZ;
+		this.maxX = maxX;
+		this.maxZ = maxZ;
+//		this.minX = minZ;
+//		this.minZ = maxX;
+//		this.maxX = maxZ;
+//		this.maxZ = minX;
 	}
 
 	/// <summary>

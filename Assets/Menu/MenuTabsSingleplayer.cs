@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEditor;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -9,6 +10,7 @@ public class MenuTabsSingleplayer : MenuTabs
 	
 	bool KeyboardSelected = true;
 	bool PhoneSelected = false;
+	bool ImportingData = false;
 
 	public MenuTabsSingleplayer (MenuHandler handler) : base(handler)
 	{
@@ -17,72 +19,384 @@ public class MenuTabsSingleplayer : MenuTabs
 	}
 	
 	protected override void GUISettings(){
-		if(GUI.Button(new Rect(w - tw*3.5f, h*0.5f - th*0.5f, tw*0.5f, th), " >> ")){
-			SetTabState(TabState.TabDefault);
-		}
-		GUI.Box(new Rect(w - tw*3f, th*7f, tw*3f, h - th*7f), "");
 		
-		
-		if(Handler.Inflater.TerrainVisible)
-			MenuHandler.GUIDrawRect(new Rect(w - tw*2f, h/2 - th*1.5f, tw, th), new Color(0.38f, 0.57f, 0.72f, 0.55f));
-		if(GUI.Button(new Rect(w - tw*2f, h/2 - th*1.5f, tw, th), "Terrain On/Off")){
-			if(Handler.Inflater.TerrainVisible){
-				Handler.Inflater.HideTerrain();
-			}else if(!Handler.Inflater.TerrainVisible){
-				Handler.Inflater.UnhideTerrain();
+		if(ImportingData){
+
+			ImportDataGUI();
+
+		}else{
+			if(GUI.Button(new Rect(w - tw*3.5f, h*0.5f - th*0.5f, tw*0.5f, th), " >> ")){
+				SetTabState(TabState.TabDefault);
 			}
-			Handler.UpdateFlags();
-		}
-		
-		if(Handler.Inflater.MapVisible)
-			MenuHandler.GUIDrawRect(new Rect(w - tw*2f, h/2 - th*0.5f, tw, th), new Color(0.38f, 0.57f, 0.72f, 0.55f));
-		if(GUI.Button(new Rect(w - tw*2f, h/2 - th*0.5f, tw, th), "Map On/Off")){
+			GUI.Box(new Rect(w - tw*3f, th*7f, tw*3f, h - th*7f), "");
+			
+			
+			if(Handler.Inflater.TerrainVisible)
+				MenuHandler.GUIDrawRect(new Rect(w - tw*2f, h/2 - th*1.5f, tw, th), new Color(0.38f, 0.57f, 0.72f, 0.55f));
+			if(GUI.Button(new Rect(w - tw*2f, h/2 - th*1.5f, tw, th), "Terrain On/Off")){
+				if(Handler.Inflater.TerrainVisible){
+					Handler.Inflater.HideTerrain();
+				}else if(!Handler.Inflater.TerrainVisible){
+					Handler.Inflater.UnhideTerrain();
+				}
+				Handler.UpdateFlags();
+			}
+			
 			if(Handler.Inflater.MapVisible)
-				Handler.Inflater.HideMap();
-			else if(!Handler.Inflater.MapVisible)
-				Handler.Inflater.UnhideMap();
-		}
-		if(Handler.GridsVisible)
-			MenuHandler.GUIDrawRect(new Rect(w - tw*2f, h/2 + th*0.5f, tw, th), new Color(0.38f, 0.57f, 0.72f, 0.55f));
-		if(GUI.Button(new Rect(w - tw*2f, h/2 + th*0.5f, tw, th), "Grids On/Off")){
+				MenuHandler.GUIDrawRect(new Rect(w - tw*2f, h/2 - th*0.5f, tw, th), new Color(0.38f, 0.57f, 0.72f, 0.55f));
+			if(GUI.Button(new Rect(w - tw*2f, h/2 - th*0.5f, tw, th), "Map On/Off")){
+				if(Handler.Inflater.MapVisible)
+					Handler.Inflater.HideMap();
+				else if(!Handler.Inflater.MapVisible)
+					Handler.Inflater.UnhideMap();
+			}
 			if(Handler.GridsVisible)
-				Handler.HideGrids();
-			else if(!Handler.GridsVisible)
-				Handler.UnhideGrids();
-		}
+				MenuHandler.GUIDrawRect(new Rect(w - tw*2f, h/2 + th*0.5f, tw, th), new Color(0.38f, 0.57f, 0.72f, 0.55f));
+			if(GUI.Button(new Rect(w - tw*2f, h/2 + th*0.5f, tw, th), "Grids On/Off")){
+				if(Handler.GridsVisible)
+					Handler.HideGrids();
+				else if(!Handler.GridsVisible)
+					Handler.UnhideGrids();
+			}
 
-		#region Controller Selection
-		GUI.Label(new Rect(w - tw*2f, h/2 + th*2.5f, tw, th), "Controller: ");
-		if(KeyboardSelected)
-			MenuHandler.GUIDrawRect(new Rect(w - tw*2f, h/2 + th*3.5f, tw, th), new Color(0.38f, 0.57f, 0.72f, 0.55f));
-		if(GUI.Button(new Rect(w - tw*2f, h/2 + th*3.5f, tw, th), "Keyboard")){
-			if(!KeyboardSelected){
-				PhoneSelected = false;
-				Handler.ControlHandler.SetControl(ControllerHandler.ControllerType.Keyboard);
-				KeyboardSelected = true;
+			#region Controller Selection
+			GUI.Label(new Rect(w - tw*2f, h/2 + th*2.5f, tw, th), "Controller: ");
+			if(KeyboardSelected)
+				MenuHandler.GUIDrawRect(new Rect(w - tw*2f, h/2 + th*3.5f, tw, th), new Color(0.38f, 0.57f, 0.72f, 0.55f));
+			if(GUI.Button(new Rect(w - tw*2f, h/2 + th*3.5f, tw, th), "Keyboard")){
+				if(!KeyboardSelected){
+					PhoneSelected = false;
+					Handler.ControlHandler.SetControl(ControllerHandler.ControllerType.Keyboard);
+					KeyboardSelected = true;
+				}
+			}
+			if(PhoneSelected)
+				MenuHandler.GUIDrawRect(new Rect(w - tw*2f, h/2 + th*4.5f, tw, th), new Color(0.38f, 0.57f, 0.72f, 0.55f));
+			if(GUI.Button(new Rect(w - tw*2f, h/2 + th*4.5f, tw, th), "Phone")){
+				if(!PhoneSelected){
+					KeyboardSelected = false;
+					Handler.ControlHandler.SetControl(ControllerHandler.ControllerType.Phone);
+					PhoneSelected = true;
+				}
+			}
+
+			#endregion
+			
+			MenuHandler.GUIDrawRect(new Rect(w - tw*2.25f, h/2 + th*5.75f, tw*1.5f, th), Color.green);
+			if(GUI.Button(new Rect(w - tw*2.25f, h/2 + th*5.75f, tw*1.5f, th), "Import Data")){
+				ImportingData = true;
+				ImportDataPresetList = DataInterpreter.GetPresetList();
+			}
+
+			MenuHandler.GUIDrawRect(new Rect(w - tw*2.25f, h/2 + th*7.5f, tw*1.5f, th), Color.red);
+			if(GUI.Button(new Rect(w - tw*2.25f, h/2 + th*7.5f, tw*1.5f, th), "Regenerate Terrain")){
+				Handler.StateSingleplayer.RegenerateCurrentTerrainSingle();
+			}
+			
+			// Developer tool to regenerate every map 
+			MenuHandler.GUIDrawRect(new Rect(w - tw*2.25f, h/2 + th*9.5f, tw*1.5f, th), Color.red);
+			if(GUI.Button(new Rect(w - tw*2.25f, h/2 + th*9.5f, tw*1.5f, th), "Regenerate ALL")){
+				Handler.Inflater.GenerateAllTerrains();
 			}
 		}
-		if(PhoneSelected)
-			MenuHandler.GUIDrawRect(new Rect(w - tw*2f, h/2 + th*4.5f, tw, th), new Color(0.38f, 0.57f, 0.72f, 0.55f));
-		if(GUI.Button(new Rect(w - tw*2f, h/2 + th*4.5f, tw, th), "Phone")){
-			if(!PhoneSelected){
-				KeyboardSelected = false;
-				Handler.ControlHandler.SetControl(ControllerHandler.ControllerType.Phone);
-				PhoneSelected = true;
-			}
-		}
+	}
 
-		#endregion
+	string ImportDataFilename = "";
+	string ImportDataMapFilename = "";
+	string[] ImportDataColumnNames;
+	int[] ImportDataColumnSelected;
+	string[] ImportDataColumnAlias;
+	Vector2 ImportDataScrollPos = new Vector2();
+	string ImportDataErrorMessage = "Import Data";
+	string ImportDataPresetName = "";
+	bool ImportDataShowAdvanced = false;
+	double ImportDataMinX, ImportDataMinZ, ImportDataMaxX, ImportDataMaxZ;
+	private enum ImportDataState {Default=1, Add=2, Edit=3, Delete=4};
+	ImportDataState ImportDataStateCurrent = ImportDataState.Default;
+	List<string[]> ImportDataPresetList = new List<string[]>();
+	string ImportDataDeleteDataName = "";
+	string ImportDataDeletePresetName = "";
 
-		MenuHandler.GUIDrawRect(new Rect(w - tw*2.25f, h/2 + th*6.5f, tw*1.5f, th), Color.red);
-		if(GUI.Button(new Rect(w - tw*2.25f, h/2 + th*6.5f, tw*1.5f, th), "Regenerate Terrain")){
-			Handler.StateSingleplayer.RegenerateCurrentTerrainSingle();
+	private void ImportDataGUI(){
+		//
+		switch(ImportDataStateCurrent){
+		case ImportDataState.Default:
+			ImportDataDefaultGUI();
+			break;
+		case ImportDataState.Add:
+			ImportDataAddGUI();
+			break;
+		case ImportDataState.Edit:
+			ImportDataAddGUI();
+			break;
+		case ImportDataState.Delete:
+			ImportDataDeleteGUI();
+			break;
 		}
+	}
+
+	private void ImportDataDefaultGUI(){
 		
-		// Developer tool to regenerate every map 
-		MenuHandler.GUIDrawRect(new Rect(w - tw*2.25f, h/2 + th*8.5f, tw*1.5f, th), Color.red);
-		if(GUI.Button(new Rect(w - tw*2.25f, h/2 + th*8.5f, tw*1.5f, th), "Regenerate ALL")){
-			Handler.Inflater.GenerateAllTerrains();
+		float boxX = w*0.15f, boxY = th*6f, boxW = w*0.7f, boxH = h - th*8f;
+		GUI.Box(new Rect(boxX, boxY, boxW, boxH), "");
+		if(GUI.Button(new Rect(boxX + boxW*0.5f - tw*0.6f, boxY + th*1f, tw*1.2f, th), "Import New Data")){
+			ImportDataFilename = "";
+			ImportDataMapFilename = "";
+			ImportDataScrollPos = new Vector2();
+			ImportDataErrorMessage = "Import Data";
+			ImportDataPresetName = "";
+			ImportDataShowAdvanced = false;
+			ImportDataMinX = 0;
+			ImportDataMinZ = 0;
+			ImportDataMaxX = 0; 
+			ImportDataMaxZ = 0;
+			ImportDataStateCurrent = ImportDataState.Add;
+		}
+
+		GUI.Box(new Rect(boxX + tw/2f, boxY + th*2.5f, boxW - tw, th), "");
+		GUI.Label(new Rect(boxX + tw/2f, boxY + th*2.5f, tw*1.5f, th), "Source File");
+		GUI.Label(new Rect(boxX + tw/2f + tw*1.6f, boxY + th*2.5f, tw*1.5f, th), "Preset Name");
+		if(ImportDataPresetList.Count * th * 1.1f < boxH - th*5f){
+			
+			ImportDataShowPresets(boxX + tw/2f, boxY + th*3.5f, boxW - tw, boxH - th*5f);
+			
+		}else{
+			Rect scrollRect = new Rect(boxX + tw/2f, boxY + th*3.5f, boxW - tw, boxH - th*5f);
+			Rect viewRect = new Rect(0f, 0f, boxW - tw*1.5f, ImportDataPresetList.Count * th * 1.1f);
+			ImportDataScrollPos = GUI.BeginScrollView(
+				scrollRect,
+				ImportDataScrollPos,
+				viewRect,
+				false,
+				true);
+			ImportDataShowPresets(0, 0, boxW - tw*1.5f, ImportDataPresetList.Count * th * 1.1f);
+			GUI.EndScrollView();
+		}
+
+		if(GUI.Button(new Rect(boxX + boxW*0.5f - tw*0.5f, boxY+boxH - th*1.5f, tw, th), "Close")){
+			ImportingData = false;
+		}
+	}
+
+	private void ImportDataShowPresets(float boxX, float boxY, float boxW, float boxH){
+		for(int i=0; i<ImportDataPresetList.Count; i++){
+			GUI.Box(new Rect(boxX, boxY + (th*1.1f*i), (boxW - tw*1.8f)*0.5f - tw*0.05f, th), "");
+			GUI.Label(new Rect(boxX, boxY + (th*1.1f*i), (boxW - tw*1.8f)*0.5f - tw*0.05f, th), ImportDataPresetList[i][0]);
+			GUI.Box(new Rect(boxX + (boxW - tw*1.8f)*0.5f + tw*0.05f, boxY + (th*1.1f*i), (boxW - tw*1.8f)*0.5f - tw*0.05f, th), "");
+			GUI.Label(new Rect(boxX + (boxW - tw*1.8f)*0.5f + tw*0.05f, boxY + (th*1.1f*i), (boxW - tw*1.8f)*0.5f - tw*0.05f, th), ImportDataPresetList[i][1]);
+			if(GUI.Button(new Rect(boxX + boxW - tw*1.7f, boxY + (th*1.1f*i), tw*0.75f, th), "Edit")){
+				// Edit listing
+				Variables Vars = VariablesPresets.VariablePreset(ImportDataPresetList[i][0],
+				                                "Cylindrical",
+				                                ImportDataPresetList[i][1],
+				                                "Cylindrical"); // Using cylindrical to simply get data for the preset
+				ImportDataFilename = Application.dataPath + Vars.FILENAME;
+				ImportDataMapFilename = Application.dataPath + Vars.MAP_FILENAME;
+				ImportDataColumnNames = DataInterpreter.ImportHeaderList(ImportDataFilename);
+				ImportDataColumnSelected = new int[]{Vars.COLUMN_X, Vars.COLUMN_Y, Vars.COLUMN_Z};
+				ImportDataColumnAlias = new string[]{Vars.COLUMN_X_ALIAS, Vars.COLUMN_Y_ALIAS, Vars.COLUMN_Z_ALIAS};
+				ImportDataPresetName = ImportDataPresetList[i][1];
+				ImportDataShowAdvanced = true;
+				ImportDataMinX = Vars.MIN_X;
+				ImportDataMinZ = Vars.MIN_Z;
+				ImportDataMaxX = Vars.MAX_X;
+				ImportDataMaxZ = Vars.MAX_Z;
+				ImportDataStateCurrent = ImportDataState.Edit;
+			}
+			if(GUI.Button(new Rect(boxX +boxW - tw*0.85f, boxY + (th*1.1f*i), tw*0.75f, th), "Delete")){
+				// Delete listing
+				ImportDataDeleteDataName = ImportDataPresetList[i][0];
+				ImportDataDeletePresetName = ImportDataPresetList[i][1];
+				ImportDataStateCurrent = ImportDataState.Delete;
+			}
+		}
+	}
+
+	private void ImportDataDeleteGUI(){
+		float boxX = w/2f - tw*1.5f, boxY = h/2f - th*2f, boxW = tw*3f, boxH = th*5.25f;
+		GUI.Box(new Rect(boxX, boxY, boxW, boxH), "Do you want to delete...");
+		GUI.Label(new Rect(boxX + boxW/2f - tw*1.25f, boxY + th*1.5f, tw*2.5f, th), "Data: " + ImportDataDeleteDataName);
+		GUI.Label(new Rect(boxX + boxW/2f - tw*1.25f, boxY + th*2.5f, tw*2.5f, th), "Preset: " + ImportDataDeletePresetName);
+		if(GUI.Button(new Rect(boxX + boxW/2f - tw*0.75f, boxY + th*4f, tw*0.5f, th), "Yes")){
+			DataInterpreter.DeletePreset(ImportDataDeleteDataName, ImportDataDeletePresetName);
+			ImportDataPresetList = DataInterpreter.GetPresetList();
+			Handler.StateSingleplayer.ReinitGui();
+			ImportDataStateCurrent = ImportDataState.Default;
+		}
+		if(GUI.Button(new Rect(boxX + boxW/2f + tw*0.25f, boxY + th*4f, tw*0.5f, th), "No")){
+			ImportDataStateCurrent = ImportDataState.Default;
+		}
+	}
+
+	private void ImportDataAddGUI(){
+		float boxX = w/4f, boxY = th*6f, boxW = w/2f, boxH = h - th*8f;
+		GUI.Box(new Rect(boxX, boxY, boxW, boxH), ImportDataErrorMessage);
+		GUI.Box (new Rect(boxX + tw/2f, boxY + th*1f, boxW - tw*2f, th), "");
+		GUI.Label(new Rect(boxX + tw/2f, boxY + th*1f, boxW - tw*2f, th), ImportDataFilename);
+		if(GUI.Button(new Rect(boxX + boxW - tw*1.5f, boxY + th*1f, tw*1.2f, th), "Open File")){
+			ImportDataFilename = EditorUtility.OpenFilePanel("Open File", "", "csv");
+			if(ImportDataFilename != "" && 
+			   ImportDataFilename.EndsWith(".csv")){
+				ImportDataColumnNames = DataInterpreter.ImportHeaderList(ImportDataFilename);
+				if(ImportDataColumnNames.Length < 3){
+					ImportDataErrorMessage = "Not enough data.";
+					ImportDataFilename = "";
+				}else{
+					ImportDataColumnSelected = new int[]{0,1,2};
+					ImportDataColumnAlias = new string[]{"","",""};
+				}
+			}
+		}
+
+		// File selected
+		if(ImportDataFilename != "" && 
+			   ImportDataFilename.EndsWith(".csv")){
+
+			// Map Filename selection
+			GUI.Box (new Rect(boxX + tw/2f, boxY + th*2f, boxW - tw*2f, th), "");
+			GUI.Label(new Rect(boxX + tw/2f, boxY + th*2f, boxW - tw*2f, th), ImportDataMapFilename);
+			if(GUI.Button(new Rect(boxX + boxW - tw*1.5f, boxY + th*2f, tw*1.2f, th), "Select Map Image")){
+				ImportDataMapFilename = EditorUtility.OpenFilePanel("Select Map Image", "", "png");
+			}
+
+			if(ImportDataShowAdvanced){
+				MenuHandler.GUIDrawRect(new Rect(boxX + boxW, boxY + th*2f, tw*1.2f, th), Color.gray);
+				ImportDataAdvanced(boxX, boxY, boxW, boxH);
+			}
+			if(GUI.Button(new Rect(boxX + boxW, boxY + th*2f, tw*1.2f, th), "Advanced Settings")){
+				ImportDataShowAdvanced = !ImportDataShowAdvanced;
+			}
+
+			GUI.Box(new Rect(boxX + tw/2f, boxY + th*3.5f, boxW - tw, th), "");
+			GUI.Label(new Rect(boxX + tw/2f, boxY + th*3.5f, tw/3f, th), "X");
+			GUI.Label(new Rect(boxX + tw/2f + tw/3f, boxY + th*3.5f, tw/3f, th), "Y");
+			GUI.Label(new Rect(boxX + tw/2f + tw*2f/3f, boxY + th*3.5f, tw/3f, th), "Z");
+			GUI.Label(new Rect(boxX + tw*1.5f, boxY + th*3.5f, tw, th), "Column Name");
+			if(ImportDataColumnNames.Length * th * 1.1f < boxH - th*5.5f){
+
+				ImportDataFromOrigin(boxX + tw/2f, boxY + th*4.5f, boxW - tw, boxH - th*8f);
+
+			}else{
+				Rect scrollRect = new Rect(boxX + tw/2f, boxY + th*4.5f, boxW - tw, boxH - th*8f);
+				Rect viewRect = new Rect(0f, 0f, boxW - tw*1.5f, ImportDataColumnNames.Length * th * 1.1f);
+				ImportDataScrollPos = GUI.BeginScrollView(
+					scrollRect,
+					ImportDataScrollPos,
+					viewRect,
+					false,
+					true);
+				ImportDataFromOrigin(0, 0, boxW - tw*1.5f, ImportDataColumnNames.Length * th * 1.1f);
+				GUI.EndScrollView();
+			}
+		}
+
+		GUI.Label(new Rect(boxX + boxW*0.5f - tw*1.75f, boxY+boxH - th*3f, tw*1f, th), "Preset Name: ");
+		ImportDataPresetName = GUI.TextField(new Rect(boxX + boxW*0.5f - tw*0.75f, boxY+boxH - th*3f, tw*2.5f, th), ImportDataPresetName);
+		
+		if(GUI.Button(new Rect(boxX + boxW*0.5f - tw*1.25f, boxY+boxH - th*1.5f, tw, th), "Import")){
+			// Test all necessary inputs have been chosen
+			string[] filename_parts = ImportDataFilename.Split('/');
+			string data_name = filename_parts[filename_parts.Length-1].Replace(".csv", "");
+			if(ImportDataFilename != "" && 
+			   ImportDataFilename.EndsWith(".csv")){
+				// Map filename
+				if(ImportDataMapFilename == ""){
+					ImportDataMapFilename = Application.dataPath + "/Heightmaps/Maps/Time.png";
+				}
+
+				// if advanced settings is toggled
+				if(ImportDataShowAdvanced){
+					DataInterpreter.ImportPreset(ImportDataPresetName, 
+					                             data_name,
+					                             ImportDataFilename, 
+					                             ImportDataMapFilename, 
+					                             ImportDataColumnSelected[0],
+					                             ImportDataColumnSelected[1],
+					                             ImportDataColumnSelected[2],
+					                             ImportDataColumnAlias[0],
+					                             ImportDataColumnAlias[1],
+					                             ImportDataColumnAlias[2],
+					                             ImportDataMinX,
+					                             ImportDataMinZ,
+					                             ImportDataMaxX,
+					                             ImportDataMaxZ);
+				}else{
+					DataInterpreter.ImportPreset(ImportDataPresetName, 
+					                             data_name,
+					                             ImportDataFilename, 
+					                             ImportDataMapFilename, 
+					                             ImportDataColumnSelected[0],
+					                             ImportDataColumnSelected[1],
+					                             ImportDataColumnSelected[2],
+					                             ImportDataColumnAlias[0],
+					                             ImportDataColumnAlias[1],
+					                             ImportDataColumnAlias[2]);
+				}
+
+				Handler.StateSingleplayer.ReinitGui();
+				// Reset all variables and exit import gui.
+				ImportDataFilename = "";
+				ImportDataMapFilename = "";
+				ImportDataScrollPos = new Vector2();
+				ImportDataErrorMessage = "Import Data";
+				ImportDataPresetName = "";
+				ImportDataPresetList = DataInterpreter.GetPresetList();
+				ImportDataStateCurrent = ImportDataState.Default;
+			}
+		}
+		if(GUI.Button(new Rect(boxX + boxW*0.5f + tw*0.25f, boxY+boxH - th*1.5f, tw, th), "Cancel")){
+			ImportDataStateCurrent = ImportDataState.Default;
+		}
+	}
+
+	private void ImportDataAdvanced(float boxX, float boxY, float boxW, float boxH){
+		float tBoxX = boxX + boxW, tBoxY = boxY + th*3f, tBoxW = tw*1.5f, tBoxH = boxH - th*3f;
+		GUI.Box(new Rect(tBoxX, tBoxY, tBoxW, tBoxH), "");
+		
+		GUI.Label(new Rect(tBoxX, tBoxY, tw, th), "Minimum X");
+		ImportDataMinX = double.Parse(GUI.TextField(new Rect(tBoxX + tw*0.25f, tBoxY + th, tw, th), ImportDataMinX.ToString()));
+		GUI.Label(new Rect(tBoxX, tBoxY + th*2f, tw, th), "Minimum Z");
+		ImportDataMinZ = double.Parse(GUI.TextField(new Rect(tBoxX + tw*0.25f, tBoxY + th*3f, tw, th), ImportDataMinZ.ToString()));
+		GUI.Label(new Rect(tBoxX, tBoxY + th*4f, tw, th), "Maximum X");
+		ImportDataMaxX = double.Parse(GUI.TextField(new Rect(tBoxX + tw*0.25f, tBoxY + th*5f, tw, th), ImportDataMaxX.ToString()));
+		GUI.Label(new Rect(tBoxX, tBoxY + th*6f, tw, th), "Maximum Z");
+		ImportDataMaxZ = double.Parse(GUI.TextField(new Rect(tBoxX + tw*0.25f, tBoxY + th*7f, tw, th), ImportDataMaxZ.ToString()));
+	}
+
+	private void ImportDataFromOrigin(float boxX, float boxY, float boxW, float boxH){
+		for(int i=0; i<ImportDataColumnNames.Length; i++){
+			for(int col = 0; col < ImportDataColumnSelected.Length; col++){
+				bool toggled = ImportDataColumnSelected[col] == i;
+				if(GUI.Toggle(new Rect(boxX + (tw/3f)*col, boxY + (th*1.1f*i), tw/3f, th),
+				              toggled,
+				              "")){
+					bool collision = false;
+					for(int j=0; j<ImportDataColumnSelected.Length; j++){
+						if(ImportDataColumnSelected[j] == i){
+							collision = true;
+							//Swap the two selected columns
+							ImportDataColumnSelected[j] = ImportDataColumnSelected[col];
+							ImportDataColumnSelected[col] = i;
+						}
+					}
+					if(!collision){
+						ImportDataColumnSelected[col] = i;
+					}
+				}
+			}
+			bool selected = false;
+			int columnIndex = -1;
+			for(int j=0; j<ImportDataColumnSelected.Length; j++){
+				if(ImportDataColumnSelected[j] == i){
+					selected = true;
+					columnIndex = j;
+				}
+			}
+			GUI.Label(new Rect(boxX + tw*1.1f, boxY + (th*1.1f*i), tw*1f, th), ImportDataColumnNames[i]);
+			if(selected && ImportDataColumnSelected[columnIndex] == i){
+				float size = tw*1.25f; //tw*3.35f > boxW ? boxW - tw*2.1f : tw*1.25f;
+				ImportDataColumnAlias[columnIndex] = GUI.TextField(new Rect(boxX + tw*2.1f, boxY + (th*1.1f*i), size, th), ImportDataColumnAlias[columnIndex]);
+			}
 		}
 	}
 	

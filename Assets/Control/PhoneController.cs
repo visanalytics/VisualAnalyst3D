@@ -84,8 +84,6 @@ public class PhoneController : Controller
 
 			RoomName = System.Environment.UserName;
 			MasterServer.RegisterHost(TypeName,RoomName);
-
-			Debug.Log("Multiplayer Server return: " + e);
 		}
 
 		/// <summary>

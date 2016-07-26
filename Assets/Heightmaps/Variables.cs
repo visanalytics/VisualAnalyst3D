@@ -26,6 +26,9 @@ public class Variables
 	public int COLUMN_X = 3;
 	public int COLUMN_Y = 1;
 	public int COLUMN_Z = 2;
+	public string COLUMN_X_ALIAS = "X Axis";
+	public string COLUMN_Y_ALIAS = "Y Axis";
+	public string COLUMN_Z_ALIAS = "Z Axis";
 
 	// Hills Variables ONLY
 	public float MAX_RADIUS = 300f;

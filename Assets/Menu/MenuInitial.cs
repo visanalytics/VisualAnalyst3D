@@ -215,6 +215,18 @@ public class MenuInitial
 	private HostData[] GetHostList(){
 		Handler.Multiplayer.RefreshHostList();
 		return MasterServer.PollHostList();
+
+		// Test Multiple Server list
+//		HostData[] temp = new HostData[70];
+//		for(int i=0; i<70; i++){
+//			HostData t = new HostData();
+//			t.gameType = "DeakinDataVis";
+//			t.gameName = "test_" + i.ToString();
+//			t.ip = new string[]{"127.0.0.1"};
+//			t.port = 25061;
+//			temp[i] = t;
+//		}
+//		return temp;
 	}
 
 	private HostData[] RefineHostList(HostData[] hostList, string searchString){

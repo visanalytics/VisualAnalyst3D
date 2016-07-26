@@ -49,10 +49,10 @@ public class MenuTabs
 		List<double[]> data = dH.GetData();
 		MaxNumDataPoints = data.Count;
 		NumDataPoints = (int)(MaxNumDataPoints/1000f) + 1;
-		AxisMinGridX = Math.Abs(Handler.Inflater.Vars.MIN_Z);
-		AxisMinGridZ = Math.Abs(Handler.Inflater.Vars.MIN_X);
-		AxisMaxGridX = Math.Abs(Handler.Inflater.Vars.MAX_Z);
-		AxisMaxGridZ = Math.Abs(Handler.Inflater.Vars.MAX_X);
+		AxisMinGridX = (Handler.Inflater.Vars.MIN_X);
+		AxisMinGridZ = (Handler.Inflater.Vars.MIN_Z);
+		AxisMaxGridX = (Handler.Inflater.Vars.MAX_X);
+		AxisMaxGridZ = (Handler.Inflater.Vars.MAX_Z);
 		MinY = 0f;
 		MaxY = (float)dH.GetMaxY();
 		AxisMinGridY = 0f;
@@ -249,12 +249,6 @@ public class MenuTabs
 			Vector3 pos = new Vector3((float)(data[i][0])*Handler.Inflater.theterrain.terrainData.size.x,
 			                          (float)(Y)*Handler.Inflater.theterrain.terrainData.size.y,
 			                          (float)(1-data[i][2])*Handler.Inflater.theterrain.terrainData.size.z);
-			Debug.Log((float)(data[i][0])*Handler.Inflater.theterrain.terrainData.size.x + "    " +
-			          (float)(Y)*Handler.Inflater.theterrain.terrainData.size.y + "    " +
-			          (float)(data[i][2])*Handler.Inflater.theterrain.terrainData.size.z);
-			Debug.Log((float)(data[i][0]) + "     " + 
-			          (float)(Y) + "      " + 
-			          (float)(data[i][2]));
 			GameObject temp = (GameObject) Main.Instantiate (Handler.Inflater.DataPoint, pos, Quaternion.identity);
 			toAddPoints.Add(temp);
 		}
@@ -344,8 +338,8 @@ public class MenuTabs
 
 	#region Surface Grid Functions
 	public void ApplySurfaceGridValues(float gridSizeValueX, float gridSizeValueZ){
-		float proportionX = (float)((gridSizeValueX)/(AxisMaxGridX - AxisMinGridX));
-		float proportionZ = (float)((gridSizeValueZ)/(AxisMaxGridZ - AxisMinGridZ));
+		float proportionX = (float)Math.Abs(((gridSizeValueX)/(AxisMaxGridX - AxisMinGridX)));
+		float proportionZ = (float)Math.Abs(((gridSizeValueZ)/(AxisMaxGridZ - AxisMinGridZ)));
 		if(gridSizeValueX == 0)
 			proportionX = 1f;
 		if(gridSizeValueZ == 0)
@@ -391,10 +385,10 @@ public class MenuTabs
 	public void ResetSurfaceGrid(){
 		float tempRatioX = (AxisGridSizeX)/(AxisMaxGridX-AxisMinGridX);
 		float tempRatioZ = (AxisGridSizeZ)/(AxisMaxGridZ-AxisMinGridZ);
-		MinGridX = Math.Abs(Handler.Inflater.Vars.MIN_Z);
-		MinGridZ = Math.Abs(Handler.Inflater.Vars.MIN_X);
-		MaxGridX = Math.Abs(Handler.Inflater.Vars.MAX_Z);
-		MaxGridZ = Math.Abs(Handler.Inflater.Vars.MAX_X);
+		MinGridX = (Handler.Inflater.Vars.MIN_X);
+		MinGridZ = (Handler.Inflater.Vars.MIN_Z);
+		MaxGridX = (Handler.Inflater.Vars.MAX_X);
+		MaxGridZ = (Handler.Inflater.Vars.MAX_Z);
 		GridSizeX = tempRatioX*(MaxGridX-MinGridX);
 		GridSizeZ = tempRatioZ*(MaxGridZ-MinGridZ);
 		GridSizeXString = String.Format("{0:0.00}", GridSizeX);
@@ -649,7 +643,7 @@ public class MenuTabs
 		zDir = new Vector3(0,0,-1f);
 
 		// X Lines
-		float iteratorX = proportionX*tSize.x;
+		float iteratorX = Math.Abs(proportionX*tSize.x);
 		if(iteratorX == 0)
 			iteratorX = 8f;
 		for(float i=0; i<tSize.x; i+=iteratorX){
@@ -664,7 +658,7 @@ public class MenuTabs
 		}
 
 		// Y Lines
-		float iteratorY = proportionY*tSize.y;
+		float iteratorY = Math.Abs(proportionY*tSize.y);
 		if(iteratorY == 0)
 			iteratorY = 8f;
 		for(float i=0; i<tSize.y; i+=iteratorY){
@@ -679,7 +673,7 @@ public class MenuTabs
 		}
 
 		// Z Lines
-		float iteratorZ = proportionZ*tSize.z;
+ 		float iteratorZ = Math.Abs(proportionZ*tSize.z);
 		if(iteratorZ == 0)
 			iteratorZ = 8f;
 		for(float i=0; i<tSize.z; i+=iteratorZ){
@@ -700,9 +694,9 @@ public class MenuTabs
 		Terrain ter = (Terrain)GameObject.Find("Terrain").GetComponent<Terrain>();
 		Vector3 tSize = ter.terrainData.size;
 		Vector3 tPos = ter.transform.position;
-		float iteratorX = proportionX*tSize.x;
-		float iteratorY = proportionY*tSize.y;
-		float iteratorZ = proportionZ*tSize.z;
+		float iteratorX = Math.Abs(proportionX*tSize.x);
+   		float iteratorY = Math.Abs(proportionY*tSize.y);
+		float iteratorZ = Math.Abs(proportionZ*tSize.z);
 		Vector3 xStart = new Vector3(tPos.x,tPos.y+(iteratorY/2f)+tSize.y,tPos.z + tSize.z),
 		xDir = new Vector3(1f,0,0),
 		yStart1 = new Vector3(tPos.x,tPos.y+(iteratorY/2f),tPos.z+tSize.z),
@@ -713,12 +707,12 @@ public class MenuTabs
 		zDir = new Vector3(0,0,-1f);
 
 		
-		float DataXStart = Handler.Inflater.Vars.MIN_Z,
-		DataXIt = (Handler.Inflater.Vars.MAX_Z - Handler.Inflater.Vars.MIN_Z)*(iteratorX/tSize.x),
+		float DataXStart = Handler.Inflater.Vars.MIN_X,
+		DataXIt = (Handler.Inflater.Vars.MAX_X - Handler.Inflater.Vars.MIN_X)*(iteratorX/tSize.x),
 		DataYStart = AxisMinGridY,
 		DataYIt = (AxisMaxGridY - AxisMinGridY)*(iteratorY/tSize.y),
-		DataZStart = Handler.Inflater.Vars.MIN_X,
-		DataZIt = (Handler.Inflater.Vars.MAX_X - Handler.Inflater.Vars.MIN_X)*(iteratorZ/tSize.z);
+		DataZStart = Handler.Inflater.Vars.MIN_Z,
+		DataZIt = (Handler.Inflater.Vars.MAX_Z - Handler.Inflater.Vars.MIN_Z)*(iteratorZ/tSize.z);
 
 		float scale = 4f;
 		Vector3 offsetX = new Vector3(0,0,scale*scale),
@@ -820,11 +814,11 @@ public class MenuTabs
 		float tempRatioX = (AxisGridSizeX)/(AxisMaxGridX-AxisMinGridX);
 		float tempRatioZ = (AxisGridSizeZ)/(AxisMaxGridZ-AxisMinGridZ);
 		float tempRatioY = (AxisGridSizeY)/(AxisMaxGridY-AxisMinGridY);
-		AxisMinGridX = Math.Abs(Handler.Inflater.Vars.MIN_Z);
-		AxisMinGridZ = Math.Abs(Handler.Inflater.Vars.MIN_X);
+		AxisMinGridX = (Handler.Inflater.Vars.MIN_X);
+		AxisMinGridZ = (Handler.Inflater.Vars.MIN_Z);
 		AxisMinGridY = 0f;
-		AxisMaxGridX = Math.Abs(Handler.Inflater.Vars.MAX_Z);
-		AxisMaxGridZ = Math.Abs(Handler.Inflater.Vars.MAX_X);
+		AxisMaxGridX = (Handler.Inflater.Vars.MAX_X);
+		AxisMaxGridZ = (Handler.Inflater.Vars.MAX_Z);
 		AxisMaxGridY = (float)Math.Abs(dH.GetMaxY());
 		AxisGridSizeX = tempRatioX*(AxisMaxGridX-AxisMinGridX);
 		AxisGridSizeY = tempRatioY*(AxisMaxGridY-AxisMinGridY);
@@ -855,11 +849,11 @@ public class MenuTabs
 
 	private void ResetAxisStatics(){
 		DataHandler dH = Handler.Inflater.dH;
-		AxisMinGridX = Math.Abs(Handler.Inflater.Vars.MIN_Z);
-		AxisMinGridZ = Math.Abs(Handler.Inflater.Vars.MIN_X);
+		AxisMinGridX = (Handler.Inflater.Vars.MIN_X);
+		AxisMinGridZ = (Handler.Inflater.Vars.MIN_Z);
 		AxisMinGridY = 0f;
-		AxisMaxGridX = Math.Abs(Handler.Inflater.Vars.MAX_Z);
-		AxisMaxGridZ = Math.Abs(Handler.Inflater.Vars.MAX_X);
+		AxisMaxGridX = (Handler.Inflater.Vars.MAX_X);
+		AxisMaxGridZ = (Handler.Inflater.Vars.MAX_Z);
 		AxisMaxGridY = (float)Math.Abs(dH.GetMaxY());
 		AxisGridSizeXIT = GetGridIterator(AxisMaxGridX-AxisMinGridX);
 		AxisGridSizeYIT = GetGridIterator(AxisMaxGridY-AxisMinGridY);

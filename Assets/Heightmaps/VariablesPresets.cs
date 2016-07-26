@@ -41,6 +41,9 @@ public class VariablesPresets
 			Vars.COLUMN_X = (int)result[0]["ColumnX"];
 			Vars.COLUMN_Y = (int)result[0]["ColumnY"];
 			Vars.COLUMN_Z = (int)result[0]["ColumnZ"];
+			Vars.COLUMN_X_ALIAS = (string)result[0]["ColumnXAlias"];
+			Vars.COLUMN_Y_ALIAS = (string)result[0]["ColumnYAlias"];
+			Vars.COLUMN_Z_ALIAS = (string)result[0]["ColumnZAlias"];
 			Vars.MIN_X = (float)result[0]["MinX"];
 			Vars.MIN_Z = (float)result[0]["MinZ"];
 			Vars.MAX_X = (float)result[0]["MaxX"];
@@ -85,6 +88,9 @@ public class VariablesPresets
 		table.Columns.Add("ColumnX", typeof(int));
 		table.Columns.Add("ColumnY", typeof(int));
 		table.Columns.Add("ColumnZ", typeof(int));
+		table.Columns.Add("ColumnXAlias", typeof(string));
+		table.Columns.Add("ColumnYAlias", typeof(string));
+		table.Columns.Add("ColumnZAlias", typeof(string));
 		table.Columns.Add("HillsMaxRadius", typeof(float));
 		table.Columns.Add("HillsIterationNumber", typeof(float));
 		table.Columns.Add("GeneticMaxIteration", typeof(int));
@@ -100,7 +106,8 @@ public class VariablesPresets
 			table.Rows.Add((string)vals[0], (string)vals[1], (string)vals[2], (string)vals[3], float.Parse(vals[4]), float.Parse(vals[5]),
 			               float.Parse(vals[6]), (string)vals[7], (string)vals[8], float.Parse(vals[9]), float.Parse(vals[10]),
 			               float.Parse(vals[11]), float.Parse(vals[12]), (string)vals[13], int.Parse(vals[14]), int.Parse(vals[15]),
-			               int.Parse(vals[16]), float.Parse(vals[17]), float.Parse(vals[18]), int.Parse(vals[19]), int.Parse(vals[20]));
+			               int.Parse(vals[16]), (string)vals[17], (string)vals[18], (string)vals[19], float.Parse(vals[20]),
+			               float.Parse(vals[21]), int.Parse(vals[22]), int.Parse(vals[23]));
 		}
 		return table;
 	}

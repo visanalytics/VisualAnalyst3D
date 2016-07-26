@@ -68,7 +68,7 @@ public class HeightmapInflater : MonoBehaviour {
 		Vars = VariablesPresets.VariablePreset(source, terrainType, dataname, preset);
 		Vars.SCALE_Y = 1/ScaleY;
 		
-		dH = new DataHandler(Application.dataPath + Vars.FILENAME, Vars.COLUMN_X, Vars.COLUMN_Y, Vars.COLUMN_Z, Vars.MIN_Z, Vars.MIN_X, Vars.MAX_Z, Vars.MAX_X, Vars);
+		dH = new DataHandler(Application.dataPath + Vars.FILENAME, Vars.COLUMN_X, Vars.COLUMN_Y, Vars.COLUMN_Z, Vars.MIN_X, Vars.MIN_Z, Vars.MAX_X, Vars.MAX_Z, Vars);
 
 		Texture2D heightMap;
 		Texture2D colorMap;
@@ -121,8 +121,8 @@ public class HeightmapInflater : MonoBehaviour {
 		td.heightmapResolution = (new int[]{heightMap.width, heightMap.height}).Max();
 
 		//Colour image background
-		for (int i = heightMap.width-1; i >= 0; i--){
-			for (int j = heightMap.height-1; j >= 0; j--){
+		for (int i = 0; i < heightMap.width; i++){
+			for (int j = 0; j < heightMap.height; j++){
 				//Insert corresponding value into heights array at specific points for x,y
 				Color32 col = heightMap.GetPixel(j, i);
 				Int32 mColor = col.r * 256*256 + col.g * 256 + col.b;
@@ -171,7 +171,7 @@ public class HeightmapInflater : MonoBehaviour {
 		Vars = VariablesPresets.VariablePreset(source, terrainType, dataname, preset);
 		Vars.SCALE_Y = 1/ScaleY;
 		
-		dH = new DataHandler(Application.dataPath + Vars.FILENAME, Vars.COLUMN_X, Vars.COLUMN_Y, Vars.COLUMN_Z, Vars.MIN_Z, Vars.MIN_X, Vars.MAX_Z, Vars.MAX_X, Vars);
+		dH = new DataHandler(Application.dataPath + Vars.FILENAME, Vars.COLUMN_X, Vars.COLUMN_Y, Vars.COLUMN_Z, Vars.MIN_X, Vars.MIN_Z, Vars.MAX_X, Vars.MAX_Z, Vars);
 
 		Texture2D heightMap;
 		Texture2D colorMap;
@@ -223,8 +223,8 @@ public class HeightmapInflater : MonoBehaviour {
 		td.heightmapResolution = (new int[]{heightMap.width, heightMap.height}).Max();
 		
 		//Colour image background
-		for (int i = heightMap.width-1; i >= 0; i--){
-			for (int j = heightMap.height-1; j >= 0; j--){
+		for (int i = 0; i < heightMap.width; i++){
+			for (int j = 0; j < heightMap.height; j++){
 				//Insert corresponding value into heights array at specific points for x,y
 				Color32 col = heightMap.GetPixel(j, i);
 				Int32 mColor = col.r * 256*256 + col.g * 256 + col.b;
@@ -272,7 +272,7 @@ public class HeightmapInflater : MonoBehaviour {
 		Vars = VariablesPresets.VariablePreset(source, terrainType, dataname, preset);
 		Vars.SCALE_Y = 1/ScaleY;
 		
-		dH = new DataHandler(Application.dataPath + Vars.FILENAME, Vars.COLUMN_X, Vars.COLUMN_Y, Vars.COLUMN_Z, Vars.MIN_Z, Vars.MIN_X, Vars.MAX_Z, Vars.MAX_X, Vars);
+		dH = new DataHandler(Application.dataPath + Vars.FILENAME, Vars.COLUMN_X, Vars.COLUMN_Y, Vars.COLUMN_Z, Vars.MIN_X, Vars.MIN_Z, Vars.MAX_X, Vars.MAX_Z, Vars);
 		
 		Texture2D heightMap;
 		Texture2D colorMap;
@@ -325,8 +325,10 @@ public class HeightmapInflater : MonoBehaviour {
 		td.heightmapResolution = (new int[]{heightMap.width, heightMap.height}).Max();
 		
 		//Colour image background
-		for (int i = heightMap.width-1; i >= 0; i--){
-			for (int j = heightMap.height-1; j >= 0; j--){
+//		for (int i = heightMap.width-1; i >= 0; i--){
+//			for (int j = heightMap.height-1; j >= 0; j--){
+		for (int i = 0; i < heightMap.width; i++){
+			for (int j = 0; j < heightMap.height; j++){
 				//Insert corresponding value into heights array at specific points for x,y
 				Color32 col = heightMap.GetPixel(j, i);
 				Int32 mColor = col.r * 256*256 + col.g * 256 + col.b;
@@ -341,6 +343,8 @@ public class HeightmapInflater : MonoBehaviour {
 		theterrain.terrainData.size = newSize;
 		
 		// Add Texture to terrain
+		// fix colormap
+//		colorMap = ;
 		td.splatPrototypes = null;
 		SplatPrototype[] terrainTexture = new SplatPrototype[1];
 		terrainTexture[0] = new SplatPrototype();
@@ -358,6 +362,24 @@ public class HeightmapInflater : MonoBehaviour {
 		for(int i=0; i<unusedTextures.Length; i++){
 			Destroy(unusedTextures[i]);
 		}
+	}
+
+	public static Texture2D RotateTexture90(Texture2D texture) {
+		Color32[] texMatrix = texture.GetPixels32();
+		int n = texture.width;
+		Color32[] output = new Color32[n * n];
+		Texture2D outTex = new Texture2D(texture.width, texture.height);
+		
+		for(int i = 0; i < n; i++){
+			for(int j = 0; j < n; j++){
+//				output[i*n + j] = texMatrix[(n - j - 1) * n + i];
+				output[i*n + j] = texMatrix[j*n + i];
+			}
+		}
+		
+		outTex.SetPixels32(output);
+		outTex.Apply();
+		return outTex;
 	}
 
 	#region Heightmap/colormap generation functions
@@ -469,8 +491,8 @@ public class HeightmapInflater : MonoBehaviour {
 		double worldMaxZ = theterrain.terrainData.size.z;
 		double ratioX = worldCoords.x/worldMaxX;
 		double ratioZ = (worldMaxZ-worldCoords.z)/worldMaxZ;
-		double dataX = (ratioX*(Vars.MAX_Z-Vars.MIN_Z)) + Vars.MIN_Z;
-		double dataZ = (ratioZ*(Vars.MAX_X-Vars.MIN_X)) + Vars.MIN_X;
+		double dataX = (ratioX*(Vars.MAX_X-Vars.MIN_X)) + Vars.MIN_X;
+		double dataZ = (ratioZ*(Vars.MAX_Z-Vars.MIN_Z)) + Vars.MIN_Z;
 		double lower = Vars.TERRAIN_NAME.Contains("Sex") ? 0f : 0f;
 		double ratioY = (double)(dH.GetMaxY()-lower)/theterrain.terrainData.size.y;
 		double dataY = ratioY*theterrain.SampleHeight(worldCoords) + lower;
@@ -548,15 +570,10 @@ public class HeightmapInflater : MonoBehaviour {
 			}
 			DateTime afterEach = DateTime.Now;
 			diff = afterEach.Subtract(beforeEach);
-			Debug.Log("Time Taken for " + (string)row["Source"] + 
-			          (string)row["TerrainType"] + 
-			          (string)row["Data"] +
-			          (string)row["Preset"]  + ": " + diff.TotalSeconds.ToString());
 			yield return new WaitForSeconds(2f);
 		}
 		
 		after = DateTime.Now;
 		diff = after.Subtract(before);
-		Debug.Log("Time Taken for Mesh Gen: " + diff.TotalSeconds.ToString());
 	}
 }

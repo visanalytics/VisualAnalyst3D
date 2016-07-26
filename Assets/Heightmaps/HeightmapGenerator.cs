@@ -48,10 +48,14 @@ public class HeightmapGenerator
 		this.Vars = Vars;
 		this.filename = filename;
 		this.maxRadius = maxRadius;
-		this.minX = minZ;
-		this.minZ = maxX;
-		this.maxX = maxZ;
-		this.maxZ = minX;
+		this.minX = minX;
+		this.minZ = minZ;
+		this.maxX = maxX;
+		this.maxZ = maxZ;
+//		this.minX = minZ;
+//		this.minZ = maxX;
+//		this.maxX = maxZ;
+//		this.maxZ = minX;
 	}
 
 	/// <summary>
@@ -168,10 +172,8 @@ public class HeightmapGenerator
 		if(it == 0){
 			it = 1f;
 		}
-
 		System.Drawing.Bitmap bit = new System.Drawing.Bitmap(heightMap.width, heightMap.height);
 		System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(bit);
-		
 		double h = lowerBound;
 		while(data.Count != 0){
 			h += it;

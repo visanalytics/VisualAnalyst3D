@@ -38,7 +38,74 @@ public class DataInterpreter
 		StreamReader dataStream = new StreamReader(File.OpenRead(filename));
 		string headers_line = dataStream.ReadLine();
 		string[] headers_arr = headers_line.Split(',');
+		dataStream.Close();
 		return headers_arr;
+	}
+
+	// Parse values from double format or date format to double value
+	private static double ParseValue(string item){
+		double value;
+		try{
+			value = double.Parse(item.Replace("\"", ""));
+		}catch(Exception e){
+			// item is a Date value
+			if(item.Replace("\"", "").Contains("/")){
+				string[] parts = item.Replace("\"", "").Split('/');
+				int month = int.Parse(parts[1]);
+				int year = int.Parse(parts[2]);
+				value = month+(year*12);
+			}else{
+				throw new InvalidDataException("Invalid data selected.");
+			}
+		}
+		return value;
+	}
+	
+	public static void ImportPreset(string preset_name, string data_name, string filename, string map_filename,
+	                                int columnXIndex, int columnYIndex, int columnZIndex,
+	                                string columnXAlias, string columnYAlias, string columnZAlias){
+		string[] map_split = map_filename.Split('.');
+		string map_filename_suffix = map_split[map_split.Length-1];
+		string map_filename_reduced = "/Heightmaps/Maps/" + data_name + "." + map_filename_suffix;
+		File.Copy(map_filename, Application.dataPath + map_filename_reduced, true);
+		// Copy data file
+		string local_filename = "/Heightmaps/Import_Data/" + data_name + ".csv";
+		File.Copy(filename, Application.dataPath + local_filename, true);
+		
+		StreamReader dataStream = new StreamReader(File.OpenRead(filename));
+		// Find Minimum/Maximum values of all data dimensions.
+		int[] ColumnIndexes = {columnXIndex, columnYIndex, columnZIndex};
+		double[] MinI = new double[ColumnIndexes.Length];
+		double[] MaxI = new double[ColumnIndexes.Length];
+		// Set first Min/Max
+		string[] headers = dataStream.ReadLine().Split(',');
+		string[] first_line = dataStream.ReadLine().Split(',');
+		
+		for(int i=0; i<ColumnIndexes.Length; i++){
+			try{
+				MinI[i] = ParseValue(first_line[ColumnIndexes[i]]);//double.Parse(first_line[ColumnIndexes[i]].Replace("\"", ""));
+				MaxI[i] = ParseValue(first_line[ColumnIndexes[i]]);//double.Parse(first_line[ColumnIndexes[i]].Replace("\"", ""));
+			}catch(InvalidDataException e){
+				return;
+			}
+		}
+		
+		// Search through entire file to find Min/Max values for each dimension
+		while(!dataStream.EndOfStream){
+			string[] line_vals = dataStream.ReadLine().Split(',');
+			for(int i=0; i<ColumnIndexes.Length; i++){
+				double temp = ParseValue(line_vals[ColumnIndexes[i]]);
+				MinI[i] = temp < MinI[i] ? temp : MinI[i];//double.Parse(line_vals[ColumnIndexes[i]].Replace("\"", "")) < MinI[i] ? double.Parse(line_vals[ColumnIndexes[i]].Replace("\"", "")) : MinI[i];
+				MaxI[i] = temp > MaxI[i] ? temp : MaxI[i];//double.Parse(line_vals[ColumnIndexes[i]].Replace("\"", "")) > MaxI[i] ? double.Parse(line_vals[ColumnIndexes[i]].Replace("\"", "")) : MaxI[i];
+			}
+		}
+		
+		dataStream.Close();
+
+		ImportPreset(preset_name, data_name, filename, map_filename, 
+		             columnXIndex, columnYIndex, columnZIndex,
+		             columnXAlias, columnYAlias, columnZAlias,
+		             MinI[0], MinI[2], MaxI[0], MaxI[2]);
 	}
 
 	/// <summary>
@@ -53,35 +120,26 @@ public class DataInterpreter
 	/// <param name="columnXIndex">Column X index.</param>
 	/// <param name="columnYIndex">Column Y index.</param>
 	/// <param name="columnZIndex">Column Z index.</param>
-	public static void ImportPreset(string preset_name, string data_name, string filename, string map_filename, int columnXIndex, int columnYIndex, int columnZIndex){
-		StreamReader dataStream = new StreamReader(File.OpenRead(filename));
-		string headers_line = dataStream.ReadLine();
-		string[] headers = headers_line.Split(',');
-		for(int i=0; i<headers.Length; i++){
-			headers[i] = headers[i].Replace("\"", "").Replace("\n", "");
-		}
-
-		// Find Minimum/Maximum values of all data dimensions.
-		int[] ColumnIndexes = {columnXIndex, columnYIndex, columnZIndex};
-		double[] MinI = new double[ColumnIndexes.Length];
-		double[] MaxI = new double[ColumnIndexes.Length];
-		// Set first Min/Max
-		string[] first_line = dataStream.ReadLine ().Split(',');
-		for(int i=0; i<ColumnIndexes.Length; i++){
-			MinI[i] = double.Parse(first_line[ColumnIndexes[i]]);
-       		MaxI[i] = double.Parse(first_line[ColumnIndexes[i]]);
-		}
-
-		// Search through entire file to find Min/Max values for each dimension
-		while(!dataStream.EndOfStream){
-			string[] line_vals = dataStream.ReadLine().Split(',');
-			for(int i=0; i<ColumnIndexes.Length; i++){
-				MinI[i] = double.Parse(first_line[ColumnIndexes[i]]) < MinI[i] ? double.Parse(first_line[ColumnIndexes[i]]) : MinI[i];
-				MaxI[i] = double.Parse(first_line[ColumnIndexes[i]]) < MaxI[i] ? double.Parse(first_line[ColumnIndexes[i]]) : MaxI[i];
-			}
-		}
+	public static void ImportPreset(string preset_name, string data_name, string filename, string map_filename,
+		                                int columnXIndex, int columnYIndex, int columnZIndex, string columnXAlias,
+	                                	string columnYAlias, string columnZAlias, double minX, double minZ, 
+	                                	double maxX, double maxZ){
+		// Move all files into working directory
+		// Copy Map image:
+		string[] map_split = map_filename.Split('.');
+		string map_filename_suffix = map_split[map_split.Length-1];
+		string map_filename_reduced = "/Heightmaps/Maps/" + data_name + "." + map_filename_suffix;
+		if(!File.Exists(Application.dataPath + map_filename_reduced))
+			File.Copy(map_filename, Application.dataPath + map_filename_reduced, true);
+		// Copy data file
+		string local_filename = "/Heightmaps/Import_Data/" + data_name + ".csv";
+		if(!File.Exists(Application.dataPath + local_filename))
+			File.Copy(filename, Application.dataPath + local_filename, true);
 
 		// Define preset strings
+		String presetFilename = Application.dataPath + "/Heightmaps/DataPresets.csv";
+		StreamWriter sw = File.AppendText(presetFilename);
+
 		string PresetOutputString = "";
 		string Comma = ",";
 		for(int i=0; i<PresetStrings.Length; i++){
@@ -91,17 +149,85 @@ public class DataInterpreter
 			temp += PresetStrings[i][0] + Comma; // Terrain type & preset
 			temp += "512,512" + Comma; // Heightmap size. colormap size
 			temp += "1" + Comma; // Scale Y
-			temp += filename + Comma; // Data filename
-			temp += map_filename + Comma; // Map filename
-			temp += MinI[0].ToString() + Comma; // Min X
-			temp += MinI[2].ToString() + Comma; // Min Z
-			temp += MaxI[0].ToString() + Comma; // Max X
-			temp += MaxI[2].ToString() + Comma; // Max Z
+			temp += local_filename + Comma; // Data filename
+			temp += map_filename_reduced + Comma; // Map filename
+			temp += minX.ToString() + Comma; // Min X
+			temp += minZ.ToString() + Comma; // Min Z
+			temp += maxX.ToString() + Comma; // Max X
+			temp += maxZ.ToString() + Comma; // Max Z
 			temp += PresetStrings[i][1] + Comma; // Color Preset
 			temp += columnXIndex.ToString() + Comma; // Column X Index
 			temp += columnYIndex.ToString() + Comma; // Column Y Index
 			temp += columnZIndex.ToString() + Comma; // Column Z Index
+			temp += columnXAlias + Comma; // Column X Alias
+			temp += columnYAlias + Comma; // Column Y Alias
+			temp += columnZAlias + Comma; // Column Z Alias
 			temp += PresetStrings[i][2]; // HillsMaxRadius,HillsIterationNumber,GeneticMaxIteration,GeneticSmoothIteration
+			
+			sw.WriteLine(temp);
 		}
+		sw.Close();
+	}
+
+	public static List<string[]> GetPresetList(){
+		List<string[]> output = new List<string[]>();
+
+		String presetFilename = Application.dataPath + "/Heightmaps/DataPresets.csv";
+		StreamReader dataStream = new StreamReader(File.OpenRead(presetFilename));
+		// Append each preset to the array
+		while(!dataStream.EndOfStream){
+			string[] line_vals = dataStream.ReadLine().Split(',');
+			// index 1 is data source
+			// index 0 is the preset name
+			bool exists = false;
+			string[] out_t = {line_vals[1], line_vals[0]};
+			for(int i=0; i<output.Count; i++){
+				if(output[i][0] == out_t[0] && output[i][1] == out_t[1]){
+					exists = true;
+					break;
+				}
+			}
+			if(!exists){
+				output.Add(out_t);
+			}
+		}
+		// Sort output by data (string at index 0)
+		List<string[]> output_refined = new List<string[]>();
+		while(output.Count != 0){
+			string data_name = output[0][0];
+			List<string[]> output_replacement = new List<string[]>();
+			for(int i=0; i<output.Count; i++){
+				if(output[i][0] == data_name){
+					output_refined.Add(output[i]);
+				}else{
+					output_replacement.Add(output[i]);
+				}
+			}
+			output = output_replacement;
+		}
+		dataStream.Close();
+		return output_refined;
+	}
+
+	public static void DeletePreset(string data_name, string preset_name){
+		string temp_filepath = Path.GetTempFileName();
+		String presetFilename = Application.dataPath + "/Heightmaps/DataPresets.csv";
+		StreamWriter tempWriter = new StreamWriter(temp_filepath);
+		StreamReader presetsFileReader = new StreamReader(File.OpenRead(presetFilename));
+
+		while(!presetsFileReader.EndOfStream){
+			string line = presetsFileReader.ReadLine();
+			string[] line_vals = line.Split(',');
+			// index 1 is data name
+			// index 0 is preset name
+			// if the line does not correspond to the data/preset given
+			if(line_vals[1] != data_name ||  line_vals[0] != preset_name){
+				tempWriter.WriteLine(line);
+			}
+		}
+		tempWriter.Close();
+		presetsFileReader.Close();
+		File.Delete(presetFilename);
+		File.Move(temp_filepath, presetFilename);
 	}
 }
