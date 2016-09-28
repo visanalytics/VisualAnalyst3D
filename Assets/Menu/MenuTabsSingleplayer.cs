@@ -1,6 +1,6 @@
 using System;
 using UnityEngine;
-using UnityEditor;
+using System.Windows.Forms;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -124,10 +124,10 @@ public class MenuTabsSingleplayer : MenuTabs
 			ImportDataDefaultGUI();
 			break;
 		case ImportDataState.Add:
-			ImportDataAddGUI();
+			ImportDataAddGUI(false);
 			break;
 		case ImportDataState.Edit:
-			ImportDataAddGUI();
+			ImportDataAddGUI(true);
 			break;
 		case ImportDataState.Delete:
 			ImportDataDeleteGUI();
@@ -190,8 +190,8 @@ public class MenuTabsSingleplayer : MenuTabs
 				                                "Cylindrical",
 				                                ImportDataPresetList[i][1],
 				                                "Cylindrical"); // Using cylindrical to simply get data for the preset
-				ImportDataFilename = Application.dataPath + Vars.FILENAME;
-				ImportDataMapFilename = Application.dataPath + Vars.MAP_FILENAME;
+				ImportDataFilename = UnityEngine.Application.dataPath + Vars.FILENAME;
+				ImportDataMapFilename = UnityEngine.Application.dataPath + Vars.MAP_FILENAME;
 				ImportDataColumnNames = DataInterpreter.ImportHeaderList(ImportDataFilename);
 				ImportDataColumnSelected = new int[]{Vars.COLUMN_X, Vars.COLUMN_Y, Vars.COLUMN_Z};
 				ImportDataColumnAlias = new string[]{Vars.COLUMN_X_ALIAS, Vars.COLUMN_Y_ALIAS, Vars.COLUMN_Z_ALIAS};
@@ -228,22 +228,31 @@ public class MenuTabsSingleplayer : MenuTabs
 		}
 	}
 
-	private void ImportDataAddGUI(){
+	private void ImportDataAddGUI(bool editing){
 		float boxX = w/4f, boxY = th*6f, boxW = w/2f, boxH = h - th*8f;
 		GUI.Box(new Rect(boxX, boxY, boxW, boxH), ImportDataErrorMessage);
 		GUI.Box (new Rect(boxX + tw/2f, boxY + th*1f, boxW - tw*2f, th), "");
 		GUI.Label(new Rect(boxX + tw/2f, boxY + th*1f, boxW - tw*2f, th), ImportDataFilename);
-		if(GUI.Button(new Rect(boxX + boxW - tw*1.5f, boxY + th*1f, tw*1.2f, th), "Open File")){
-			ImportDataFilename = EditorUtility.OpenFilePanel("Open File", "", "csv");
-			if(ImportDataFilename != "" && 
-			   ImportDataFilename.EndsWith(".csv")){
-				ImportDataColumnNames = DataInterpreter.ImportHeaderList(ImportDataFilename);
-				if(ImportDataColumnNames.Length < 3){
-					ImportDataErrorMessage = "Not enough data.";
-					ImportDataFilename = "";
-				}else{
-					ImportDataColumnSelected = new int[]{0,1,2};
-					ImportDataColumnAlias = new string[]{"","",""};
+		if(!editing){
+			if(GUI.Button(new Rect(boxX + boxW - tw*1.5f, boxY + th*1f, tw*1.2f, th), "Open File")){
+				OpenFileDialog dialog = new OpenFileDialog();
+				dialog.Filter = 
+					"CSV files (*.csv)|*.csv|All files (*.*)|*.*";
+				dialog.DefaultExt = "csv";
+				DialogResult result = dialog.ShowDialog();
+				if(result == DialogResult.OK){
+					ImportDataFilename = dialog.FileName.Replace('\\', '/'); //EditorUtility.OpenFilePanel("Open File", "", "csv");
+					if(ImportDataFilename != "" && 
+					   ImportDataFilename.EndsWith(".csv")){
+						ImportDataColumnNames = DataInterpreter.ImportHeaderList(ImportDataFilename);
+						if(ImportDataColumnNames.Length < 3){
+							ImportDataErrorMessage = "Not enough data.";
+							ImportDataFilename = "";
+						}else{
+							ImportDataColumnSelected = new int[]{0,1,2};
+							ImportDataColumnAlias = new string[]{"","",""};
+						}
+					}
 				}
 			}
 		}
@@ -256,7 +265,11 @@ public class MenuTabsSingleplayer : MenuTabs
 			GUI.Box (new Rect(boxX + tw/2f, boxY + th*2f, boxW - tw*2f, th), "");
 			GUI.Label(new Rect(boxX + tw/2f, boxY + th*2f, boxW - tw*2f, th), ImportDataMapFilename);
 			if(GUI.Button(new Rect(boxX + boxW - tw*1.5f, boxY + th*2f, tw*1.2f, th), "Select Map Image")){
-				ImportDataMapFilename = EditorUtility.OpenFilePanel("Select Map Image", "", "png");
+				OpenFileDialog dialog = new OpenFileDialog();
+				dialog.DefaultExt = "png";
+				DialogResult result = dialog.ShowDialog();
+				if(result == DialogResult.OK)
+					ImportDataMapFilename = dialog.FileName.Replace('\\', '/');//EditorUtility.OpenFilePanel("Select Map Image", "", "png");
 			}
 
 			if(ImportDataShowAdvanced){
@@ -291,8 +304,12 @@ public class MenuTabsSingleplayer : MenuTabs
 		}
 
 		GUI.Label(new Rect(boxX + boxW*0.5f - tw*1.75f, boxY+boxH - th*3f, tw*1f, th), "Preset Name: ");
-		ImportDataPresetName = GUI.TextField(new Rect(boxX + boxW*0.5f - tw*0.75f, boxY+boxH - th*3f, tw*2.5f, th), ImportDataPresetName);
-		
+		if(!editing){
+			ImportDataPresetName = GUI.TextField(new Rect(boxX + boxW*0.5f - tw*0.75f, boxY+boxH - th*3f, tw*2.5f, th), ImportDataPresetName);
+		}else{
+			GUI.Label(new Rect(boxX + boxW*0.5f - tw*0.75f, boxY+boxH - th*3f, tw*2.5f, th), ImportDataPresetName);
+		}
+
 		if(GUI.Button(new Rect(boxX + boxW*0.5f - tw*1.25f, boxY+boxH - th*1.5f, tw, th), "Import")){
 			// Test all necessary inputs have been chosen
 			string[] filename_parts = ImportDataFilename.Split('/');
@@ -301,11 +318,13 @@ public class MenuTabsSingleplayer : MenuTabs
 			   ImportDataFilename.EndsWith(".csv")){
 				// Map filename
 				if(ImportDataMapFilename == ""){
-					ImportDataMapFilename = Application.dataPath + "/Heightmaps/Maps/Time.png";
+					ImportDataMapFilename = UnityEngine.Application.dataPath + "/Heightmaps/Maps/Time.png";
 				}
 
 				// if advanced settings is toggled
 				if(ImportDataShowAdvanced){
+					// Delete preset if it exists
+					DataInterpreter.DeletePreset(data_name, ImportDataPresetName);
 					DataInterpreter.ImportPreset(ImportDataPresetName, 
 					                             data_name,
 					                             ImportDataFilename, 
@@ -321,6 +340,8 @@ public class MenuTabsSingleplayer : MenuTabs
 					                             ImportDataMaxX,
 					                             ImportDataMaxZ);
 				}else{
+					// Delete preset if it exists
+					DataInterpreter.DeletePreset(data_name, ImportDataPresetName);
 					DataInterpreter.ImportPreset(ImportDataPresetName, 
 					                             data_name,
 					                             ImportDataFilename, 

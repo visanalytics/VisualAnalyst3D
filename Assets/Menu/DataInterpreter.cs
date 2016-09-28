@@ -67,12 +67,15 @@ public class DataInterpreter
 		string[] map_split = map_filename.Split('.');
 		string map_filename_suffix = map_split[map_split.Length-1];
 		string map_filename_reduced = "/Heightmaps/Maps/" + data_name + "." + map_filename_suffix;
-		File.Copy(map_filename, Application.dataPath + map_filename_reduced, true);
+		if(!File.Exists(Application.dataPath + map_filename_reduced))
+			File.Copy(map_filename, Application.dataPath + map_filename_reduced, true);
 		// Copy data file
 		string local_filename = "/Heightmaps/Import_Data/" + data_name + ".csv";
-		File.Copy(filename, Application.dataPath + local_filename, true);
-		
-		StreamReader dataStream = new StreamReader(File.OpenRead(filename));
+		if(!File.Exists(Application.dataPath + local_filename))
+			File.Copy(filename, Application.dataPath + local_filename, true);
+
+		FileStream readStream = File.OpenRead(filename);
+		StreamReader dataStream = new StreamReader(readStream);
 		// Find Minimum/Maximum values of all data dimensions.
 		int[] ColumnIndexes = {columnXIndex, columnYIndex, columnZIndex};
 		double[] MinI = new double[ColumnIndexes.Length];
@@ -99,8 +102,8 @@ public class DataInterpreter
 				MaxI[i] = temp > MaxI[i] ? temp : MaxI[i];//double.Parse(line_vals[ColumnIndexes[i]].Replace("\"", "")) > MaxI[i] ? double.Parse(line_vals[ColumnIndexes[i]].Replace("\"", "")) : MaxI[i];
 			}
 		}
-		
 		dataStream.Close();
+		readStream.Close();
 
 		ImportPreset(preset_name, data_name, filename, map_filename, 
 		             columnXIndex, columnYIndex, columnZIndex,
@@ -173,7 +176,8 @@ public class DataInterpreter
 		List<string[]> output = new List<string[]>();
 
 		String presetFilename = Application.dataPath + "/Heightmaps/DataPresets.csv";
-		StreamReader dataStream = new StreamReader(File.OpenRead(presetFilename));
+		FileStream fileStream = File.OpenRead(presetFilename);
+		StreamReader dataStream = new StreamReader(fileStream);
 		// Append each preset to the array
 		while(!dataStream.EndOfStream){
 			string[] line_vals = dataStream.ReadLine().Split(',');
@@ -206,6 +210,7 @@ public class DataInterpreter
 			output = output_replacement;
 		}
 		dataStream.Close();
+		fileStream.Close();
 		return output_refined;
 	}
 
@@ -213,7 +218,8 @@ public class DataInterpreter
 		string temp_filepath = Path.GetTempFileName();
 		String presetFilename = Application.dataPath + "/Heightmaps/DataPresets.csv";
 		StreamWriter tempWriter = new StreamWriter(temp_filepath);
-		StreamReader presetsFileReader = new StreamReader(File.OpenRead(presetFilename));
+		FileStream fs = File.OpenRead(presetFilename);
+		StreamReader presetsFileReader = new StreamReader(fs);
 
 		while(!presetsFileReader.EndOfStream){
 			string line = presetsFileReader.ReadLine();
@@ -227,7 +233,14 @@ public class DataInterpreter
 		}
 		tempWriter.Close();
 		presetsFileReader.Close();
-		File.Delete(presetFilename);
-		File.Move(temp_filepath, presetFilename);
+		fs.Close();
+		bool file_copy_success = false;
+		while(!file_copy_success){
+			try{
+				File.Delete(presetFilename);
+				File.Move(temp_filepath, presetFilename);
+				file_copy_success = true;
+			}catch(Exception e){ }
+		}
 	}
 }
