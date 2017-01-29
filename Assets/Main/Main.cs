@@ -227,6 +227,24 @@ public class Main : MonoBehaviour {
 		((PhoneController)Menu.ControlHandler.CurControl).SetEnabled(val);
 	}
 
+	[RPC]
+	void DropFlag(NetworkPlayer player, string annotation){
+		
+		RaycastHit hit; 
+		Ray ray = MainCamera.ScreenPointToRay(new Vector3((float)Screen.width / 2f, (float)Screen.height / 2f, 0f));
+		if(Physics.Raycast(ray, out hit, Mathf.Infinity)){
+			Vector3 flagPos = hit.point;
+			Vector3 DataPosition = Inflater.DataPosFromWorld(flagPos);
+			Vector3 WorldPosition = flagPos + Vector3.down * 1.0F;
+			GameObject temp = Menu.CreateFlag(annotation, WorldPosition);
+			Color c = Color.white;
+			temp.transform.Find("Cube").renderer.material.SetColor ("_Color", c);
+			temp.transform.Find("Cube").renderer.material.mainTexture = (Texture2D)Resources.Load(Menu.flaghandler.FLAG_PATH[1] + "/" + Menu.flaghandler.FLAG_IMAGE[1]);
+			
+			temp.GetComponent<FlagData>().Init(Menu.R.Next(1,25000), WorldPosition, DataPosition, annotation);
+		}
+	}
+
 	#region Client Calls (DISREGARD):
 
 	[RPC]

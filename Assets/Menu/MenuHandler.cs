@@ -32,7 +32,7 @@ public class MenuHandler
 	public Variables Vars;
 	
 	public FlagHandler flaghandler;
-	System.Random R;
+	public System.Random R;
 
 	public MenuHandler (HeightmapInflater Inflater, Camera MainCamera, NetworkView nView)
 	{
